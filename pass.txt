@@ -1,0 +1,1 @@
+mongodb+srv://test:<password>@cluster0-yphbp.mongodb.net/test?retryWrites=true&w=majority
