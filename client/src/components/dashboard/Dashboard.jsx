@@ -5,6 +5,7 @@ import Spinner from "../layout/Spinner";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import SideMenu from "./SideMenu";
+import PageContent from "../layout/PageContent";
 
 function Dashboard(props) {
   const {
@@ -14,12 +15,9 @@ function Dashboard(props) {
     profile: { profile, loading }
   } = props;
 
-  useEffect(
-    () => {
-      getCurrentProfile();
-    },
-    [getCurrentProfile]
-  );
+  useEffect(() => {
+    getCurrentProfile();
+  }, [getCurrentProfile]);
 
   const {
     firstName,
@@ -36,40 +34,46 @@ function Dashboard(props) {
     question,
     security,
     imageTaken
-  } = user
+  } = user;
 
   return loading ? (
     <Spinner />
   ) : (
-    <div style={{height: "92vh"}}>
-      <div className="text-center">
-        <h1 className="large text-primary">Dashboard</h1>
-        <p className="lead">
-          <i className="fas fa-user" /> Welcome, {user && `${firstName} ${lastName}`}
-        </p>
-      </div>
-        {profile !== null ? (
-          <div className="text-center">
-            <div className="my-2">
-              <button className="btn btn-danger" onClick={() => deleteAccount}>
-                <i className="fas fa-user-minus" /> Delete my account
+    <PageContent>
+      <div className="row">
+        <div className="col-md-3">
+          <SideMenu />
+        </div>
+        <div className="col-md-9">
+          <div className="dashboard-padding">
+            <h1 className="large text-primary">Dashboard</h1>
+            <p className="lead">
+              <i className="fas fa-user" /> Welcome,{" "}
+              {user && `${firstName} ${lastName}`}
+            </p>
+          </div>
+          {profile !== null ? (
+            <div className="dashboard-padding">
+              <div className="my-2">
+                <button
+                  className="btn btn-danger"
+                  onClick={() => deleteAccount}
+                >
+                  <i className="fas fa-user-minus" /> Delete my account
                 </button>
               </div>
             </div>
           ) : (
-            <div className="text-center">
+            <div className="dashboard-padding">
               <p>You have not yet set up a profile. Please add some info.</p>
-              <Link to="/create-profile" className="btn btn-primary my-1">
-                Create a profile!
+              <Link to="/profile-overview" className="btn btn-primary my-1">
+                Profile overview!
               </Link>
             </div>
           )}
-      <div className="row">
-        <div className="col-3">
-          <SideMenu />
         </div>
       </div>
-    </div>
+    </PageContent>
   );
 }
 

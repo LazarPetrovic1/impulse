@@ -9,10 +9,12 @@ import Login from "./components/auth/Login";
 import Alert from "./components/layout/Alert";
 import Dashboard from "./components/dashboard/Dashboard";
 import PrivateRoute from "./components/routing/PrivateRoute";
-import CreateProfile from "./components/profile-rest/CreateProfile";
+import ProfileOverview from "./components/profile-rest/ProfileOverview";
 import { ThemeProvider } from './contexts/ThemeContext'
 import { LanguageProvider } from './contexts/LanguageContext'
 import PageContent from "./components/layout/PageContent"
+import NotFound from './components/layout/NotFound';
+import ForumRoutes from './components/routing/ForumRoutes';
 
 // Redux stuff
 import { Provider } from "react-redux";
@@ -44,9 +46,11 @@ function App() {
                 <PrivateRoute exact path="/dashboard" component={Dashboard} />
                 <PrivateRoute
                   exact
-                  path="/create-profile"
-                  component={CreateProfile}
+                  path="/profile-overview"
+                  component={ProfileOverview}
                 />
+              <Route render={() => <PageContent><ForumRoutes /></PageContent>} />}
+              <Route render={() => <PageContent><NotFound /></PageContent>} />
               </Switch>
             </Fragment>
           </Router>

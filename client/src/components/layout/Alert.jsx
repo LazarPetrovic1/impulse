@@ -1,15 +1,31 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { removeAlert } from '../../actions/alert';
 
 const Alert = ({ alerts }) =>
   alerts !== null &&
   alerts.length > 0 &&
   alerts.map(alert => (
-    <div className={`alert alert-${alert.alertType}`} key={alert.id}>
+    <div
+      className={`alert alert-${alert.alertType} alert-dismissible fade show`}
+      role="alert"
+      key={alert.id}
+    >
       {alert.msg}
-    </div>
-  ));
+      <button
+        type="button"
+        onChange={() => removeAlert(alert.id)}
+        className="close"
+        data-dismiss="alert"
+        aria-label="Close"
+      >
+      <span aria-hidden="true">
+        <i className="fas fa-times" />
+      </span>
+    </button>
+  </div>
+));
 
 Alert.propTypes = {
   alerts: PropTypes.array.isRequired

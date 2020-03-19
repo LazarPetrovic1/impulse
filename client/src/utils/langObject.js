@@ -4,22 +4,27 @@ export const registercomponent = {
     sr: "Tako je!",
     de: "Das sieht gut aus!"
   },
+  _name: {
+    en: "name",
+    sr: "ime",
+    de: "Namen"
+  },
   yourbasic: {
     en: "Your basic personal information",
     sr: "Vase osnovne licne informacije",
     de: "Ihre grundlegenden persönlichen Daten"
   },
-  firstname: {
+  _firstname: {
     en: "First name",
     sr: "Ime",
     de: "Vorname"
   },
-  lastname: {
+  _lastname: {
     en: "Last name",
     sr: "Prezime",
     de: "Nachname"
   },
-  email: {
+  _email: {
     en: "E-mail",
     sr: "Imejl",
     de: "Email"
@@ -54,15 +59,20 @@ export const registercomponent = {
     sr: "Osnovne informacije profila",
     de: "Grundsätzlich Profildateien"
   },
-  username: {
+  _username: {
     en: "Username",
     sr: "Korisnicko ime",
     de: "Nutzername"
   },
-  password: {
+  _password: {
     en: "Password",
     sr: "Lozinka",
     de: "Passwort"
+  },
+  confirmpass: {
+    en: "Confirm your password",
+    sr: "Potvrdite svoju lozinku",
+    de: "Bestätigen Sie Ihr Passwort"
   },
   passwordnotconfirmed: {
     en: "Password not confirmed",
@@ -89,12 +99,17 @@ export const registercomponent = {
     sr: "Datum rodjenja",
     de: "Geburtsdatum"
   },
-  city: {
+  chooseone: {
+    en: "-- Choose one --",
+    sr: "-- Izaberite --",
+    de: "-- Wählen Sie --"
+  },
+  _city: {
     en: "City",
     sr: "Grad",
     de: "Stadt"
   },
-  country: {
+  _country: {
     en: "Country",
     sr: "Drzava",
     de: "Staat"
@@ -114,20 +129,35 @@ export const registercomponent = {
     sr: "Slažem se sa uslovima koriscenja",
     de: "Ich stimme den Nutzungsbedingungen zu"
   },
-  sequrityanswer: {
+  securityanswer: {
     en: "Choose a security question",
     sr: "Izaberite sigurnosno pitanje",
-    de: "Ich stimme den Nutzungsbedingungen zu"
+    de: "Bitte wählen Sie eine Frage"
   },
-  answer: {
+  securityquestion: {
+    en: "Security question",
+    sr: "Sigurnosno pitanje",
+    de: "Sicherheitsfrage"
+  },
+  addsecurity: {
+    en: "Add a security answer",
+    sr: "Dodajte sigurnosni odgovor",
+    de: "Fügen Sie eine Sicherheitsantword hinzu"
+  },
+  _answer: {
     en: "Answer",
     sr: "Odgovor",
     de: "Antwort"
   },
   picturetext: {
-    en: "Please take a picture of yourself for additional security (compeletely optional)",
-    sr: "Molimo Vas da se slikate radi dodatne bezbednosti (ne morate)",
-    de: "Bitte machen Sie ein Foto von sich für zusätzliche Sicherheit (völlig optional)"
+    en: "Please take a picture of yourself for additional security",
+    sr: "Molimo Vas da se slikate radi dodatne bezbednosti",
+    de: "Bitte machen Sie ein Foto von sich für zusätzliche Sicherheit"
+  },
+  compeletelyoptional: {
+    en: "(compeletely optional)",
+    sr: "(mada i ne morate)",
+    de: "(völlig optional)"
   },
   snapbutton: {
     en: "Take a picture",
@@ -158,6 +188,36 @@ export const registercomponent = {
     en: "No",
     sr: "Nema",
     de: "Kein"
+  },
+  _from: {
+    en: "From",
+    sr: "Iz",
+    de: "Aus"
+  },
+  location: {
+    en: "location",
+    sr: "lokacije",
+    de: "Ort"
+  },
+  imagetaken: {
+    en: "Image taken for security:",
+    sr: "Slikali ste se za sigurnost:",
+    de: "Aus Sicherheitsgründen aufgenommenes Bild:"
+  },
+  yes: {
+    en: "yes",
+    sr: "da",
+    de: "ja"
+  },
+  no: {
+    en: "no",
+    sr: "ne",
+    de: "nein"
+  },
+  agreement: {
+    en: "You must agree before submitting.",
+    sr: "Morate se sloziti pre podnosenja zahteva.",
+    de: "Sie müssen zustimmen, bevor Sie einreichen."
   }
 }
 
@@ -169,7 +229,7 @@ export const logincomponent = {
   },
   loginusing: {
     en: "Log in using",
-    sr: "Ulogujte se preko",
+    sr: "Ulogujte se",
     de: "Einloggen mit"
   },
   yourphonenumber: {

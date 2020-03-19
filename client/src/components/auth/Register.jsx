@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from 'react'
+import React, { useState, Fragment, useEffect, useContext } from 'react'
 import countries from '../../utils/countries.js'
 import Camera from '../misc/Camera'
 import PropTypes from 'prop-types'
@@ -6,7 +6,10 @@ import { connect } from 'react-redux'
 import { register } from '../../actions/auth'
 import { Redirect } from 'react-router-dom'
 import DatePicker from 'react-datepicker'
+import { LanguageContext } from '../../contexts/LanguageContext'
 import Moment from 'react-moment'
+import { registercomponent } from "../../utils/langObject"
+
 // Stylesheets
 import 'react-datepicker/dist/react-datepicker.css'
 
@@ -43,6 +46,7 @@ const Register = props => {
   const [check, setcheck] = useState(false)
   const [progress, setProgress] = useState(0)
   const [image, setImage] = useState(null)
+  const { language } = useContext(LanguageContext)
 
   const {
     firstName,
@@ -147,11 +151,58 @@ const Register = props => {
     setProgress(newValue)
   }
 
+  const {
+    looksgood,
+    yourbasic,
+    _firstname,
+    _lastname,
+    _email,
+    pleaseenter,
+    yoursex,
+    male,
+    female,
+    nospecify,
+    basicprofileinfo,
+    _username,
+    _password,
+    passwordnotconfirmed,
+    tellusalittlebit,
+    yourbio,
+    advancedpersonalinfo,
+    dateofbirth,
+    _city,
+    _country,
+    zipcode,
+    yourphonenumber,
+    agreewithterms,
+    securityanswer,
+    _answer,
+    picturetext,
+    snapbutton,
+    pleasenote,
+    overview,
+    signmeup,
+    fullname,
+    notgiven,
+    _name,
+    confirmpass,
+    chooseone,
+    addsecurity,
+    compeletelyoptional,
+    _from,
+    location,
+    securityquestion,
+    imagetaken,
+    yes,
+    no,
+    agreement
+  } = registercomponent
+
   return (
     <Fragment>
       <div
         id='carouselExampleIndicators'
-        className='carousel slide high pt-4 darkbackground'
+        className='carousel slide high pt-4'
         data-interval='false'
       >
         <div className='container text-center'>
@@ -207,7 +258,7 @@ const Register = props => {
           <div className='carousel-inner'>
             <div className='progress mx-2'>
               <div
-                className='progress-bar progress-bar-striped bg-success progress-bar-animated'
+                className='progress-bar progress-bar-striped bg-primary progress-bar-animated'
                 role='progressbar'
                 style={{ width: `${progress}%` }}
               />
@@ -216,11 +267,11 @@ const Register = props => {
               <div className='carousel-item active'>
                 <div className='w-75 h-100 m-auto'>
                   <div style={{ marginTop: '20%' }}>
-                    <h2 className='mb-2 white'>
-                      Your basic personal information
+                    <h2 className='mb-2 '>
+                      {yourbasic[language]}
                     </h2>
-                    <label htmlFor='firstName' className='white'>
-                      First name
+                    <label htmlFor='firstName' >
+                      {_firstname[language]}
                     </label>
                     <input
                       type='text'
@@ -232,17 +283,18 @@ const Register = props => {
                           ? `form-control is-valid`
                           : 'form-control is-invalid'
                       }
+                      placeholder={_firstname[language]}
                       required
                     />
                     {firstName ? (
-                      <div className='valid-feedback'>Looks good!</div>
+                      <div className='valid-feedback'>{looksgood[language]}</div>
                     ) : (
                       <div className='invalid-feedback'>
-                        Please enter your name.
+                        {pleaseenter[language]}{" "}{_name[language]}
                       </div>
                     )}
-                    <label className='white' htmlFor='lastName'>
-                      Last name
+                    <label  htmlFor='lastName'>
+                      {_lastname[language]}
                     </label>
                     <input
                       type='text'
@@ -254,17 +306,18 @@ const Register = props => {
                       value={lastName}
                       name='lastName'
                       onChange={onChange}
+                      placeholder={_lastname[language]}
                       required
                     />
                     {lastName ? (
-                      <div className='valid-feedback'>Looks good!</div>
+                      <div className='valid-feedback'>{looksgood[language]}</div>
                     ) : (
                       <div className='invalid-feedback'>
-                        Please enter your name.
+                        {pleaseenter[language]}{" "}{_name[language]}
                       </div>
                     )}
-                    <label htmlFor='email' className='white'>
-                      E-mail
+                    <label htmlFor='email' >
+                      {_email[language]}
                     </label>
                     <input
                       type='email'
@@ -277,19 +330,20 @@ const Register = props => {
                       name='email'
                       onChange={onChange}
                       required
+                      placeholder={_email[language]}
                     />
                     {email ? (
-                      <div className='valid-feedback'>Looks good!</div>
+                      <div className='valid-feedback'>{looksgood[language]}</div>
                     ) : (
                       <div className='invalid-feedback'>
-                        Please enter your e-mail address.
+                        {pleaseenter[language]}{" "}{_email[language]}
                       </div>
                     )}
                     <label
                       htmlFor='sex'
-                      className='mt-4 white'
+                      className='mt-4 '
                     >
-                      Your sex
+                      {yoursex[language]}
                     </label>
                     <div className='custom-control custom-radio'>
                       <input
@@ -305,10 +359,10 @@ const Register = props => {
                         onChange={onChange}
                       />
                       <label
-                        className='custom-control-label white'
+                        className='custom-control-label '
                         htmlFor='male'
                       >
-                        Male
+                        {male[language]}
                       </label>
                     </div>
                     <div className='custom-control custom-radio'>
@@ -325,10 +379,10 @@ const Register = props => {
                         onChange={onChange}
                       />
                       <label
-                        className='custom-control-label white'
+                        className='custom-control-label '
                         htmlFor='female'
                       >
-                        Female
+                        {female[language]}
                       </label>
                     </div>
                     <div className='custom-control custom-radio'>
@@ -345,10 +399,10 @@ const Register = props => {
                         onChange={onChange}
                       />
                       <label
-                        className='custom-control-label white'
+                        className='custom-control-label '
                         htmlFor='unknown'
                       >
-                        I do not wish to specify
+                        {nospecify[language]}
                       </label>
                     </div>
                   </div>
@@ -357,14 +411,14 @@ const Register = props => {
                       className='valid-feedback'
                       style={{ display: 'block' }}
                     >
-                      Looks good!
+                      {looksgood[language]}
                     </div>
                   ) : (
                     <div
                       className='invalid-feedback'
                       style={{ display: 'block' }}
                     >
-                      Please choose your sex
+                      {pleaseenter[language]}{" "}{yoursex[language]}
                     </div>
                   )}
                 </div>
@@ -372,14 +426,14 @@ const Register = props => {
               <div className='carousel-item'>
                 <div className='w-75 h-100 m-auto'>
                   <div style={{ marginTop: '25%' }}>
-                    <h2 className='mb-2 white'>
-                      Your basic profile information
+                    <h2 className='mb-2 '>
+                      {basicprofileinfo[language]}
                     </h2>
                     <label
                       htmlFor='username'
-                      className='white'
+
                     >
-                      Username
+                      {_username[language]}
                     </label>
                     <div className='input-group'>
                       <div className='input-group-prepend'>
@@ -400,24 +454,25 @@ const Register = props => {
                         name='username'
                         onChange={onChange}
                         value={username}
+                        placeholder={_username[language]}
                         required
                       />
                       {username.length > 2 ? (
                         <div className='valid-feedback'>
-                          Looks good!
+                          {looksgood[language]}
                         </div>
                       ) : (
                         <div className='invalid-feedback'>
-                          Please enter your username.
+                          {pleaseenter[language]}{" "}{_username[language]}
                         </div>
                       )}
                     </div>
                     <div className='form-group rel'>
                       <label
                         htmlFor='password'
-                        className='white'
+
                       >
-                        Password
+                        {_password[language]}
                       </label>
                       <input
                         type={viewPass ? 'text' : 'password'}
@@ -429,7 +484,7 @@ const Register = props => {
                         }
                         value={password}
                         onChange={onChange}
-                        placeholder='Please enter your password.'
+                        placeholder={_password[language]}
                       />
                       {viewPass ? (
                         <i
@@ -444,20 +499,20 @@ const Register = props => {
                       )}
                       {password.length > 2 ? (
                         <div className='valid-feedback'>
-                          Looks good!
+                          {looksgood[language]}
                         </div>
                       ) : (
                         <div className='invalid-feedback'>
-                          Please enter your name.
+                          {pleaseenter[language]}{" "}{_password[language]}
                         </div>
                       )}
                     </div>
                     <div className='form-group rel'>
                       <label
                         htmlFor='password2'
-                        className='white'
+
                       >
-                        Password
+                        {confirmpass[language]}
                       </label>
                       <input
                         type={viewPass2 ? 'text' : 'password'}
@@ -487,11 +542,11 @@ const Register = props => {
                         password2.length >= 5 &&
                         password2 === password ? (
                           <div className='valid-feedback'>
-                          Looks good!
+                          {looksgood[language]}
                         </div>
                       ) : (
                         <div className='invalid-feedback'>
-                          Password not confirmed.
+                          {passwordnotconfirmed[language]}
                         </div>
                       )}
                     </div>
@@ -501,14 +556,14 @@ const Register = props => {
               <div className='carousel-item'>
                 <div className='w-75 h-100 m-auto'>
                   <div style={{ marginTop: '15%' }}>
-                    <h2 className='mb-2 white'>
-                      Tell us a little bit about yourself
+                    <h2 className='mb-2 '>
+                      {tellusalittlebit[language]}
                     </h2>
                     <label
                       htmlFor='bio'
-                      className='white'
+
                     >
-                      Your bio:{' '}
+                      {yourbio[language]}:{' '}
                     </label>
                     <textarea
                       className={
@@ -516,21 +571,19 @@ const Register = props => {
                           ? 'form-control is-valid'
                           : 'form-control is-invalid'
                       }
-                      placeholder='Write something about yourself'
+                      placeholder={tellusalittlebit[language]}
                       name='bio'
                       value={bio}
                       id='bio'
                       onChange={onChange}
-                    >
-                      Tell us
-                    </textarea>
+                    />
                     {bio ? (
                       <div className='valid-feedback mt-5'>
-                        Looks good!
+                        {looksgood[language]}
                       </div>
                     ) : (
                       <div className='invalid-feedback mt-5'>
-                        Please tell us a little bit about yourself.
+                        {tellusalittlebit[language]}
                       </div>
                     )}
                   </div>
@@ -539,14 +592,14 @@ const Register = props => {
               <div className='carousel-item'>
                 <div className='w-75 h-100 m-auto'>
                   <div style={{ marginTop: '10%' }}>
-                    <h2 className='mb-2 white'>
-                      Advanced personal information
+                    <h2 className='mb-2 '>
+                      {advancedpersonalinfo[language]}
                     </h2>
                     <label
                       htmlFor='dob'
-                      className='white'
+
                     >
-                      Date of birth
+                      {dateofbirth[language]}
                     </label>
                     <br />
                     <DatePicker
@@ -567,18 +620,18 @@ const Register = props => {
                     <br />
                     {dob ? (
                       <div className='valid-feedback d-block'>
-                        Looks good!
+                        {looksgood[language]}
                       </div>
                     ) : (
                       <div className='invalid-feedback d-block'>
-                        Please enter your date of birth.
+                        {pleaseenter[language]}{" "}{dateofbirth[language]}
                       </div>
                     )}
                     <label
                       htmlFor='city'
-                      className='white mt-2'
+                      className=' mt-2'
                     >
-                      City
+                      {_city[language]}
                     </label>
                     <input
                       type='text'
@@ -590,22 +643,23 @@ const Register = props => {
                       value={city}
                       name='city'
                       onChange={onChange}
+                      placeholder={_city[language]}
                       required
                     />
                     {city ? (
                       <div className='valid-feedback'>
-                        Looks good!
+                        {looksgood[language]}
                       </div>
                     ) : (
                       <div className='invalid-feedback'>
-                        Please enter your city
+                        {pleaseenter[language]}{" "}{_city[language]}
                       </div>
                     )}
                     <label
                       htmlFor='country'
-                      className='white'
+
                     >
-                      Country
+                      {_country[language]}
                     </label>
                     <select
                       onChange={e =>
@@ -620,7 +674,7 @@ const Register = props => {
                       required
                     >
                       <option value=''>
-                        -- Choose one --
+                        {chooseone[language]}
                       </option>
                       {
                         countries.map(country => (
@@ -637,18 +691,18 @@ const Register = props => {
                     {
                       country ? (
                         <div className='valid-feedback'>
-                        Looks good!
+                        {looksgood[language]}
                       </div>
                     ) : (
                       <div className='invalid-feedback'>
-                        Please select your country
+                        {pleaseenter[language]}{" "}{_country[language]}
                       </div>
                     )}
                     <label
                       htmlFor='zip'
-                      className='white'
+
                     >
-                      Zip Code
+                      {zipcode[language]}
                     </label>
                     <input
                       type='text'
@@ -660,20 +714,21 @@ const Register = props => {
                           : 'form-control is-invalid'
                       }
                       value={zip}
+                      placeholder={zipcode[language]}
                       required
                     />
                     {
                       zip ? (
-                        <div className='valid-feedback'>
-                        Looks good!
+                      <div className='valid-feedback'>
+                        {looksgood[language]}
                       </div>
                     ) : (
                       <div className='invalid-feedback'>
-                        Please enter your zip code
+                        {pleaseenter[language]}{" "}{zipcode[language]}
                       </div>
                     )}
-                    <label htmlFor='phone mt-3'>
-                      Your phone number
+                    <label htmlFor='phone' className="">
+                      {yourphonenumber[language]}
                     </label>
                     <div className='input-group'>
                       <div className='input-group-prepend'>
@@ -694,16 +749,17 @@ const Register = props => {
                         name='phone'
                         onChange={onChange}
                         value={phone}
+                        placeholder={yourphonenumber[language]}
                         required
                       />
                       {
                         phone ? (
                           <div className='valid-feedback'>
-                          Looks good!
+                          {looksgood[language]}
                         </div>
                       ) : (
                         <div className='invalid-feedback'>
-                          Please enter your phone number.
+                          {pleaseenter[language]}{" "}{yourphonenumber[language]}
                         </div>
                       )}
                     </div>
@@ -717,10 +773,10 @@ const Register = props => {
                       className='container-md scroller'
                       style={{ userSelect: 'none' }}
                     >
-                      <h2 className='white'>
+                      <h2 >
                         License, terms and conditions
                       </h2>
-                      <p className='lead white'>
+                      <p className='lead '>
                         Lorem ipsum dolor sit amet, consectetur adipisicing
                         elit. Repellendus architecto ipsum eaque sit,
                         consectetur a laborum quod autem deserunt amet qui
@@ -757,9 +813,6 @@ const Register = props => {
                         aut harum consequatur, quas! Harum eveniet tempora
                         numquam natus ab tempore ducimus.
                       </p>
-                      <p className='display-3 white'>
-                        You have to agree before you can create an account.
-                      </p>
                     </article>
                     <div className='custom-control custom-checkbox'>
                       <input
@@ -779,34 +832,34 @@ const Register = props => {
                         className='custom-control-label'
                         htmlFor='check'
                       >
-                        I agree with the terms and conditions
+                        {agreewithterms[language]}
                       </label>
                     </div>
-                    <div
-                      className={
-                        check ? 'valid-feedback d-block' : 'invalid-feedback'
-                      }
-                    >
-                      {
-                        check
-                          ? 'Looks good!'
-                          : 'You must agree before submitting.'
-                      }
-                    </div>
+                    {
+                      check ? (
+                        <div className="valid-feedback d-block">
+                          {looksgood[language]}
+                        </div>
+                      ) : (
+                        <div className="invalid-feedback">
+                          {agreement[language]}
+                        </div>
+                      )
+                    }
                   </div>
                 </div>
               </div>
               <div className='carousel-item'>
                 <div className='w-75 h-100 m-auto'>
                   <div style={{ marginTop: '30%' }}>
-                    <h2 className='white'>
-                      Add a security answer
+                    <h2 >
+                      {addsecurity[language]}
                     </h2>
                     <label
                       htmlFor='question'
-                      className='mt-2'
+                      className='mt-2 '
                     >
-                      Choose a question
+                      {securityanswer[language]}
                     </label>
                     <select
                       onChange={e =>
@@ -821,7 +874,7 @@ const Register = props => {
                       required
                     >
                       <option value=''>
-                        -- Choose one --
+                        {chooseone[language]}
                       </option>
                       {
                           questions.map(
@@ -837,9 +890,9 @@ const Register = props => {
                     </select>
                     <label
                       htmlFor='security'
-                      className='white mt-2'
+                      className=' mt-2'
                     >
-                      Answer
+                      {_answer[language]}
                     </label>
                     <input
                       type='text'
@@ -851,17 +904,18 @@ const Register = props => {
                           ? `form-control is-valid`
                           : 'form-control is-invalid'
                       }
+                      placeholder={_answer[language]}
                       value={security}
                       required
                     />
                     {
                       security ? (
                         <div className='valid-feedback'>
-                        Looks good!
+                        {looksgood[language]}
                       </div>
                     ) : (
                       <div className='invalid-feedback'>
-                        Please provide an answer to the question.
+                        {pleaseenter[language]}{" "}{_answer[language]}
                       </div>
                     )}
                   </div>
@@ -872,22 +926,19 @@ const Register = props => {
                   <article style={{ marginTop: '2rem' }}>
                     <h2
                       style={{ marginBottom: '1rem' }}
-                      className='white'
+
                     >
-                      Please take a picture of yourself for additional security
-                      (
-                        <b>
-                        compeletely optional
-                        </b>
-                      )
+                      {picturetext[language]}{" "}
+                      <b>
+                        {compeletelyoptional[language]}
+                      </b>
                     </h2>
                     <Camera
                       onCapture={blob => setImage(blob)}
                       onClear={() => setImage(null)}
                     />
                     <small className='d-block bg-light lead text-secondary mt-4'>
-                      Please note that this image will be discarded after the
-                      registration process
+                      {pleasenote[language]}
                     </small>
                   </article>
                 </div>
@@ -895,15 +946,15 @@ const Register = props => {
               <div className='carousel-item'>
                 <div className='w-75 h-100 m-auto'>
                   <div style={{ marginTop: '10%' }}>
-                    <h2 style={{ marginBottom: '2rem' }} className='white'>
-                      Overview of your information:
+                    <h2 style={{ marginBottom: '2rem' }} >
+                      {overview[language]}:
                     </h2>
                     <ul
                       className='list-group'
                       style={{ marginBottom: '2rem' }}
                     >
                       <li className='overview-items list-group-item list-group-item-action'>
-                        Name:{' '}
+                        {fullname[language]}:{' '}
                         {firstName &&
                           lastName ? (
                             <span className='text-success'>
@@ -911,56 +962,56 @@ const Register = props => {
                             </span>
                         ) : (
                           <span className='text-danger'>
-                            No name given.
+                            {notgiven[language]}{" "}{fullname[language]}
                           </span>
                         )}
                       </li>
                       <li className='overview-items list-group-item list-group-item-action'>
-                        Sex:{' '}
+                        {yoursex[language]}:{' '}
                         {sex === 'm' ? (
                           <span className='text-success'>
-                            male
+                            {male[language]}
                           </span>
                         ) : sex === 'f' ? (
                           <span className='text-success'>
-                            female
+                            {female[language]}
                           </span>
                         ) : sex === 'n/a' ? (
                           <span className='text-success'>
-                            didn't wish to specify
+                            {nospecify[language]}
                           </span>
                         ) : (
                           <span className='text-danger'>
-                            No gender given.
+                            {notgiven[language]}{" "}{yoursex[language]}
                           </span>
                         )}
                       </li>
                       <li className='overview-items list-group-item list-group-item-action'>
-                        E-mail:{' '}
+                        {_email[language]}:{' '}
                         {email ? (
                           <span className='text-success'>
                             {email}
                           </span>
                         ) : (
                           <span className='text-danger'>
-                            No e-mail given.
+                            {notgiven[language]}{" "}{_email[language]}
                           </span>
                         )}
                       </li>
                       <li className='overview-items list-group-item list-group-item-action'>
-                        Username:{' '}
+                        {_username[language]}:{' '}
                         {username ? (
                           <span className='text-success'>
                             @{username}
                           </span>
                         ) : (
                           <span className='text-danger'>
-                            No username is currently set.
+                            {notgiven[language]}{" "}{_username[language]}
                           </span>
                         )}
                       </li>
                       <li className='overview-items list-group-item list-group-item-action'>
-                        Date of birth:{' '}
+                        {dateofbirth[language]}:{' '}
                         {dob ? (
                           <span className='text-success'>
                             <Moment format='DD.MM.YYYY.'>
@@ -969,12 +1020,12 @@ const Register = props => {
                           </span>
                         ) : (
                           <span className='text-danger'>
-                            No date of birth set.
+                            {notgiven[language]}{" "}{dateofbirth[language]}
                           </span>
                         )}
                       </li>
                       <li className='overview-items list-group-item list-group-item-action'>
-                        From:{' '}
+                        {_from[language]}:{' '}
                         {zip &&
                           city &&
                           country ? (
@@ -983,36 +1034,36 @@ const Register = props => {
                             </span>
                         ) : (
                           <span className='text-danger'>
-                            No location set.
+                            {notgiven[language]}{" "}{location[language]}
                           </span>
                         )}
                       </li>
                       <li className='overview-items list-group-item list-group-item-action'>
-                        Security question:{' '}
+                        {securityquestion[language]}:{' '}
                         {security ? (
                           <span className='text-success'>
                             {security}
                           </span>
                         ) : (
                           <span className='text-danger'>
-                            No answer given.
+                            {notgiven[language]}{" "}{securityanswer[language]}
                           </span>
                         )}
                       </li>
                       <li className='overview-items list-group-item list-group-item-action'>
-                        Image taken for security:&nbsp;&nbsp;
+                        {imagetaken[language]}&nbsp;&nbsp;
                         {image ? (
                           <span className='text-success'>
-                            yes
+                            {yes[language]}
                           </span>
                         ) : (
                           <span className='text-danger'>
-                            no
+                            {no[language]}
                           </span>
                         )}
                       </li>
                       <li className='overview-items list-group-item list-group-item-action'>
-                        Your phone number:{' '}
+                        {yourphonenumber[language]}:{' '}
                         {phone ? (
                           <span className='text-success'>
                             {callcode}
@@ -1020,7 +1071,7 @@ const Register = props => {
                           </span>
                         ) : (
                           <span className='text-danger'>
-                            No phone number was given
+                            {notgiven[language]}{" "}{yourphonenumber[language]}
                           </span>
                         )}
                       </li>
@@ -1045,7 +1096,7 @@ const Register = props => {
                       className='btn btn-lg btn-primary btn-block'
                     >
                       <i className='fas fa-paper-plane' />
-                      &nbsp;&nbsp;Sign me up!
+                      &nbsp;&nbsp;{signmeup[language]}
                     </button>
                   </div>
                 </div>

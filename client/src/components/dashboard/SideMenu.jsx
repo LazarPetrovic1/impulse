@@ -6,7 +6,7 @@ const SideMenu = () => (
     <ul className='navbar-nav mr-auto abs-sidenav'>
       <li className='nav-item bg-light m-1 px-5 text-center'>
         <Link
-          className='nav-link text-dark lead'
+          className='nav-link lead text-primary'
           to='/forum'
         >
           <i className="fas fa-comment-dots"></i>{" "}Forum
@@ -14,7 +14,7 @@ const SideMenu = () => (
       </li>
       <li className='nav-item bg-light m-1 px-5 text-center'>
         <Link
-          className='nav-link text-dark lead'
+          className='nav-link text-primary lead'
           to='/social'
         >
           <i className="fas fa-users"></i>{" "}Social
@@ -22,7 +22,7 @@ const SideMenu = () => (
       </li>
       <li className='nav-item bg-light m-1 px-5 text-center'>
         <Link
-          className='nav-link text-dark lead'
+          className='nav-link text-primary lead'
           to='/videos'
         >
           <i className="fas fa-video"></i>{" "}Videos

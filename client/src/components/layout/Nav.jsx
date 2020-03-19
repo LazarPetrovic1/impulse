@@ -1,5 +1,5 @@
 import React, { Fragment, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { logout } from "../../actions/auth";
@@ -16,12 +16,14 @@ function Nav(props) {
   const { toggleTheme, isDarkTheme } = useContext(ThemeContext)
   const { language, changeLanguage } = useContext(LanguageContext)
 
+  const { pathname } = props.location
+
   const authLinks = (
     <ul className='navbar-nav ml-auto'>
       <li className='nav-item active px-1'>
         <select
           onChange={changeLanguage}
-          className='custom-select bg-info text-light'
+          className='custom-select bg-light '
           style={{ border: 'none', outline: 'none' }}
           defaultValue={localStorage.getItem('language')}
         >
@@ -31,11 +33,11 @@ function Nav(props) {
         </select>
       </li>
       <li className='nav-item px-1'>
-        <Link className='nav-link text-light' to='/dashboard'><i className="fas fa-user" /> <span className="hide-sm">Profile</span> </Link>
+        <Link className='nav-link ' to='/dashboard'><i className="fas fa-user" /> <span className="hide-sm">Profile</span> </Link>
       </li>
       <li className='nav-item px-1'>
         <a
-          className="nav-link text-light"
+          className="nav-link "
           href="#!"
           onClick={logout}
         >
@@ -64,7 +66,7 @@ function Nav(props) {
       <li className='nav-item active px-1'>
         <select
           onChange={changeLanguage}
-          className='custom-select bg-info text-light'
+          className='custom-select bg-light '
           style={{ border: 'none', outline: 'none' }}
           defaultValue={localStorage.getItem('language')}
         >
@@ -74,13 +76,13 @@ function Nav(props) {
         </select>
       </li>
       <li className='nav-item px-1'>
-        <Link className='nav-link text-light' to='/register'>Register</Link>
+        <Link className={pathname === 'register' ? `nav-link active` : `nav-link`} to='/register'>Register</Link>
       </li>
       <li className='nav-item px-1'>
-        <Link className='nav-link text-light' to='/login'>Login</Link>
+        <Link className={pathname === 'login' ? "nav-link active" : "nav-link"} to='/login'>Login</Link>
       </li>
       <li className='nav-item px-1'>
-        <Link className='nav-link text-light' to='/asd'>NotFound</Link>
+        <Link className={pathname === 'asd' ? "nav-link active" : "nav-link"} to='/asd'>NotFound</Link>
       </li>
       <li className="nav-item px-1">
         <div className='custom-control custom-switch alignment mt-2'>
@@ -98,7 +100,7 @@ function Nav(props) {
   )
 
   return (
-    <nav className='navbar navbar-expand-lg navbar-dark bg-dark'>
+    <nav className='navbar navbar-expand-lg navbar-light bg-light'>
       <Link className='navbar-brand' to='/'>
         <img src={logo} alt="Impulse: Make an impact. Change lives."/>
       </Link>
@@ -127,4 +129,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { logout }
-)(Nav);
+)(withRouter(Nav));

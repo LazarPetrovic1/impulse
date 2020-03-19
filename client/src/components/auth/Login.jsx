@@ -35,8 +35,8 @@ const Login = props => {
   } = logincomponent
 
   const secondphonenumber = registercomponent.yourphonenumber
-  const secondemail = registercomponent.email
-  const secondusername = registercomponent.username
+  const secondemail = registercomponent._email
+  const secondusername = registercomponent._username
 
   const onChange = e => setData({ ...data, [e.target.name]: e.target.value });
 
@@ -52,7 +52,7 @@ const Login = props => {
   };
 
   if (isAuthenticated) {
-    return <Redirect to="/dashboard" />;
+    return <Redirect to="/" />;
   }
 
   const emailLogin = (
@@ -123,8 +123,8 @@ const Login = props => {
     <div className='darkbackground mt-5 p-5'>
       <div className='form-group'>
         <label htmlFor='username' className='white'>
-            {secondusername[language]}:
-          </label>
+          {secondusername[language]}:
+        </label>
         <input
           checked={remember}
           type='text'
@@ -136,7 +136,7 @@ const Login = props => {
           placeholder={secondusername[language]}
           onChange={onChange}
           required
-          />
+        />
       </div>
       <div className='form-group rel'>
         <label htmlFor='password' className='white'>
@@ -272,7 +272,17 @@ const Login = props => {
 
       {loginType && (
         <h2 className='darkbackground py-3 text-light text-center mt-4'>
-          <b>Login with {loginType}</b>
+          <b>
+            {
+              loginusing[language]}{" "}{
+              loginType === 'email' ?
+              _email[language] :
+              loginType === 'username' ?
+              _username[language] :
+              loginType === 'phone' ?
+              yourphonenumber[language] : ""
+            }
+          </b>
         </h2>
       )}
 

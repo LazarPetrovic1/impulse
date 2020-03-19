@@ -121,6 +121,8 @@ export const login = ({email, username, phone, password}) => async dispatch => {
   try {
     const res = await axios.post('/api/auth', body, config)
 
+    await console.log(res.data);
+
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data
@@ -128,7 +130,7 @@ export const login = ({email, username, phone, password}) => async dispatch => {
 
     dispatch(loadUser())
   } catch (e) {
-    console.warn(e.response.data.errors)
+    console.warn(e)
     dispatch({
       type: LOGIN_FAIL
     })

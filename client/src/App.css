@@ -17,12 +17,11 @@
 }
 
 body {
-  /* background-image: url("./assets/Space.gif"); */
-  background-color: #aacc81;
-  background-image: url("./assets/background.svg");
-  background-attachment: fixed;
-  background-size: cover;
-  overflow-x: hidden;
+  /* background-color: #aacc81; */
+  /* background-image: url("./assets/background.svg"); */
+  /* background-attachment: fixed; */
+  /* background-size: cover; */
+  /* overflow-x: hidden; */
   /* height: 100vh; */
 }
 
@@ -267,4 +266,99 @@ select {
 
 .abs-sidenav li:hover {
   transform: translate(30px, 0);
+}
+
+.not-found-border {
+  border: 2px solid black;
+  padding: 0 3rem 3rem 3rem;
+}
+
+.login-accordion-fontsize {
+  font-size: 2rem;
+}
+
+.dashboard-padding {
+  padding-left: 5rem;
+}
+
+.left-side-navigation {
+  border-right: 1px solid black;
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 10px;
+}
+
+.span-col-2 { grid-column: span 2 / auto; }
+.span-col-8 { grid-column: span 8 / auto; }
+
+/* .forum-side-navigation-links {
+  text-decoration: none;
+  font-size: 1.3rem;
+} */
+
+.forum-side-navigation-links {
+  color: black;
+  font-size: 20px;
+  text-decoration: none;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  margin: 0 10px;
+  position: relative;
+  transition: all 150ms;
+}
+
+.forum-side-navigation-list-item {
+  transition: all 150ms;
+}
+
+.forum-side-navigation-links:hover {
+  text-decoration: none;
+}
+
+.forum-side-navigation-list-item:hover {
+  background-color: #eee;
+}
+
+.forum-side-navigation-list-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #3d3d3d;
+  transform: scaleX(0);
+  transition: all 0.5s;
+  transform-origin: left;
+}
+
+.forum-side-navigation-list-item:hover::before {
+  transform: scaleX(1);
+}
+
+.forum-side-navigation-list-item::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #3d3d3d;
+  transform: scaleX(0);
+  transition: all 0.5s;
+  transform-origin: right;
+}
+
+.forum-side-navigation-list-item:hover::after {
+  transform: scaleX(1);
+}
+
+.forum-searchbar-close-button {
+  position: absolute;
+  top: 10px;
+  right: 20px;
 }
