@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import forumPosts from '../../utils/forumPosts';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react'
+import forumPosts from '../../utils/forumPosts'
+import { Link } from 'react-router-dom'
 
-function ForumDiscussion({ match: {params} }) {
+function ForumDiscussion ({ match: {params} }) {
+  const [reply, setReply] = useState(false)
   const [post, setPost] = useState(
     forumPosts.filter(
       post => post.id === parseInt(params.id)
@@ -10,17 +11,17 @@ function ForumDiscussion({ match: {params} }) {
   )
 
   return post ? (
-    <div className="container">
+    <div className='container'>
       {
         post.comments.map(
           comment => (
-            <div className="container border border-primary rounded my-3 p-3" key={comment.id}>
-              <p className="mt-2">{comment.content}</p>
-              <div className="d-flex justify-content-between">
-                <button className="btn btn-primary">
-                  <i className="fas fa-plus" /> Reply
+            <div className='container border border-primary rounded my-3 p-3' key={comment.id}>
+              <p className='mt-2'>{comment.content}</p>
+              <div className='d-flex justify-content-between'>
+                <button onClick={() => setReply(true)} className='btn btn-primary'>
+                  <i className='fas fa-plus' /> Reply
                 </button>
-                <p className="text-secondary mt-2 mb-0">- by {comment.by}</p>
+                <p className='text-secondary mt-2 mb-0'>- by {comment.by}</p>
               </div>
             </div>
           )
@@ -29,7 +30,7 @@ function ForumDiscussion({ match: {params} }) {
     </div>
   ) : (
     <h1>Please wait</h1>
-  );
+  )
 }
 
-export default ForumDiscussion;
+export default ForumDiscussion

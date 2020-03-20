@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import SimpleMDEReact from "react-simplemde-editor";
 
 class Autosaving extends Component {
-  defaultProps = {
+  static defaultProps = {
     delay: 1000,
     value: ''
   }
@@ -12,10 +12,11 @@ class Autosaving extends Component {
   };
 
   render() {
-    const { options, delay, id, ...rest } = this.props;
+    const { options, delay, id, onChange, ...rest } = this.props;
     return (
       <SimpleMDEReact
         {...rest}
+        onChange={onChange}
         id={id}
         value={this.state.value}
         options={{

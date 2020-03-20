@@ -1,12 +1,15 @@
-const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+const mongoose = require('mongoose')
+const { Schema, model } = mongoose
 
 const ForumPostSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: "user"
+    ref: 'user'
   },
-  content: {
+  author: {
+    type: String
+  },
+  body: {
     type: String,
     required: true
   },
@@ -22,48 +25,14 @@ const ForumPostSchema = new Schema({
     {
       user: {
         type: Schema.Types.ObjectId,
-        ref: "user"
+        ref: 'user'
       },
-      text: {
+      content: {
         type: String,
         required: true
       },
-      name: {
+      by: {
         // username
-        type: String
-      },
-      avatar: {
-        // user avatar
-        type: String
-      },
-      date: {
-        type: Date,
-        default: Date.now
-      }
-    }
-  ],
-  endorsements: {
-    type: Number
-  },
-  judgements: {
-    type: Number
-  },
-  comments: [
-    {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: "user"
-      },
-      text: {
-        type: String,
-        required: true
-      },
-      name: {
-        // username
-        type: String
-      },
-      avatar: {
-        // user avatar
         type: String
       },
       date: {
@@ -72,6 +41,6 @@ const ForumPostSchema = new Schema({
       }
     }
   ]
-});
+})
 
-module.exports = ForumPost = model("forum", ForumPostSchema);
+module.exports = ForumPost = model('forum', ForumPostSchema)
