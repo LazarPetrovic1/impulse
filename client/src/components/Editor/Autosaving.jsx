@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import SimpleMDEReact from "react-simplemde-editor";
+import React, { Component } from "react"
+import SimpleMDEReact from "react-simplemde-editor"
 
 class Autosaving extends Component {
   static defaultProps = {
@@ -9,10 +9,10 @@ class Autosaving extends Component {
 
   state = {
     value: localStorage.getItem(`smde_${this.props.id}`) || this.props.value
-  };
+  }
 
   render() {
-    const { options, delay, id, onChange, ...rest } = this.props;
+    const { options, delay, id, onChange, ...rest } = this.props
     return (
       <SimpleMDEReact
         {...rest}
@@ -28,8 +28,8 @@ class Autosaving extends Component {
           ...options
         }}
       />
-    );
+    )
   }
 }
 
-export default Autosaving;
+export default Autosaving

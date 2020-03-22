@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import forumPosts from '../../utils/forumPosts'
-import { Link } from 'react-router-dom'
 
 function ForumDiscussion ({ match: {params} }) {
   const [reply, setReply] = useState(false)

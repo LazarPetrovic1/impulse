@@ -1,17 +1,17 @@
-import React, { Fragment, useContext } from "react";
-import { Link, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { logout } from "../../actions/auth";
-import { ThemeContext } from '../../contexts/ThemeContext';
-import { LanguageContext } from '../../contexts/LanguageContext';
-import logo from "../../assets/mainlogo.png"
+import React, { Fragment, useContext } from 'react'
+import { Link, withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { logout } from '../../actions/auth'
+import { ThemeContext } from '../../contexts/ThemeContext'
+import { LanguageContext } from '../../contexts/LanguageContext'
+import logo from '../../assets/mainlogo.png'
 
-function Nav(props) {
+function Nav (props) {
   const {
     logout,
     auth: { isAuthenticated, loading }
-  } = props;
+  } = props
 
   const { toggleTheme, isDarkTheme } = useContext(ThemeContext)
   const { language, changeLanguage } = useContext(LanguageContext)
@@ -33,20 +33,20 @@ function Nav(props) {
         </select>
       </li>
       <li className='nav-item px-1'>
-        <Link className='nav-link ' to='/dashboard'><i className="fas fa-user" /> <span className="hide-sm">Profile</span> </Link>
+        <Link className='nav-link ' to='/dashboard'><i className='fas fa-user' /> <span className='hide-sm'>Profile</span> </Link>
       </li>
       <li className='nav-item px-1'>
         <a
-          className="nav-link "
-          href="#!"
+          className='nav-link '
+          href='#!'
           onClick={logout}
         >
-          {" "}
-          <i className="fas fa-sign-out-alt" />{" "}
-          <span className="hide-sm">Logout</span>
+          {' '}
+          <i className='fas fa-sign-out-alt' />{' '}
+          <span className='hide-sm'>Logout</span>
         </a>
       </li>
-      <li className="nav-item px-1">
+      <li className='nav-item px-1'>
         <div className='custom-control custom-switch alignment mt-2'>
           <input
             onChange={toggleTheme}
@@ -59,7 +59,7 @@ function Nav(props) {
         </div>
       </li>
     </ul>
-  );
+  )
 
   const guestLinks = (
     <ul className='navbar-nav ml-auto'>
@@ -79,12 +79,12 @@ function Nav(props) {
         <Link className={pathname === 'register' ? `nav-link active` : `nav-link`} to='/register'>Register</Link>
       </li>
       <li className='nav-item px-1'>
-        <Link className={pathname === 'login' ? "nav-link active" : "nav-link"} to='/login'>Login</Link>
+        <Link className={pathname === 'login' ? 'nav-link active' : 'nav-link'} to='/login'>Login</Link>
       </li>
       <li className='nav-item px-1'>
-        <Link className={pathname === 'asd' ? "nav-link active" : "nav-link"} to='/asd'>NotFound</Link>
+        <Link className={pathname === 'asd' ? 'nav-link active' : 'nav-link'} to='/asd'>NotFound</Link>
       </li>
-      <li className="nav-item px-1">
+      <li className='nav-item px-1'>
         <div className='custom-control custom-switch alignment mt-2'>
           <input
             onChange={toggleTheme}
@@ -102,7 +102,7 @@ function Nav(props) {
   return (
     <nav className='navbar navbar-expand-lg navbar-light bg-light'>
       <Link className='navbar-brand' to='/'>
-        <img src={logo} alt="Impulse: Make an impact. Change lives."/>
+        <img src={logo} alt='Impulse: Make an impact. Change lives.' />
       </Link>
       <button className='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
         <span className='navbar-toggler-icon' />
@@ -114,19 +114,19 @@ function Nav(props) {
         </Fragment>
       </div>
     </nav>
-  );
+  )
 }
 
 Nav.propTypes = {
   logout: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired
-};
+}
 
 const mapStateToProps = state => ({
   auth: state.auth
-});
+})
 
 export default connect(
   mapStateToProps,
   { logout }
-)(withRouter(Nav));
+)(withRouter(Nav))

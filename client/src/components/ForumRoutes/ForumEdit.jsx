@@ -1,33 +1,40 @@
-import React, { useState } from 'react'
-import forumPosts from '../../utils/forumPosts'
+import React, { useState, useEffect } from 'react'
 import Autosaving from '../Editor/Autosaving'
+import { getForumPostById } from '../../actions/forum'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
-function ForumEdit ({ match, history }) {
-  const [post, setPost] = useState(
-    forumPosts.filter(
-      post => post.id === parseInt(match.params.id)
-    )[0]
-  )
+function ForumEdit ({ match, history, forum, getForumPostById }) {
+  const { post } = forum
 
-  const onChange = (value) => setPost({ ...post, body: value })
+  useEffect(() => {
+    getForumPostById(match.params.id)
+  }, [getForumPostById])
 
-  const save = () => history.push(`/forum-post/${id}`)
+  const onChange = (value) => console.log('Setting posts')
 
-  const {
-    id,
-    author,
-    title,
-    body
-  } = post
+  const save = () => history.push(`/forum/forum-post/${post._id}`)
 
   return (
     <div className='container'>
-      <Autosaving value={body} onChange={onChange} />
+      <Autosaving value={post.body} onChange={onChange} />
       <button className='btn btn-primary btn-lg btn-block' onClick={save}>
-        <i className='fas fa-save' />&nbsp;Save
+        <i className='fas fa-save' />&nbsp; Save
       </button>
     </div>
   )
 }
 
-export default ForumEdit
+ForumEdit.propTypes = {
+  forum: PropTypes.object.isRequired,
+  getForumPostById: PropTypes.func.isRequired
+}
+
+const mapStateToProps = state => ({
+  forum: state.forum
+})
+
+export default connect(
+  mapStateToProps,
+  { getForumPostById }
+)(ForumEdit)

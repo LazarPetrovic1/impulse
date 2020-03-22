@@ -1,38 +1,33 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import forumPosts from '../../utils/forumPosts'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Editor from '../Editor/Editor'
 import Reply from './Reply'
 import PropTypes from 'prop-types'
+import { getForumPostById } from '../../actions/forum'
+import MarkdownRenderer from 'react-markdown-renderer'
 
-function ForumPost ({match: {params}, auth}) {
-  const [post, setPost] = useState(
-    forumPosts.filter(
-      post => post.id === parseInt(params.id)
-    )[0]
-  )
+function ForumPost ({match: {params}, auth, getForumPostById, forum}) {
+  const { post } = forum
 
-  const {
-    id,
-    author,
-    title,
-    body
-  } = post
+  useEffect(() => {
+    getForumPostById(params.id)
+  }, [getForumPostById])
 
   const deletePost = () => console.log('Post purged!')
 
   return post ? (
     <div className='container'>
-      <h1 className='text-primary text-center display-3'>{title}</h1>
-      <p className='lead text-right display-4'>- by {author}</p>
-      <div className='lead mb-4'>{body}</div>
+      <h1 className='text-primary text-center display-3'>{post.title}</h1>
+      <p className='lead text-right display-4'>- by {post.author}</p>
+      <MarkdownRenderer markdown={post.body} />
       <div className='text-right mb-4'>
         {
-          auth.user.username.toString() === author.toString() &&
+          auth.user.username.toString() === post.author.toString() &&
           (
             <Fragment>
-              <Link className='btn btn-lg btn-primary mx-2' to={`/forum-post/${id}/edit`}>
+              <Link className='btn btn-lg btn-primary mx-2' to={`/forum/forum-post/${post._id}/edit`}>
                 <i className='fas fa-edit' />&nbsp;
                 Edit
               </Link>
@@ -43,11 +38,11 @@ function ForumPost ({match: {params}, auth}) {
             </Fragment>
           )
         }
-        <Link className='btn btn-lg btn-info mx-2' to={`/forum-post/${id}/discuss`}>Discussion</Link>
+        <Link className='btn btn-lg btn-info mx-2' to={`/forum/forum-post/${post._id}/discuss`}>Discussion</Link>
         <Link className='btn btn-lg btn-secondary mx-2' to='/forum'>Go back</Link>
       </div>
       {
-        post.comments.map(comment => (
+        post.comments && post.comments.map(comment => (
           <Reply comment={comment} key={comment.id} />
         ))
       }
@@ -58,14 +53,17 @@ function ForumPost ({match: {params}, auth}) {
 }
 
 ForumPost.propTypes = {
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
+  forum: PropTypes.object.isRequired,
+  getForumPostById: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
+  forum: state.forum
 })
 
 export default connect(
   mapStateToProps,
-  null
+  { getForumPostById }
 )(ForumPost)

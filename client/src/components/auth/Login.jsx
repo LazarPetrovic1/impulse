@@ -1,26 +1,26 @@
-import React, { useState, useContext } from "react";
-import { Link, Redirect } from "react-router-dom";
-import axios from "axios";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { login } from "../../actions/auth";
+import React, { useState, useContext } from 'react'
+import { Link, Redirect } from 'react-router-dom'
+import axios from 'axios'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { login } from '../../actions/auth'
 import { LanguageContext } from '../../contexts/LanguageContext'
 import { logincomponent } from '../../utils/langObject'
-import { registercomponent } from "../../utils/langObject"
+import { registercomponent } from '../../utils/langObject'
 
 const Login = props => {
   const [data, setData] = useState({
-    email: "",
-    password: "",
-    phone: "",
-    username: ""
-  });
+    email: '',
+    password: '',
+    phone: '',
+    username: ''
+  })
   const [loginType, setLoginType] = useState('')
   const [viewPass, setViewPass] = useState(false)
   const [remember, setRemember] = useState(false)
 
-  const { login, isAuthenticated } = props;
-  const { username, phone, email, password } = data;
+  const { login, isAuthenticated } = props
+  const { username, phone, email, password } = data
   const { language } = useContext(LanguageContext)
 
   const {
@@ -38,29 +38,29 @@ const Login = props => {
   const secondemail = registercomponent._email
   const secondusername = registercomponent._username
 
-  const onChange = e => setData({ ...data, [e.target.name]: e.target.value });
+  const onChange = e => setData({ ...data, [e.target.name]: e.target.value })
 
   const onSubmit = async e => {
-    e.preventDefault();
+    e.preventDefault()
     if (username) {
-      login({username, password});
+      login({username, password})
     } else if (phone) {
-      login({phone, password});
+      login({phone, password})
     } else {
-      login({email, password});
+      login({email, password})
     }
-  };
+  }
 
   if (isAuthenticated) {
-    return <Redirect to="/" />;
+    return <Redirect to='/' />
   }
 
   const emailLogin = (
     <div className='darkbackground mt-5 p-5'>
       <div className='form-group'>
         <label htmlFor='email' className='white'>
-            {secondemail[language]}
-          </label>
+          {secondemail[language]}
+        </label>
         <input
           type='email'
           className={
@@ -140,8 +140,8 @@ const Login = props => {
       </div>
       <div className='form-group rel'>
         <label htmlFor='password' className='white'>
-            {_password[language]}
-          </label>
+          {_password[language]}
+        </label>
         <input
           type={viewPass ? 'text' : 'password'}
           name='password'
@@ -190,7 +190,7 @@ const Login = props => {
       <div className='form-group'>
         <label htmlFor='phone' className='white'>
           {secondphonenumber[language]}
-          </label>
+        </label>
         <input
           type='phone'
           className={
@@ -205,8 +205,8 @@ const Login = props => {
       </div>
       <div className='form-group rel'>
         <label htmlFor='password' className='white'>
-            {_password[language]}
-          </label>
+          {_password[language]}
+        </label>
         <input
           type={viewPass ? 'text' : 'password'}
           name='password'
@@ -274,13 +274,13 @@ const Login = props => {
         <h2 className='darkbackground py-3 text-light text-center mt-4'>
           <b>
             {
-              loginusing[language]}{" "}{
+              loginusing[language]}{' '}{
               loginType === 'email' ?
               _email[language] :
               loginType === 'username' ?
               _username[language] :
               loginType === 'phone' ?
-              yourphonenumber[language] : ""
+              yourphonenumber[language] : ''
             }
           </b>
         </h2>
@@ -300,19 +300,19 @@ const Login = props => {
         )}
       </form>
     </div>
-  );
-};
+  )
+}
 
 Login.propTypes = {
   login: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool
-};
+}
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated
-});
+})
 
 export default connect(
   mapStateToProps,
   { login }
-)(Login);
+)(Login)

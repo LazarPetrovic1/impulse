@@ -43,4 +43,4 @@ const ForumPostSchema = new Schema({
   ]
 })
 
-module.exports = ForumPost = model('forum', ForumPostSchema)
+module.exports = ForumPost = model('forumpost', ForumPostSchema)

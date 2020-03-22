@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import ForumMenu from './ForumMisc/ForumMenu'
 import forumPosts from '../../utils/forumPosts'
 import { Link } from 'react-router-dom'
@@ -6,17 +6,24 @@ import ForumSearchBar from './ForumMisc/ForumSearchBar'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { setAlert } from '../../actions/alert'
+import { getAllForumPosts } from '../../actions/forum'
+import MarkdownRenderer from 'react-markdown-renderer'
 
-function Forum ({auth: { user }, setAlert}) {
+function Forum ({auth: { user }, setAlert, getAllForumPosts, forum}) {
+  const { posts } = forum
   const [mainPosts, setMainPosts] = useState(forumPosts)
+
+  useEffect(() => {
+    getAllForumPosts()
+  }, [getAllForumPosts])
+
   const search = (text) => {
+    // REWORK FUNCTION
     if (text === '') {
-      setMainPosts(forumPosts)
+      getAllForumPosts()
     } else {
-      setMainPosts(
-        forumPosts.filter(
-          post => post.body.includes(text)
-        )
+      posts.filter(
+        post => post.body.toLowerCase().includes(text.toLowerCase())
       )
     }
   }
@@ -53,17 +60,17 @@ function Forum ({auth: { user }, setAlert}) {
         <div style={{ gridColumn: 'span 1 / auto' }} />
         <div className='span-col-8'>
           {
-            mainPosts.map((post) => (
-              <div key={post.id}>
+            posts.map((post) => (
+              <div key={post._id}>
                 <h1 className='text-primary'>
-                  <Link to={`/forum-post/${post.id}`}>
+                  <Link to={`/forum/forum-post/${post._id}`}>
                     {post.title}
                   </Link>
                 </h1>
-                <p>{post.body}</p>
+                <MarkdownRenderer markdown={post.body} />
                 <p className='text-right text-secondary lead'>- by {post.author}</p>
                 <div className='text-right'>
-                  <Link to={`/forum-post/${post.id}`} className='btn btn-primary btn-lg mx-2'>
+                  <Link to={`/forum/forum-post/${post._id}`} className='btn btn-primary btn-lg mx-2'>
                     Go to post
                   </Link>
                   <button
@@ -72,7 +79,8 @@ function Forum ({auth: { user }, setAlert}) {
                     aria-label='Dismiss post'
                   >Dismiss</button>
                 </div>
-              </div>)
+              </div>
+              )
             )
           }
         </div>
@@ -83,11 +91,13 @@ function Forum ({auth: { user }, setAlert}) {
 
 Forum.propTypes = {
   auth: PropTypes.object.isRequired,
-  setAlert: PropTypes.func.isRequired
+  setAlert: PropTypes.func.isRequired,
+  forum: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
+  forum: state.forum
 })
 
-export default connect(mapStateToProps, { setAlert })(Forum)
+export default connect(mapStateToProps, { setAlert, getAllForumPosts })(Forum)

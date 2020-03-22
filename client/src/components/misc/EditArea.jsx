@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 
-function EditField(props) {
+function EditField (props) {
   const { value, setter } = props
   return (
     <textarea
@@ -8,7 +8,7 @@ function EditField(props) {
       value={value}
       onChange={(e) => setter(e.target.value)}
     />
-  );
+  )
 }
 
-export default EditField;
+export default EditField

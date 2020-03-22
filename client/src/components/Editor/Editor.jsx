@@ -24,7 +24,6 @@ function Editor () {
   return (
     <div className='container container-narrow'>
       <SimpleMDEReact
-        className={''}
         value={textValue}
         onChange={handleChange}
       />

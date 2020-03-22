@@ -21,7 +21,7 @@ _done_
 + /forum-post/:id/edit [update route]
 
 ___not done___
-+ [delete route]
+<!-- All caught up -->
 
 ## Video routes
 

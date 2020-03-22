@@ -6,9 +6,7 @@ const User = require('../../models/User')
 const ForumPost = require('../../models/ForumPost')
 const Profile = require('../../models/Profile')
 
-// @route -- POST -- api/forumposts
-// @desc -- -- Create a post
-// @access -- -- Private
+// Create a post
 router.post(
   '/',
   [
@@ -41,6 +39,7 @@ router.post(
       })
 
       const post = await newPost.save()
+      await res.json(post)
     } catch (e) {
       console.error(e.message)
       res.status(500).send('Internal server error.')
@@ -48,9 +47,7 @@ router.post(
   }
 )
 
-// @route -- GET -- api/forumposts
-// @desc -- -- Get all posts
-// @access -- -- Private
+// Get all posts
 router.get('/', auth, async (req, res) => {
   try {
     const posts = await ForumPost.find().sort({ date: -1 })
@@ -61,9 +58,7 @@ router.get('/', auth, async (req, res) => {
   }
 })
 
-// @route -- GET -- api/forumposts/:id
-// @desc -- -- Get a post by id
-// @access -- -- Private
+// Get a post by id
 router.get('/:id', auth, async (req, res) => {
   try {
     const post = await ForumPost.findById(req.params.id)
@@ -84,9 +79,7 @@ router.get('/:id', auth, async (req, res) => {
   }
 })
 
-// @route -- DELETE -- api/forumposts/:id
-// @desc -- -- Delete a post
-// @access -- -- Private
+// Delete a post
 router.delete('/:id', auth, async (req, res) => {
   try {
     const post = await ForumPost.findById(req.params.id)
@@ -113,10 +106,8 @@ router.delete('/:id', auth, async (req, res) => {
   }
 })
 
-// @route -- PUT -- api/forumposts/:id/edit
-// @desc -- -- Edit a post
-// @access -- -- Private
-router.put('/:id/edit', auth, async (req, res) => {
+// Edit a post
+router.put('/:id', auth, async (req, res) => {
   try {
     const post = await ForumPost.findById(req.params.id)
 
@@ -135,9 +126,7 @@ router.put('/:id/edit', auth, async (req, res) => {
   }
 })
 
-// @route -- POST -- api/forumposts/comment/:id
-// @desc -- -- Comment on a post
-// @access -- -- Private
+// Comment on a post
 router.post(
   '/comment/:id',
   [
@@ -176,9 +165,7 @@ router.post(
   }
 )
 
-// @route -- DELETE -- api/forumposts/comment/:id/:comment_id
-// @desc -- -- Delete a comment
-// @access -- -- Private
+// Delete a comment
 router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
   try {
     const post = await ForumPost.findById(req.params.id)
