@@ -2,6 +2,14 @@
   font-family: "Montserrat", sans-serif;
 }
 
+body {
+  overflow-x: hidden;
+}
+
+.impulse-medium-logo {
+  height: 60px;
+}
+
 #bio {
   /* fallback fonting */
   font-family: "Montserrat", sans-serif;

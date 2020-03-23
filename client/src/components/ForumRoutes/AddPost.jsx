@@ -3,10 +3,12 @@ import Autosaving from '../Editor/Autosaving'
 import { createForumPost } from '../../actions/forum'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import Spinner from '../layout/Spinner'
 
 function AddPost ({ forum, history, createForumPost }) {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
+  const { loading } = forum
 
   const onChange = (value) => setBody(value)
 
@@ -17,7 +19,9 @@ function AddPost ({ forum, history, createForumPost }) {
     history.push('/forum')
   }
 
-  return (
+  return loading ? (
+    <Spinner />
+  ) : (
     <div className='container mb-4'>
       <h1 className='text-center text-primary display-3 my-2'>Add post</h1>
       <form onSubmit={onSubmit}>

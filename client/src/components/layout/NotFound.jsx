@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import longLogo from '../../assets/long-logo.png'
+import longLogo from '../../assets/IMPULSE_LOGOS/photoshop-logos/long.png'
 
 function NotFound ({auth: {isAuthenticated}}) {
   return (

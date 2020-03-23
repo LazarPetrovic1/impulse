@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { logout } from '../../actions/auth'
 import { ThemeContext } from '../../contexts/ThemeContext'
 import { LanguageContext } from '../../contexts/LanguageContext'
-import logo from '../../assets/mainlogo.png'
+import logo from '../../assets/IMPULSE_LOGOS/photoshop-logos/medium.png'
 
 function Nav (props) {
   const {
@@ -102,7 +102,7 @@ function Nav (props) {
   return (
     <nav className='navbar navbar-expand-lg navbar-light bg-light'>
       <Link className='navbar-brand' to='/'>
-        <img src={logo} alt='Impulse: Make an impact. Change lives.' />
+        <img src={logo} alt='Impulse: Make an impact. Change lives.' className='impulse-medium-logo' />
       </Link>
       <button className='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
         <span className='navbar-toggler-icon' />

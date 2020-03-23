@@ -55,8 +55,11 @@ function Dashboard (props) {
           {profile !== null ? (
             <div className='dashboard-padding'>
               <div className='my-2'>
+                <Link to='/profile-overview' className='btn btn-primary mx-2'>
+                  Profile overview!
+                </Link>
                 <button
-                  className='btn btn-danger'
+                  className='btn btn-danger mx-2'
                   onClick={() => deleteAccount}
                 >
                   <i className='fas fa-user-minus' /> Delete my account

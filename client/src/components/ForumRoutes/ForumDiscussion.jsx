@@ -1,20 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import forumPosts from '../../utils/forumPosts'
+import Spinner from '../layout/Spinner'
+import { getForumPostById } from '../../actions/forum'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
-function ForumDiscussion ({ match: {params} }) {
+function ForumDiscussion ({ match: {params}, forum, getForumPostById }) {
   const [reply, setReply] = useState(false)
-  const [post, setPost] = useState(
-    forumPosts.filter(
-      post => post.id === parseInt(params.id)
-    )[0]
-  )
 
-  return post ? (
+  const { post, loading } = forum
+
+  useEffect(() => {
+    getForumPostById(params.id)
+  }, [])
+
+  return post && !loading ? (
     <div className='container'>
       {
         post.comments.map(
           comment => (
-            <div className='container border border-primary rounded my-3 p-3' key={comment.id}>
+            <div className='container border border-primary rounded my-3 p-3' key={comment._id}>
               <p className='mt-2'>{comment.content}</p>
               <div className='d-flex justify-content-between'>
                 <button onClick={() => setReply(true)} className='btn btn-primary'>
@@ -28,8 +33,21 @@ function ForumDiscussion ({ match: {params} }) {
       }
     </div>
   ) : (
-    <h1>Please wait</h1>
+    <Spinner />
   )
 }
 
-export default ForumDiscussion
+ForumDiscussion.propTypes = {
+  forum: PropTypes.object.isRequired,
+  getForumPostById: PropTypes.func.isRequired
+}
+
+const mapStateToProps = state => ({
+  forum: state.forum
+})
+
+export default connect(
+  mapStateToProps,
+  { getForumPostById }
+)(ForumDiscussion)
+

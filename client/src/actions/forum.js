@@ -7,6 +7,7 @@ import {
   EDIT_FORUM_POST,
   FORUM_POST_ADD_COMMENT,
   FORUM_POST_DELETE_COMMENT,
+  FORUM_POST_DISMISS,
   FORUM_ERROR
 } from './types'
 
@@ -97,7 +98,7 @@ export const deleteForumPost = (id) => async dispatch => {
 }
 
 // Edit a forum post
-export const editForumPost = ({ body }, id) => async dispatch => {
+export const editForumPost = (body, id) => async dispatch => {
   const config = {
     headers: {
       'Content-Type': 'application/json'
@@ -155,6 +156,29 @@ export const forumPostDeleteComment = (id, comment_id) => async dispatch => {
   } catch (e) {
     console.warn(e.message)
 
+    dispatch({ type: FORUM_ERROR })
+  }
+}
+
+export const forumPostDismiss = (id, dismissedPosts) => async dispatch => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  try {
+    const res = await axios.put(
+      `/api/forumposts/${id}/dismiss`,
+      JSON.stringify({ dismissedPosts }),
+      config
+    )
+
+    dispatch({
+      type: FORUM_POST_DISMISS,
+      payload: res.data
+    })
+  } catch (e) {
     dispatch({ type: FORUM_ERROR })
   }
 }

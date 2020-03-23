@@ -6,6 +6,7 @@ import {
   EDIT_FORUM_POST,
   FORUM_POST_ADD_COMMENT,
   FORUM_POST_DELETE_COMMENT,
+  FORUM_POST_DISMISS,
   FORUM_ERROR
 } from '../actions/types'
 
@@ -68,6 +69,15 @@ export default (state = initialState, action) => {
           comments: state.post.comments.filter(
             comment => comment._id !== payload
           )
+        }
+      }
+    case FORUM_POST_DISMISS:
+      return {
+        ...state,
+        loading: false,
+        post: {
+          ...state.post,
+          isDismissed: payload.isDismissed
         }
       }
     case FORUM_ERROR:

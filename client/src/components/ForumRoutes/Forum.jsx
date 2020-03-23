@@ -1,16 +1,23 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import ForumMenu from './ForumMisc/ForumMenu'
 import forumPosts from '../../utils/forumPosts'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import ForumSearchBar from './ForumMisc/ForumSearchBar'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { setAlert } from '../../actions/alert'
-import { getAllForumPosts } from '../../actions/forum'
+import { getAllForumPosts, forumPostDismiss } from '../../actions/forum'
 import MarkdownRenderer from 'react-markdown-renderer'
+import Spinner from '../layout/Spinner'
 
-function Forum ({auth: { user }, setAlert, getAllForumPosts, forum}) {
-  const { posts } = forum
+function Forum ({
+  auth: { user },
+  setAlert,
+  getAllForumPosts,
+  forum,
+  forumPostDismiss
+}) {
+  const { posts, loading } = forum
   const [mainPosts, setMainPosts] = useState(forumPosts)
 
   useEffect(() => {
@@ -28,15 +35,10 @@ function Forum ({auth: { user }, setAlert, getAllForumPosts, forum}) {
     }
   }
 
-  const removePost = (id) => {
-    const remainingPosts = forumPosts.filter(
-      post => post.id !== id
-    )
-
-    setMainPosts(remainingPosts)
-
-    console.log(forumPosts)
+  const dismissForumPost = (id) => {
+    forumPostDismiss(id, user.dismissedPosts)
     setAlert('Post dismissed! We will not show it to you again.', 'success')
+    window.location.reload()
   }
 
   const reset = (setter) => {
@@ -44,7 +46,13 @@ function Forum ({auth: { user }, setAlert, getAllForumPosts, forum}) {
     setMainPosts(forumPosts)
   }
 
-  return (
+  const nonDismissedPosts = posts.filter(
+    post => !user.dismissedPosts.includes(post._id)
+  )
+
+  return loading ? (
+    <Spinner />
+  ) : (
     <Fragment>
       <h1 className='text-center text-primary'>
         Hey, {user.firstName}!<br />Here's something you might be interested in
@@ -60,7 +68,7 @@ function Forum ({auth: { user }, setAlert, getAllForumPosts, forum}) {
         <div style={{ gridColumn: 'span 1 / auto' }} />
         <div className='span-col-8'>
           {
-            posts.map((post) => (
+            nonDismissedPosts.map((post) => (
               <div key={post._id}>
                 <h1 className='text-primary'>
                   <Link to={`/forum/forum-post/${post._id}`}>
@@ -75,9 +83,11 @@ function Forum ({auth: { user }, setAlert, getAllForumPosts, forum}) {
                   </Link>
                   <button
                     className='btn btn-danger btn-lg mx-2'
-                    onClick={() => removePost(post.id)}
+                    onClick={() => dismissForumPost(post._id)}
                     aria-label='Dismiss post'
-                  >Dismiss</button>
+                  >
+                    Dismiss
+                  </button>
                 </div>
               </div>
               )
@@ -92,7 +102,8 @@ function Forum ({auth: { user }, setAlert, getAllForumPosts, forum}) {
 Forum.propTypes = {
   auth: PropTypes.object.isRequired,
   setAlert: PropTypes.func.isRequired,
-  forum: PropTypes.object.isRequired
+  forum: PropTypes.object.isRequired,
+  forumPostDismiss: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
@@ -100,4 +111,4 @@ const mapStateToProps = state => ({
   forum: state.forum
 })
 
-export default connect(mapStateToProps, { setAlert, getAllForumPosts })(Forum)
+export default connect(mapStateToProps, { setAlert, getAllForumPosts, forumPostDismiss })(Forum)

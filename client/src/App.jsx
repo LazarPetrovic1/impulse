@@ -8,14 +8,20 @@ import Register from './components/auth/Register'
 import Login from './components/auth/Login'
 import Alert from './components/layout/Alert'
 import Dashboard from './components/dashboard/Dashboard'
+import InitialDashboard from './components/dashboard/InitialDashboard'
 import PrivateRoute from './components/routing/PrivateRoute'
 import ProfileOverview from './components/profile-rest/ProfileOverview'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { LanguageProvider } from './contexts/LanguageContext'
 import PageContent from './components/layout/PageContent'
 import NotFound from './components/layout/NotFound'
-import ForumRoutes from './components/routing/ForumRoutes'
-
+import Forum from './components/ForumRoutes/Forum'
+import AddPost from './components/ForumRoutes/AddPost'
+import ForumPost from './components/ForumRoutes/ForumPost'
+import ForumDiscussion from './components/ForumRoutes/ForumDiscussion'
+import ForumEdit from './components/ForumRoutes/ForumEdit'
+import SocialProfile from './components/SocialRoutes/SocialProfile'
+import CreateSocialProfile from './components/SocialRoutes/CreateSocialProfile'
 // Redux stuff
 import { Provider } from 'react-redux'
 import store from './store'
@@ -41,6 +47,7 @@ function App () {
               <Nav />
               <Alert />
               <Switch>
+                <PrivateRoute exact path='/' component={InitialDashboard} />
                 <Route exact path='/login' render={() => <PageContent><Login /></PageContent>} />
                 <Route exact path='/register' render={() => <PageContent><Register /></PageContent>} />
                 <PrivateRoute exact path='/dashboard' component={Dashboard} />
@@ -49,7 +56,13 @@ function App () {
                   path='/profile-overview'
                   component={ProfileOverview}
                 />
-                <Route render={() => <PageContent><ForumRoutes /></PageContent>} />
+                <PrivateRoute exact path='/forum' component={Forum} />
+                <PrivateRoute exact path='/forum/forum-add-post' component={AddPost} />
+                <PrivateRoute exact path='/forum/forum-post/:id' component={ForumPost} />
+                <PrivateRoute exact path='/forum/forum-post/:id/discuss' component={ForumDiscussion} />
+                <PrivateRoute exact path='/forum/forum-post/:id/edit' component={ForumEdit} />
+                <PrivateRoute exact path='/social/social-profile' component={SocialProfile} />
+                <PrivateRoute exact path='/social/create-social-profile' component={CreateSocialProfile} />
                 <Route render={() => <PageContent><NotFound /></PageContent>} />
               </Switch>
             </Fragment>

@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+const mongoose = require('mongoose')
+const { Schema, model } = mongoose
 
 const required = true
 const unique = true
@@ -71,7 +71,11 @@ const UserSchema = new Schema({
   imageTaken: {
     type: Boolean,
     required
-  }
-});
+  },
+  dismissedPosts: [{
+    type: Schema.Types.ObjectId,
+    ref: 'forumpost'
+  }]
+})
 
-module.exports = User = model("user", UserSchema);
+module.exports = User = model('user', UserSchema)

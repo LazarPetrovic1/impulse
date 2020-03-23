@@ -31,10 +31,11 @@ router.post(
       const user = await User.findById(req.user.id).select('-password')
 
       const newPost = new ForumPost({
-        title: req.body.title,
-        body: req.body.body,
         user: req.user.id,
         author: user.username,
+        body: req.body.body,
+        title: req.body.title,
+        isDismissed: false,
         comments: []
       })
 
@@ -113,7 +114,12 @@ router.put('/:id', auth, async (req, res) => {
 
     const { body } = req.body
 
-    const newPost = await post.FindByIdAndUpdate(req.params.id, { ...post, body })
+    const newPost = await ForumPost.findByIdAndUpdate(
+      req.params.id,
+      { body },
+      { new: true }
+    )
+
     return res.json(newPost)
   } catch (e) {
     console.error(e.message)
@@ -194,6 +200,26 @@ router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
     await post.save()
 
     return res.json(post.comments)
+  } catch (e) {
+    console.error(e.message)
+    res.status(500).send('Internal server error.')
+  }
+})
+
+// Dismiss a post
+router.put('/:id/dismiss', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+
+    const { dismissedPosts } = req.body
+
+    const newUser = await User.findByIdAndUpdate(
+      req.user.id,
+      { dismissedPosts: [...dismissedPosts, req.params.id] },
+      { new: true }
+    )
+
+    return res.json(newUser)
   } catch (e) {
     console.error(e.message)
     res.status(500).send('Internal server error.')

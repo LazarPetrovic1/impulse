@@ -1,24 +1,35 @@
 import React, { useState, useEffect } from 'react'
 import Autosaving from '../Editor/Autosaving'
-import { getForumPostById } from '../../actions/forum'
+import { getForumPostById, editForumPost } from '../../actions/forum'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import Spinner from '../layout/Spinner'
 
-function ForumEdit ({ match, history, forum, getForumPostById }) {
-  const { post } = forum
+function ForumEdit ({ match, history, forum, getForumPostById, editForumPost }) {
+  const [value, setValue] = useState('')
+  const { post, loading } = forum
 
   useEffect(() => {
     getForumPostById(match.params.id)
+
+    setValue(post.body)
   }, [getForumPostById])
 
-  const onChange = (value) => console.log('Setting posts')
+  const onChange = (value) => setValue(value)
 
   const save = () => history.push(`/forum/forum-post/${post._id}`)
 
-  return (
+  const changePost = () => {
+    editForumPost(value, post._id)
+    history.push('/forum')
+  }
+
+  return loading ? (
+    <Spinner />
+  ) : (
     <div className='container'>
       <Autosaving value={post.body} onChange={onChange} />
-      <button className='btn btn-primary btn-lg btn-block' onClick={save}>
+      <button className='btn btn-primary btn-lg btn-block' onClick={changePost}>
         <i className='fas fa-save' />&nbsp; Save
       </button>
     </div>
@@ -27,7 +38,8 @@ function ForumEdit ({ match, history, forum, getForumPostById }) {
 
 ForumEdit.propTypes = {
   forum: PropTypes.object.isRequired,
-  getForumPostById: PropTypes.func.isRequired
+  getForumPostById: PropTypes.func.isRequired,
+  editForumPost: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
@@ -36,5 +48,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getForumPostById }
+  { getForumPostById, editForumPost }
 )(ForumEdit)

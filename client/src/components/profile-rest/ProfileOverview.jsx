@@ -9,6 +9,7 @@ import EditButtons from '../misc/EditButtons'
 import EditDatePicker from '../misc/EditDatePicker'
 import moment from 'moment'
 import PageContent from '../layout/PageContent'
+import { Link } from 'react-router-dom'
 
 function ProfileOverview () {
   // Disassembled state pieces
@@ -45,6 +46,7 @@ function ProfileOverview () {
     _firstname,
     _lastname,
     _email,
+    goback,
     yoursex,
     male,
     female,
@@ -170,179 +172,186 @@ function ProfileOverview () {
   }
 
   return (
-    <PageContent>
-      <form onSubmit={onSubmit}>
-        <div className='container'>
-          <h2 style={{ marginBottom: '2rem' }}>{overview[language]}:</h2>
-          <ul className='list-group' style={{ marginBottom: '2rem' }}>
-            <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              {checkFirstName ? (
-                <span>
-                  {_firstname[language]}: {firstName}
-                </span>
-              ) : (
-                <EditField
-                  type='text'
-                  setter={setFirstName}
-                  value={firstName}
+    <div className='mb-5'>
+      <PageContent>
+        <form onSubmit={onSubmit}>
+          <div className='container'>
+            <div className='d-flex justify-content-between my-3'>
+              <h2 className='m-0'>{overview[language]}</h2>
+              <Link className='btn btn-secondary' to='/dashboard'>
+                {goback[language]}
+              </Link>
+            </div>
+            <ul className='list-group' style={{ marginBottom: '2rem' }}>
+              <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
+                {checkFirstName ? (
+                  <span>
+                    {_firstname[language]}: {firstName}
+                  </span>
+                ) : (
+                  <EditField
+                    type='text'
+                    setter={setFirstName}
+                    value={firstName}
+                  />
+                )}
+                <i
+                  className='fas fa-edit pointer'
+                  onClick={() =>
+                    changeView(checkFirstName, setCheckFirstName, 'firstName')
+                  }
                 />
-              )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() =>
-                  changeView(checkFirstName, setCheckFirstName, 'firstName')
-                }
-              />
-            </li>
-            <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              {checkLastName ? (
-                <span>
-                  {_lastname[language]}: {lastName}
-                </span>
-              ) : (
-                <EditField type='text' setter={setLastName} value={lastName} />
-              )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() =>
-                  changeView(checkLastName, setCheckLastName, 'lastName')
-                }
-              />
-            </li>
-            <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              {checkSex ? (
-                <span>
-                  {yoursex[language]}:{' '}
-                  {sex === 'm'
+              </li>
+              <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
+                {checkLastName ? (
+                  <span>
+                    {_lastname[language]}: {lastName}
+                  </span>
+                ) : (
+                  <EditField type='text' setter={setLastName} value={lastName} />
+                )}
+                <i
+                  className='fas fa-edit pointer'
+                  onClick={() =>
+                    changeView(checkLastName, setCheckLastName, 'lastName')
+                  }
+                />
+              </li>
+              <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
+                {checkSex ? (
+                  <span>
+                    {yoursex[language]}:{' '}
+                    {sex === 'm'
                     ? male[language]
                     : sex === 'f'
                     ? female[language]
                     : nospecify[language]}
-                </span>
-              ) : (
-                <EditButtons setter={setSex} />
-              )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkSex, setCheckSex, 'sex')}
-              />
-            </li>
-            <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              {checkEmail ? (
+                  </span>
+                ) : (
+                  <EditButtons setter={setSex} />
+                )}
+                <i
+                  className='fas fa-edit pointer'
+                  onClick={() => changeView(checkSex, setCheckSex, 'sex')}
+                />
+              </li>
+              <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
+                {checkEmail ? (
+                  <span>
+                    {_email[language]}: {email}
+                  </span>
+                ) : (
+                  <EditField type='email' setter={setEmail} value={email} />
+                )}
+                <i
+                  className='fas fa-edit pointer'
+                  onClick={() => changeView(checkEmail, setCheckEmail, 'email')}
+                />
+              </li>
+              <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
+                {checkUsername ? (
+                  <span>
+                    {_username[language]}: {username}
+                  </span>
+                ) : (
+                  <EditField type='text' setter={setUsername} value={username} />
+                )}
+                <i
+                  className='fas fa-edit pointer'
+                  onClick={() =>
+                    changeView(checkUsername, setCheckUsername, 'username')
+                  }
+                />
+              </li>
+              <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
+                {checkDob ? (
+                  <span>
+                    {dateofbirth[language]}:{' '}
+                    <Moment format='DD.MM.YYYY.'>{dob}</Moment>
+                  </span>
+                ) : (
+                  <EditDatePicker value={dob} setter={setDob} />
+                )}
+                <i
+                  className='fas fa-edit pointer'
+                  onClick={() => changeView(checkDob, setCheckDob, 'dob')}
+                />
+              </li>
+              <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
+                {checkCity ? (
+                  <span>
+                    {_city[language]}: {city}
+                  </span>
+                ) : (
+                  <EditField type='text' setter={setCity} value={city} />
+                )}
+                <i
+                  className='fas fa-edit pointer'
+                  onClick={() => changeView(checkCity, setCheckCity, 'city')}
+                />
+              </li>
+              <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
                 <span>
-                  {_email[language]}: {email}
+                  {_country[language]}: {country}
                 </span>
-              ) : (
-                <EditField type='email' setter={setEmail} value={email} />
-              )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkEmail, setCheckEmail, 'email')}
-              />
-            </li>
-            <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              {checkUsername ? (
+                <i
+                  className='fas fa-edit pointer'
+                  onClick={() => changeView(checkCountry, setCheckCountry)}
+                />
+              </li>
+              <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
+                {checkZip ? (
+                  <span>
+                    {zipcode[language]}: {zip}
+                  </span>
+                ) : (
+                  <EditField type='number' setter={setZip} value={zip} />
+                )}
+                <i
+                  className='fas fa-edit pointer'
+                  onClick={() => changeView(checkZip, setCheckZip, 'zip')}
+                />
+              </li>
+              <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
                 <span>
-                  {_username[language]}: {username}
+                  {securityquestion[language]}: {question}
                 </span>
-              ) : (
-                <EditField type='text' setter={setUsername} value={username} />
-              )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() =>
-                  changeView(checkUsername, setCheckUsername, 'username')
-                }
-              />
-            </li>
-            <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              {checkDob ? (
-                <span>
-                  {dateofbirth[language]}:{' '}
-                  <Moment format='DD.MM.YYYY.'>{dob}</Moment>
-                </span>
-              ) : (
-                <EditDatePicker value={dob} setter={setDob} />
-              )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkDob, setCheckDob, 'dob')}
-              />
-            </li>
-            <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              {checkCity ? (
-                <span>
-                  {_city[language]}: {city}
-                </span>
-              ) : (
-                <EditField type='text' setter={setCity} value={city} />
-              )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkCity, setCheckCity, 'city')}
-              />
-            </li>
-            <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              <span>
-                {_country[language]}: {country}
-              </span>
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkCountry, setCheckCountry)}
-              />
-            </li>
-            <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              {checkZip ? (
-                <span>
-                  {zipcode[language]}: {zip}
-                </span>
-              ) : (
-                <EditField type='number' setter={setZip} value={zip} />
-              )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkZip, setCheckZip, 'zip')}
-              />
-            </li>
-            <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              <span>
-                {securityquestion[language]}: {question}
-              </span>
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkQuestion, setCheckQuestion)}
-              />
-            </li>
-            <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              {checkPhone ? (
-                <span>
-                  {yourphonenumber[language]}: {phone}
-                </span>
-              ) : (
-                <EditField type='text' setter={setPhone} value={phone} />
-              )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkPhone, setCheckPhone, 'phone')}
-              />
-            </li>
-            <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              {checkBio ? (
-                <span>
-                  {yourbio[language]}: {bio}
-                </span>
-              ) : (
-                <EditArea value={bio} setter={setBio} />
-              )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkBio, setCheckBio, 'bio')}
-              />
-            </li>
-          </ul>
-        </div>
-      </form>
-    </PageContent>
+                <i
+                  className='fas fa-edit pointer'
+                  onClick={() => changeView(checkQuestion, setCheckQuestion)}
+                />
+              </li>
+              <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
+                {checkPhone ? (
+                  <span>
+                    {yourphonenumber[language]}: {phone}
+                  </span>
+                ) : (
+                  <EditField type='text' setter={setPhone} value={phone} />
+                )}
+                <i
+                  className='fas fa-edit pointer'
+                  onClick={() => changeView(checkPhone, setCheckPhone, 'phone')}
+                />
+              </li>
+              <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
+                {checkBio ? (
+                  <span>
+                    {yourbio[language]}: {bio}
+                  </span>
+                ) : (
+                  <EditArea value={bio} setter={setBio} />
+                )}
+                <i
+                  className='fas fa-edit pointer'
+                  onClick={() => changeView(checkBio, setCheckBio, 'bio')}
+                />
+              </li>
+            </ul>
+          </div>
+        </form>
+      </PageContent>
+    </div>
   )
 }
 

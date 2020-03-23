@@ -1,23 +1,20 @@
-const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+const mongoose = require('mongoose')
+const { Schema, model } = mongoose
 
 const ProfileSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: "user"
+    ref: 'user'
+  },
+  employment: {
+    type: String
+  },
+  website: {
+    type: String
   },
   status: {
     type: String,
-    default: "Single"
-  },
-  dateofbirth: {
-    type: Date
-  },
-  bio: {
-    type: String
-  },
-  friends: {
-    type: Number
+    required: true
   },
   social: {
     youtube: {
@@ -40,6 +37,6 @@ const ProfileSchema = new Schema({
     type: Date,
     default: Date.now
   }
-});
+})
 
-module.exports = Profile = model("profile", ProfileSchema);
+module.exports = Profile = model('profile', ProfileSchema)
