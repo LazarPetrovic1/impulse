@@ -46,11 +46,10 @@ function CreateProfile (props) {
   const onSubmit = e => {
     e.preventDefault()
     createProfile(data, history)
-    console.log(data)
   }
 
   return (
-    <Fragment>
+    <>
       <h1 className='fw6 blue tc'>Create your profile</h1>
       <p className='f4 mb3 tc'>
         <i className='fas fa-user' /> Let's get some information to make your
@@ -109,7 +108,7 @@ function CreateProfile (props) {
           </button>
         </div>
         {seeSocial && (
-          <Fragment>
+          <>
             <div className='mv3'>
               <i className='fab fa-twitter fa-2x mr2' />
               <input
@@ -165,7 +164,7 @@ function CreateProfile (props) {
                 className=' pa1'
               />
             </div>
-          </Fragment>
+          </>
         )}
 
         <div className='mv4 flex justify-between'>
@@ -181,7 +180,7 @@ function CreateProfile (props) {
           </Link>
         </div>
       </form>
-    </Fragment>
+    </>
   )
 }
 
@@ -189,7 +188,4 @@ CreateProfile.propTypes = {
   createProfile: PropTypes.func.isRequired
 }
 
-export default connect(
-  null,
-  { createProfile }
-)(withRouter(CreateProfile))
+export default connect(null, { createProfile })(withRouter(CreateProfile))

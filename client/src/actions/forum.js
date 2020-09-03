@@ -29,8 +29,6 @@ export const createForumPost = ({ title, body }) => async dispatch => {
       config
     )
 
-    await console.log(res.data)
-
     dispatch({
       type: CREATE_FORUM_POST,
       payload: res.data
@@ -63,7 +61,7 @@ export const getAllForumPosts = () => async dispatch => {
 }
 
 // Get forum post by id
-export const getForumPostById = (id) => async dispatch => {
+export const getForumPostById = id => async dispatch => {
   try {
     const res = await axios.get(`/api/forumposts/${id}`)
 
@@ -81,7 +79,7 @@ export const getForumPostById = (id) => async dispatch => {
 }
 
 // Delete a forum post
-export const deleteForumPost = (id) => async dispatch => {
+export const deleteForumPost = id => async dispatch => {
   try {
     await axios.delete(`/api/forumposts/${id}`)
 
@@ -106,7 +104,11 @@ export const editForumPost = (body, id) => async dispatch => {
   }
 
   try {
-    const res = await axios.put(`/api/forumposts/${id}`, JSON.stringify({ body }), config)
+    const res = await axios.put(
+      `/api/forumposts/${id}`,
+      JSON.stringify({ body }),
+      config
+    )
 
     dispatch({
       type: EDIT_FORUM_POST,
@@ -130,7 +132,11 @@ export const forumPostAddComment = ({ content }, id) => async dispatch => {
   }
 
   try {
-    const res = await axios.post(`/api/forumposts/comment/${id}`, JSON.stringify({ content }), config)
+    const res = await axios.post(
+      `/api/forumposts/comment/${id}`,
+      JSON.stringify({ content }),
+      config
+    )
 
     dispatch({
       type: FORUM_POST_ADD_COMMENT,

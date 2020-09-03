@@ -4,10 +4,9 @@ import { ThemeContext } from '../../contexts/ThemeContext'
 function PageContent (props) {
   const { isDarkTheme } = useContext(ThemeContext)
   const styles = {
-    backgroundColor: isDarkTheme ? '#555' : 'white',
+    backgroundColor: isDarkTheme ? 'transparent' : 'white',
     color: isDarkTheme ? 'white' : 'black',
-    height: document.body.clientHeight > 1080 ? 'auto' : '100vh',
-    // height: 'auto',SREDI HEIGHT
+    minHeight: 'calc(100vh - 86px)',
     margin: 0,
     padding: 0
   }

@@ -22,6 +22,7 @@ import ForumDiscussion from './components/ForumRoutes/ForumDiscussion'
 import ForumEdit from './components/ForumRoutes/ForumEdit'
 import SocialProfile from './components/SocialRoutes/SocialProfile'
 import CreateSocialProfile from './components/SocialRoutes/CreateSocialProfile'
+import Developer from './components/misc/Developer'
 // Redux stuff
 import { Provider } from 'react-redux'
 import store from './store'
@@ -43,13 +44,30 @@ function App () {
       <ThemeProvider>
         <LanguageProvider>
           <Router>
-            <Fragment>
+            <>
               <Nav />
               <Alert />
               <Switch>
                 <PrivateRoute exact path='/' component={InitialDashboard} />
-                <Route exact path='/login' render={() => <PageContent><Login /></PageContent>} />
-                <Route exact path='/register' render={() => <PageContent><Register /></PageContent>} />
+                <PrivateRoute exact path='/developer' component={Developer} />
+                <Route
+                  exact
+                  path='/login'
+                  render={() => (
+                    <PageContent>
+                      <Login />
+                    </PageContent>
+                  )}
+                />
+                <Route
+                  exact
+                  path='/register'
+                  render={() => (
+                    <PageContent>
+                      <Register />
+                    </PageContent>
+                  )}
+                />
                 <PrivateRoute exact path='/dashboard' component={Dashboard} />
                 <PrivateRoute
                   exact
@@ -57,15 +75,45 @@ function App () {
                   component={ProfileOverview}
                 />
                 <PrivateRoute exact path='/forum' component={Forum} />
-                <PrivateRoute exact path='/forum/forum-add-post' component={AddPost} />
-                <PrivateRoute exact path='/forum/forum-post/:id' component={ForumPost} />
-                <PrivateRoute exact path='/forum/forum-post/:id/discuss' component={ForumDiscussion} />
-                <PrivateRoute exact path='/forum/forum-post/:id/edit' component={ForumEdit} />
-                <PrivateRoute exact path='/social/social-profile' component={SocialProfile} />
-                <PrivateRoute exact path='/social/create-social-profile' component={CreateSocialProfile} />
-                <Route render={() => <PageContent><NotFound /></PageContent>} />
+                <PrivateRoute
+                  exact
+                  path='/forum/forum-add-post'
+                  component={AddPost}
+                />
+                <PrivateRoute
+                  exact
+                  path='/forum/forum-post/:id'
+                  component={ForumPost}
+                />
+                <PrivateRoute
+                  exact
+                  path='/forum/forum-post/:id/discuss'
+                  component={ForumDiscussion}
+                />
+                <PrivateRoute
+                  exact
+                  path='/forum/forum-post/:id/edit'
+                  component={ForumEdit}
+                />
+                <PrivateRoute
+                  exact
+                  path='/social/social-profile'
+                  component={SocialProfile}
+                />
+                <PrivateRoute
+                  exact
+                  path='/social/create-social-profile'
+                  component={CreateSocialProfile}
+                />
+                <Route
+                  render={() => (
+                    <PageContent>
+                      <NotFound />
+                    </PageContent>
+                  )}
+                />
               </Switch>
-            </Fragment>
+            </>
           </Router>
         </LanguageProvider>
       </ThemeProvider>

@@ -165,9 +165,11 @@ export const registercomponent = {
     de: 'Machen Sie ein Foto'
   },
   pleasenote: {
-    en: 'Please note that this image will be discarded after the registration process',
+    en:
+      'Please note that this image will be discarded after the registration process',
     sr: 'Imajte u vidu da ce slika biti izbrisana nakon procesa registracije',
-    de: 'Bitte beachten Sie, dass dieses Bild nach dem Registrierungsvorgang verworfen wird'
+    de:
+      'Bitte beachten Sie, dass dieses Bild nach dem Registrierungsvorgang verworfen wird'
   },
   overview: {
     en: 'Overview of your information',
@@ -227,6 +229,21 @@ export const registercomponent = {
 }
 
 export const logincomponent = {
+  welcome: {
+    en: 'Welcome to Impulse™!',
+    sr: 'Impulse™ Vam zeli dobrodoslicu!',
+    de: 'Wilkommen bei Impulse™!'
+  },
+  loginall: {
+    en: 'Log in with E-mail, Username or phone number',
+    sr: 'Ulogujte se mejlom, korisnickim imenom ili brojem telefona',
+    de: 'Loggen Sie sich ein mit E-Mail, Nutzername oder Telefonnummer'
+  },
+  alltypes: {
+    en: 'E-mail, username or phone number',
+    sr: 'Mejl, korisnicko ime ili broj telefona',
+    de: 'E-Mail, Nutzername oder Telefonnummer'
+  },
   choosemethod: {
     en: 'Please, choose your login method',
     sr: 'Molimo Vas izaberite nacin',

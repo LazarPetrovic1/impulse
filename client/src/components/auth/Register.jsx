@@ -8,7 +8,7 @@ import { Redirect } from 'react-router-dom'
 import DatePicker from 'react-datepicker'
 import { LanguageContext } from '../../contexts/LanguageContext'
 import Moment from 'react-moment'
-import { registercomponent } from "../../utils/langObject"
+import { registercomponent } from '../../utils/langObject'
 
 // Stylesheets
 import 'react-datepicker/dist/react-datepicker.css'
@@ -68,10 +68,7 @@ const Register = props => {
     sex
   } = data
 
-  const {
-    register,
-    isAuthenticated
-  } = props
+  const { register, isAuthenticated } = props
 
   const onChange = e => {
     e.persist()
@@ -82,24 +79,7 @@ const Register = props => {
     e.preventDefault()
 
     const phoneNr = `${callcode}${phone}`
-    const imageTaken = image ? true : false
-
-    console.log({
-      firstName,
-      lastName,
-      email,
-      sex,
-      dob,
-      username,
-      password,
-      city,
-      country,
-      zip,
-      phone: phoneNr,
-      question,
-      security,
-      imageTaken
-    })
+    const imageTaken = !!image
 
     register({
       firstName,
@@ -116,7 +96,7 @@ const Register = props => {
       phone: phoneNr,
       question,
       security,
-      imageTaken: image ? true : false
+      imageTaken: !!image
     })
   }
 
@@ -128,14 +108,14 @@ const Register = props => {
   }
 
   useEffect(() => {
-    (function () {
+    ;(function () {
       if (country) {
         const callcode = countries.filter(ctry => ctry.name === country)
         setData({ ...data, callcode: callcode[0].callcode })
       }
     })()
     // eslint-disable-next-line
-  }, [country]);
+  }, [country])
 
   if (isAuthenticated) {
     return <Redirect to='/' />
@@ -199,18 +179,19 @@ const Register = props => {
   } = registercomponent
 
   return (
-    <Fragment>
+    <>
       <div
         id='carouselExampleIndicators'
-        className='carousel slide high pt-4'
+        className='carousel position-static p-3'
         data-interval='false'
+        style={{ minHeight: '100vh !important' }}
       >
         <div className='container text-center'>
           <ol
             className='carousel-indicators'
             style={{
               backgroundColor: '#bbb',
-              bottom: '6rem'
+              bottom: '0'
             }}
           >
             <li
@@ -264,15 +245,11 @@ const Register = props => {
               />
             </div>
             <form onSubmit={onSubmit}>
-              <div className='carousel-item active'>
-                <div className='w-75 h-100 m-auto'>
-                  <div style={{ marginTop: '20%' }}>
-                    <h2 className='mb-2 '>
-                      {yourbasic[language]}
-                    </h2>
-                    <label htmlFor='firstName' >
-                      {_firstname[language]}
-                    </label>
+              <div className='carousel-item active mt-3'>
+                <div className='w-75 m-auto'>
+                  <div className='d-flex flex-column justify-content-center align-items-center'>
+                    <h2 className='mb-2'>{yourbasic[language]}</h2>
+                    <label htmlFor='firstName'>{_firstname[language]}</label>
                     <input
                       type='text'
                       onChange={onChange}
@@ -280,27 +257,27 @@ const Register = props => {
                       value={firstName}
                       className={
                         firstName
-                          ? `form-control is-valid`
+                          ? 'form-control is-valid'
                           : 'form-control is-invalid'
                       }
                       placeholder={_firstname[language]}
                       required
                     />
                     {firstName ? (
-                      <div className='valid-feedback'>{looksgood[language]}</div>
+                      <div className='valid-feedback'>
+                        {looksgood[language]}
+                      </div>
                     ) : (
                       <div className='invalid-feedback'>
-                        {pleaseenter[language]}{" "}{_name[language]}
+                        {pleaseenter[language]} {_name[language]}
                       </div>
                     )}
-                    <label  htmlFor='lastName'>
-                      {_lastname[language]}
-                    </label>
+                    <label htmlFor='lastName'>{_lastname[language]}</label>
                     <input
                       type='text'
                       className={
                         lastName
-                          ? `form-control is-valid`
+                          ? 'form-control is-valid'
                           : 'form-control is-invalid'
                       }
                       value={lastName}
@@ -310,20 +287,20 @@ const Register = props => {
                       required
                     />
                     {lastName ? (
-                      <div className='valid-feedback'>{looksgood[language]}</div>
+                      <div className='valid-feedback'>
+                        {looksgood[language]}
+                      </div>
                     ) : (
                       <div className='invalid-feedback'>
-                        {pleaseenter[language]}{" "}{_name[language]}
+                        {pleaseenter[language]} {_name[language]}
                       </div>
                     )}
-                    <label htmlFor='email' >
-                      {_email[language]}
-                    </label>
+                    <label htmlFor='email'>{_email[language]}</label>
                     <input
                       type='email'
                       className={
                         email
-                          ? `form-control is-valid`
+                          ? 'form-control is-valid'
                           : 'form-control is-invalid'
                       }
                       value={email}
@@ -333,16 +310,15 @@ const Register = props => {
                       placeholder={_email[language]}
                     />
                     {email ? (
-                      <div className='valid-feedback'>{looksgood[language]}</div>
+                      <div className='valid-feedback'>
+                        {looksgood[language]}
+                      </div>
                     ) : (
                       <div className='invalid-feedback'>
-                        {pleaseenter[language]}{" "}{_email[language]}
+                        {pleaseenter[language]} {_email[language]}
                       </div>
                     )}
-                    <label
-                      htmlFor='sex'
-                      className='mt-4 '
-                    >
+                    <label htmlFor='sex' className='mt-4 '>
                       {yoursex[language]}
                     </label>
                     <div className='custom-control custom-radio'>
@@ -358,10 +334,7 @@ const Register = props => {
                         value='m'
                         onChange={onChange}
                       />
-                      <label
-                        className='custom-control-label '
-                        htmlFor='male'
-                      >
+                      <label className='custom-control-label ' htmlFor='male'>
                         {male[language]}
                       </label>
                     </div>
@@ -378,10 +351,7 @@ const Register = props => {
                         value='f'
                         onChange={onChange}
                       />
-                      <label
-                        className='custom-control-label '
-                        htmlFor='female'
-                      >
+                      <label className='custom-control-label ' htmlFor='female'>
                         {female[language]}
                       </label>
                     </div>
@@ -405,36 +375,29 @@ const Register = props => {
                         {nospecify[language]}
                       </label>
                     </div>
+                    {sex ? (
+                      <div
+                        className='valid-feedback'
+                        style={{ display: 'block' }}
+                      >
+                        {looksgood[language]}
+                      </div>
+                    ) : (
+                      <div
+                        className='invalid-feedback'
+                        style={{ display: 'block' }}
+                      >
+                        {pleaseenter[language]} {yoursex[language]}
+                      </div>
+                    )}
                   </div>
-                  {sex ? (
-                    <div
-                      className='valid-feedback'
-                      style={{ display: 'block' }}
-                    >
-                      {looksgood[language]}
-                    </div>
-                  ) : (
-                    <div
-                      className='invalid-feedback'
-                      style={{ display: 'block' }}
-                    >
-                      {pleaseenter[language]}{" "}{yoursex[language]}
-                    </div>
-                  )}
                 </div>
               </div>
-              <div className='carousel-item'>
-                <div className='w-75 h-100 m-auto'>
-                  <div style={{ marginTop: '25%' }}>
-                    <h2 className='mb-2 '>
-                      {basicprofileinfo[language]}
-                    </h2>
-                    <label
-                      htmlFor='username'
-
-                    >
-                      {_username[language]}
-                    </label>
+              <div className='carousel-item mt-4'>
+                <div className='w-75 m-auto'>
+                  <div>
+                    <h2 className='mb-2'>{basicprofileinfo[language]}</h2>
+                    <label htmlFor='username'>{_username[language]}</label>
                     <div className='input-group'>
                       <div className='input-group-prepend'>
                         <span
@@ -448,7 +411,7 @@ const Register = props => {
                         type='text'
                         className={
                           username.length > 2
-                            ? `form-control is-valid`
+                            ? 'form-control is-valid'
                             : 'form-control is-invalid'
                         }
                         name='username'
@@ -463,23 +426,18 @@ const Register = props => {
                         </div>
                       ) : (
                         <div className='invalid-feedback'>
-                          {pleaseenter[language]}{" "}{_username[language]}
+                          {pleaseenter[language]} {_username[language]}
                         </div>
                       )}
                     </div>
                     <div className='form-group rel'>
-                      <label
-                        htmlFor='password'
-
-                      >
-                        {_password[language]}
-                      </label>
+                      <label htmlFor='password'>{_password[language]}</label>
                       <input
                         type={viewPass ? 'text' : 'password'}
                         name='password'
                         className={
                           password.length > 5
-                            ? `form-control is-valid`
+                            ? 'form-control is-valid'
                             : 'form-control is-invalid'
                         }
                         value={password}
@@ -503,24 +461,19 @@ const Register = props => {
                         </div>
                       ) : (
                         <div className='invalid-feedback'>
-                          {pleaseenter[language]}{" "}{_password[language]}
+                          {pleaseenter[language]} {_password[language]}
                         </div>
                       )}
                     </div>
                     <div className='form-group rel'>
-                      <label
-                        htmlFor='password2'
-
-                      >
-                        {confirmpass[language]}
-                      </label>
+                      <label htmlFor='password2'>{confirmpass[language]}</label>
                       <input
                         type={viewPass2 ? 'text' : 'password'}
                         name='password2'
                         className={
                           password2.length >= 5 &&
                           password2.toString() === password.toString()
-                            ? `form-control is-valid`
+                            ? 'form-control is-valid'
                             : 'form-control is-invalid'
                         }
                         value={password2}
@@ -538,10 +491,8 @@ const Register = props => {
                           onClick={() => setViewPass2(true)}
                         />
                       )}
-                      {
-                        password2.length >= 5 &&
-                        password2 === password ? (
-                          <div className='valid-feedback'>
+                      {password2.length >= 5 && password2 === password ? (
+                        <div className='valid-feedback'>
                           {looksgood[language]}
                         </div>
                       ) : (
@@ -553,18 +504,11 @@ const Register = props => {
                   </div>
                 </div>
               </div>
-              <div className='carousel-item'>
-                <div className='w-75 h-100 m-auto'>
-                  <div style={{ marginTop: '15%' }}>
-                    <h2 className='mb-2 '>
-                      {tellusalittlebit[language]}
-                    </h2>
-                    <label
-                      htmlFor='bio'
-
-                    >
-                      {yourbio[language]}:{' '}
-                    </label>
+              <div className='carousel-item mt-4'>
+                <div className='w-75 m-auto'>
+                  <div className='d-flex flex-column justify-content-center align-items-center'>
+                    <h2 className='mb-2'>{tellusalittlebit[language]}</h2>
+                    <label htmlFor='bio'>{yourbio[language]}: </label>
                     <textarea
                       className={
                         bio
@@ -589,18 +533,11 @@ const Register = props => {
                   </div>
                 </div>
               </div>
-              <div className='carousel-item'>
-                <div className='w-75 h-100 m-auto'>
-                  <div style={{ marginTop: '10%' }}>
-                    <h2 className='mb-2 '>
-                      {advancedpersonalinfo[language]}
-                    </h2>
-                    <label
-                      htmlFor='dob'
-
-                    >
-                      {dateofbirth[language]}
-                    </label>
+              <div className='carousel-item mt-4'>
+                <div className='w-75 m-auto'>
+                  <div className='d-flex flex-column justify-content-center align-items-center'>
+                    <h2 className='mb-2 '>{advancedpersonalinfo[language]}</h2>
+                    <label htmlFor='dob'>{dateofbirth[language]}</label>
                     <br />
                     <DatePicker
                       name='dob'
@@ -610,7 +547,7 @@ const Register = props => {
                       scrollableYearDropdown
                       className={
                         dob
-                          ? `form-control is-valid`
+                          ? 'form-control is-valid'
                           : 'form-control is-invalid'
                       }
                       value={dob}
@@ -624,20 +561,17 @@ const Register = props => {
                       </div>
                     ) : (
                       <div className='invalid-feedback d-block'>
-                        {pleaseenter[language]}{" "}{dateofbirth[language]}
+                        {pleaseenter[language]} {dateofbirth[language]}
                       </div>
                     )}
-                    <label
-                      htmlFor='city'
-                      className=' mt-2'
-                    >
+                    <label htmlFor='city' className=' mt-2'>
                       {_city[language]}
                     </label>
                     <input
                       type='text'
                       className={
                         city
-                          ? `form-control is-valid`
+                          ? 'form-control is-valid'
                           : 'form-control is-invalid'
                       }
                       value={city}
@@ -652,19 +586,13 @@ const Register = props => {
                       </div>
                     ) : (
                       <div className='invalid-feedback'>
-                        {pleaseenter[language]}{" "}{_city[language]}
+                        {pleaseenter[language]} {_city[language]}
                       </div>
                     )}
-                    <label
-                      htmlFor='country'
-
-                    >
-                      {_country[language]}
-                    </label>
+                    <label htmlFor='country'>{_country[language]}</label>
                     <select
                       onChange={e =>
-                        setData({ ...data, country: e.target.value })
-                      }
+                        setData({ ...data, country: e.target.value })}
                       name='country'
                       className={
                         country
@@ -673,61 +601,47 @@ const Register = props => {
                       }
                       required
                     >
-                      <option value=''>
-                        {chooseone[language]}
-                      </option>
-                      {
-                        countries.map(country => (
-                          <option
-                            value={country.name}
-                            key={country.capital}
-                          >
-                            {country.name} (pop.{' '}
-                            {(country.population / 1000000).toFixed(2)}M)
-                          </option>
-                        ))
-                      }
+                      <option value=''>{chooseone[language]}</option>
+                      {countries.map(country => (
+                        <option value={country.name} key={country.capital}>
+                          {country.name} (pop.{' '}
+                          {(country.population / 1000000).toFixed(2)}M)
+                        </option>
+                      ))}
                     </select>
-                    {
-                      country ? (
-                        <div className='valid-feedback'>
+                    {country ? (
+                      <div className='valid-feedback'>
                         {looksgood[language]}
                       </div>
                     ) : (
                       <div className='invalid-feedback'>
-                        {pleaseenter[language]}{" "}{_country[language]}
+                        {pleaseenter[language]} {_country[language]}
                       </div>
                     )}
-                    <label
-                      htmlFor='zip'
-
-                    >
-                      {zipcode[language]}
-                    </label>
+                    <label htmlFor='zip'>{zipcode[language]}</label>
                     <input
                       type='text'
                       name='zip'
                       onChange={onChange}
                       className={
                         zip
-                          ? `form-control is-valid`
+                          ? 'form-control is-valid'
                           : 'form-control is-invalid'
                       }
                       value={zip}
                       placeholder={zipcode[language]}
                       required
                     />
-                    {
-                      zip ? (
+                    {zip ? (
                       <div className='valid-feedback'>
                         {looksgood[language]}
                       </div>
                     ) : (
                       <div className='invalid-feedback'>
-                        {pleaseenter[language]}{" "}{zipcode[language]}
+                        {pleaseenter[language]} {zipcode[language]}
                       </div>
                     )}
-                    <label htmlFor='phone' className="">
+                    <label htmlFor='phone' className=''>
                       {yourphonenumber[language]}
                     </label>
                     <div className='input-group'>
@@ -736,14 +650,14 @@ const Register = props => {
                           className='input-group-text'
                           id='inputGroupPrepend4'
                         >
-                          {callcode ? callcode : ':/'}
+                          {callcode || ':/'}
                         </span>
                       </div>
                       <input
                         type='text'
                         className={
                           phone
-                            ? `form-control is-valid`
+                            ? 'form-control is-valid'
                             : 'form-control is-invalid'
                         }
                         name='phone'
@@ -752,30 +666,27 @@ const Register = props => {
                         placeholder={yourphonenumber[language]}
                         required
                       />
-                      {
-                        phone ? (
-                          <div className='valid-feedback'>
+                      {phone ? (
+                        <div className='valid-feedback'>
                           {looksgood[language]}
                         </div>
                       ) : (
                         <div className='invalid-feedback'>
-                          {pleaseenter[language]}{" "}{yourphonenumber[language]}
+                          {pleaseenter[language]} {yourphonenumber[language]}
                         </div>
                       )}
                     </div>
                   </div>
                 </div>
               </div>
-              <div className='carousel-item'>
-                <div className='w-75 h-100 m-auto'>
-                  <div style={{ marginTop: '10%' }}>
+              <div className='carousel-item mt-4'>
+                <div className='w-75 m-auto'>
+                  <div>
                     <article
                       className='container-md scroller'
                       style={{ userSelect: 'none' }}
                     >
-                      <h2 >
-                        License, terms and conditions
-                      </h2>
+                      <h2>License, terms and conditions</h2>
                       <p className='lead '>
                         Lorem ipsum dolor sit amet, consectetur adipisicing
                         elit. Repellendus architecto ipsum eaque sit,
@@ -828,43 +739,32 @@ const Register = props => {
                         id='check'
                         required
                       />
-                      <label
-                        className='custom-control-label'
-                        htmlFor='check'
-                      >
+                      <label className='custom-control-label' htmlFor='check'>
                         {agreewithterms[language]}
                       </label>
                     </div>
-                    {
-                      check ? (
-                        <div className="valid-feedback d-block">
-                          {looksgood[language]}
-                        </div>
-                      ) : (
-                        <div className="invalid-feedback">
-                          {agreement[language]}
-                        </div>
-                      )
-                    }
+                    {check ? (
+                      <div className='valid-feedback d-block'>
+                        {looksgood[language]}
+                      </div>
+                    ) : (
+                      <div className='invalid-feedback'>
+                        {agreement[language]}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-              <div className='carousel-item'>
-                <div className='w-75 h-100 m-auto'>
-                  <div style={{ marginTop: '30%' }}>
-                    <h2 >
-                      {addsecurity[language]}
-                    </h2>
-                    <label
-                      htmlFor='question'
-                      className='mt-2 '
-                    >
+              <div className='carousel-item mt-5'>
+                <div className='w-75 m-auto'>
+                  <div>
+                    <h2>{addsecurity[language]}</h2>
+                    <label htmlFor='question' className='mt-2'>
                       {securityanswer[language]}
                     </label>
                     <select
                       onChange={e =>
-                        setData({ ...data, question: e.target.value })
-                      }
+                        setData({ ...data, question: e.target.value })}
                       name='questions'
                       className={
                         question
@@ -873,25 +773,14 @@ const Register = props => {
                       }
                       required
                     >
-                      <option value=''>
-                        {chooseone[language]}
-                      </option>
-                      {
-                          questions.map(
-                            quest => (
-                              <option
-                                value={quest}
-                                key={quest}
-                          >
-                                {quest}
-                              </option>
-                        ))
-                      }
+                      <option value=''>{chooseone[language]}</option>
+                      {questions.map(quest => (
+                        <option value={quest} key={quest}>
+                          {quest}
+                        </option>
+                      ))}
                     </select>
-                    <label
-                      htmlFor='security'
-                      className=' mt-2'
-                    >
+                    <label htmlFor='security' className=' mt-2'>
                       {_answer[language]}
                     </label>
                     <input
@@ -901,179 +790,248 @@ const Register = props => {
                       onChange={onChange}
                       className={
                         security
-                          ? `form-control is-valid`
+                          ? 'form-control is-valid'
                           : 'form-control is-invalid'
                       }
                       placeholder={_answer[language]}
                       value={security}
                       required
                     />
-                    {
-                      security ? (
-                        <div className='valid-feedback'>
+                    {security ? (
+                      <div className='valid-feedback'>
                         {looksgood[language]}
                       </div>
                     ) : (
                       <div className='invalid-feedback'>
-                        {pleaseenter[language]}{" "}{_answer[language]}
+                        {pleaseenter[language]} {_answer[language]}
                       </div>
                     )}
                   </div>
                 </div>
               </div>
-              <div className='carousel-item'>
+              <div className='carousel-item mt-3'>
                 <div className='w-75 h-100 m-auto'>
-                  <article style={{ marginTop: '2rem' }}>
-                    <h2
-                      style={{ marginBottom: '1rem' }}
-
-                    >
-                      {picturetext[language]}{" "}
-                      <b>
-                        {compeletelyoptional[language]}
-                      </b>
-                    </h2>
+                  <article>
                     <Camera
                       onCapture={blob => setImage(blob)}
                       onClear={() => setImage(null)}
                     />
-                    <small className='d-block bg-light lead text-secondary mt-4'>
-                      {pleasenote[language]}
-                    </small>
+                    <p className='mt-2'>
+                      {picturetext[language]}{' '}
+                      <b>{compeletelyoptional[language]}</b>
+                      <br />
+                      <span className='text-secondary'>
+                        {pleasenote[language]}
+                      </span>
+                    </p>
                   </article>
                 </div>
               </div>
               <div className='carousel-item'>
-                <div className='w-75 h-100 m-auto'>
-                  <div style={{ marginTop: '10%' }}>
-                    <h2 style={{ marginBottom: '2rem' }} >
-                      {overview[language]}:
-                    </h2>
-                    <ul
-                      className='list-group'
-                      style={{ marginBottom: '2rem' }}
-                    >
-                      <li className='overview-items list-group-item list-group-item-action'>
-                        {fullname[language]}:{' '}
-                        {firstName &&
-                          lastName ? (
-                            <span className='text-success'>
-                              {firstName} {lastName}
-                            </span>
-                        ) : (
-                          <span className='text-danger'>
-                            {notgiven[language]}{" "}{fullname[language]}
-                          </span>
-                        )}
+                <div className='w-75 m-auto'>
+                  <div className='mt-4'>
+                    <h3>{overview[language]}:</h3>
+                    <ul className='list-group mb-3'>
+                      <li
+                        className='overview-items list-group-item list-group-item-action'
+                        data-slide-to='0'
+                        data-target='#carouselExampleIndicators'
+                        onClick={() => setProgress(0)}
+                      >
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <div>
+                            {fullname[language]}:{' '}
+                            {firstName && lastName ? (
+                              <span className='text-success'>
+                                {firstName} {lastName}
+                              </span>
+                            ) : (
+                              <span className='text-danger'>
+                                {notgiven[language]} {fullname[language]}
+                              </span>
+                            )}
+                          </div>
+                          <i className='fas fa-arrow-right fa-2x pointer' />
+                        </div>
                       </li>
-                      <li className='overview-items list-group-item list-group-item-action'>
-                        {yoursex[language]}:{' '}
-                        {sex === 'm' ? (
-                          <span className='text-success'>
-                            {male[language]}
-                          </span>
-                        ) : sex === 'f' ? (
-                          <span className='text-success'>
-                            {female[language]}
-                          </span>
-                        ) : sex === 'n/a' ? (
-                          <span className='text-success'>
-                            {nospecify[language]}
-                          </span>
-                        ) : (
-                          <span className='text-danger'>
-                            {notgiven[language]}{" "}{yoursex[language]}
-                          </span>
-                        )}
+                      <li
+                        className='overview-items list-group-item list-group-item-action'
+                        onClick={() => setProgress(0)}
+                        data-slide-to='0'
+                        data-target='#carouselExampleIndicators'
+                      >
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <div>
+                            {yoursex[language]}:{' '}
+                            {sex === 'm' ? (
+                              <span className='text-success'>
+                                {male[language]}
+                              </span>
+                            ) : sex === 'f' ? (
+                              <span className='text-success'>
+                                {female[language]}
+                              </span>
+                            ) : sex === 'n/a' ? (
+                              <span className='text-success'>
+                                {nospecify[language]}
+                              </span>
+                            ) : (
+                              <span className='text-danger'>
+                                {notgiven[language]} {yoursex[language]}
+                              </span>
+                            )}
+                          </div>
+                          <i className='fas fa-arrow-right fa-2x pointer' />
+                        </div>
                       </li>
-                      <li className='overview-items list-group-item list-group-item-action'>
-                        {_email[language]}:{' '}
-                        {email ? (
-                          <span className='text-success'>
-                            {email}
-                          </span>
-                        ) : (
-                          <span className='text-danger'>
-                            {notgiven[language]}{" "}{_email[language]}
-                          </span>
-                        )}
+                      <li
+                        className='overview-items list-group-item list-group-item-action'
+                        onClick={() => setProgress(0)}
+                        data-slide-to='0'
+                        data-target='#carouselExampleIndicators'
+                      >
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <div>
+                            {_email[language]}:{' '}
+                            {email ? (
+                              <span className='text-success'>{email}</span>
+                            ) : (
+                              <span className='text-danger'>
+                                {notgiven[language]} {_email[language]}
+                              </span>
+                            )}
+                          </div>
+                          <i className='fas fa-arrow-right fa-2x pointer' />
+                        </div>
                       </li>
-                      <li className='overview-items list-group-item list-group-item-action'>
-                        {_username[language]}:{' '}
-                        {username ? (
-                          <span className='text-success'>
-                            @{username}
-                          </span>
-                        ) : (
-                          <span className='text-danger'>
-                            {notgiven[language]}{" "}{_username[language]}
-                          </span>
-                        )}
+                      <li
+                        className='overview-items list-group-item list-group-item-action'
+                        onClick={() => setProgress(15)}
+                        data-slide-to='1'
+                        data-target='#carouselExampleIndicators'
+                      >
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <div>
+                            {_username[language]}:{' '}
+                            {username ? (
+                              <span className='text-success'>@{username}</span>
+                            ) : (
+                              <span className='text-danger'>
+                                {notgiven[language]} {_username[language]}
+                              </span>
+                            )}
+                          </div>
+                          <i className='fas fa-arrow-right fa-2x pointer' />
+                        </div>
                       </li>
-                      <li className='overview-items list-group-item list-group-item-action'>
-                        {dateofbirth[language]}:{' '}
-                        {dob ? (
-                          <span className='text-success'>
-                            <Moment format='DD.MM.YYYY.'>
-                              {dob}
-                            </Moment>
-                          </span>
-                        ) : (
-                          <span className='text-danger'>
-                            {notgiven[language]}{" "}{dateofbirth[language]}
-                          </span>
-                        )}
+                      <li
+                        className='overview-items list-group-item list-group-item-action'
+                        onClick={() => setProgress(45)}
+                        data-slide-to='3'
+                        data-target='#carouselExampleIndicators'
+                      >
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <div>
+                            {dateofbirth[language]}:{' '}
+                            {dob ? (
+                              <span className='text-success'>
+                                <Moment format='DD.MM.YYYY.'>{dob}</Moment>
+                              </span>
+                            ) : (
+                              <span className='text-danger'>
+                                {notgiven[language]} {dateofbirth[language]}
+                              </span>
+                            )}
+                          </div>
+                          <i className='fas fa-arrow-right fa-2x pointer' />
+                        </div>
                       </li>
-                      <li className='overview-items list-group-item list-group-item-action'>
-                        {_from[language]}:{' '}
-                        {zip &&
-                          city &&
-                          country ? (
-                            <span className='text-success'>
-                              {zip} - {city}, {country}
-                            </span>
-                        ) : (
-                          <span className='text-danger'>
-                            {notgiven[language]}{" "}{location[language]}
-                          </span>
-                        )}
+                      <li
+                        className='overview-items list-group-item list-group-item-action'
+                        onClick={() => setProgress(45)}
+                        data-slide-to='3'
+                        data-target='#carouselExampleIndicators'
+                      >
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <div>
+                            {_from[language]}:{' '}
+                            {zip && city && country ? (
+                              <span className='text-success'>
+                                {zip} - {city}, {country}
+                              </span>
+                            ) : (
+                              <span className='text-danger'>
+                                {notgiven[language]} {location[language]}
+                              </span>
+                            )}
+                          </div>
+                          <i className='fas fa-arrow-right fa-2x pointer' />
+                        </div>
                       </li>
-                      <li className='overview-items list-group-item list-group-item-action'>
-                        {securityquestion[language]}:{' '}
-                        {security ? (
-                          <span className='text-success'>
-                            {security}
-                          </span>
-                        ) : (
-                          <span className='text-danger'>
-                            {notgiven[language]}{" "}{securityanswer[language]}
-                          </span>
-                        )}
+                      <li
+                        className='overview-items list-group-item list-group-item-action'
+                        onClick={() => setProgress(45)}
+                        data-slide-to='3'
+                        data-target='#carouselExampleIndicators'
+                      >
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <div>
+                            {yourphonenumber[language]}:{' '}
+                            {phone ? (
+                              <span className='text-success'>
+                                {callcode}
+                                {phone}
+                              </span>
+                            ) : (
+                              <span className='text-danger'>
+                                {notgiven[language]} {yourphonenumber[language]}
+                              </span>
+                            )}
+                          </div>
+                          <i className='fas fa-arrow-right fa-2x pointer' />
+                        </div>
                       </li>
-                      <li className='overview-items list-group-item list-group-item-action'>
-                        {imagetaken[language]}&nbsp;&nbsp;
-                        {image ? (
-                          <span className='text-success'>
-                            {yes[language]}
-                          </span>
-                        ) : (
-                          <span className='text-danger'>
-                            {no[language]}
-                          </span>
-                        )}
+                      <li
+                        className='overview-items list-group-item list-group-item-action'
+                        onClick={() => setProgress(75)}
+                        data-slide-to='5'
+                        data-target='#carouselExampleIndicators'
+                      >
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <div>
+                            {securityquestion[language]}:{' '}
+                            {security ? (
+                              <span className='text-success'>{security}</span>
+                            ) : (
+                              <span className='text-danger'>
+                                {notgiven[language]} {securityanswer[language]}
+                              </span>
+                            )}
+                          </div>
+                          <i className='fas fa-arrow-right fa-2x pointer' />
+                        </div>
                       </li>
-                      <li className='overview-items list-group-item list-group-item-action'>
-                        {yourphonenumber[language]}:{' '}
-                        {phone ? (
-                          <span className='text-success'>
-                            {callcode}
-                            {phone}
-                          </span>
-                        ) : (
-                          <span className='text-danger'>
-                            {notgiven[language]}{" "}{yourphonenumber[language]}
-                          </span>
-                        )}
+                      <li
+                        className='overview-items list-group-item list-group-item-action'
+                        onClick={() => setProgress(90)}
+                        data-slide-to='6'
+                        data-target='#carouselExampleIndicators'
+                      >
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <div>
+                            {imagetaken[language]}&nbsp;&nbsp;
+                            {image ? (
+                              <span className='text-success'>
+                                {yes[language]}
+                              </span>
+                            ) : (
+                              <span className='text-danger'>
+                                {no[language]}
+                              </span>
+                            )}
+                          </div>
+                          <i className='fas fa-arrow-right fa-2x pointer' />
+                        </div>
                       </li>
                     </ul>
                     <button
@@ -1093,7 +1051,7 @@ const Register = props => {
                         !password2 ||
                         !phone
                       }
-                      className='btn btn-lg btn-primary btn-block'
+                      className='btn btn-primary btn-block'
                     >
                       <i className='fas fa-paper-plane' />
                       &nbsp;&nbsp;{signmeup[language]}
@@ -1110,14 +1068,13 @@ const Register = props => {
               role='button'
               data-slide='prev'
               onClick={() => onProgressChange(-15)}
+              style={{ height: 'calc(100vh - 86px)', top: '86px' }}
             >
               <span
                 className='carousel-control-prev-icon text-primary'
                 aria-hidden='true'
               />
-              <span className='sr-only'>
-                Previous
-              </span>
+              <span className='sr-only'>Previous</span>
             </a>
           )}
           {progress < 100 && (
@@ -1127,19 +1084,18 @@ const Register = props => {
               role='button'
               data-slide='next'
               onClick={() => onProgressChange(15)}
+              style={{ height: 'calc(100vh - 86px)', top: '86px' }}
             >
               <span
                 className='carousel-control-next-icon text-primary'
                 aria-hidden='true'
               />
-              <span className='sr-only'>
-                Next
-              </span>
+              <span className='sr-only'>Next</span>
             </a>
           )}
         </div>
       </div>
-    </Fragment>
+    </>
   )
 }
 
@@ -1152,7 +1108,4 @@ const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated
 })
 
-export default connect(
-  mapStateToProps,
-  { register }
-)(Register)
+export default connect(mapStateToProps, { register })(Register)
