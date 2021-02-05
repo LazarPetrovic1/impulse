@@ -72,7 +72,6 @@ router.post("/", async (req, res) => {
 
 router.put("/firstName", auth, async (req, res) => {
   const { firstName } = req.body;
-  console.log(`REQ_BODY: ${JSON.stringify(req.body)}`);
   try {
     const user = await User.findByIdAndUpdate(
       { _id: req.user.id },
@@ -141,7 +140,6 @@ router.put("/username", auth, async (req, res) => {
 
 router.put("/dob", auth, async (req, res) => {
   const { dob } = req.body;
-  await console.log(dob);
 
   try {
     const user = await User.findByIdAndUpdate({ _id: req.user.id }, { dob });
@@ -178,6 +176,17 @@ router.put("/country", auth, async (req, res) => {
     res.status(500).send("Internal server error");
   }
 });
+
+router.get("/country", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+    const users = await User.find({ country: user.country }).select("-imageTaken -password -security -question")
+    return res.json(users)
+  } catch (e) {
+    console.error(e.message)
+    res.status(500).send('Internal server error')
+  }
+})
 
 router.put("/zip", auth, async (req, res) => {
   const { zip } = req.body;

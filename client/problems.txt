@@ -1,0 +1,10 @@
+PROXY - StackOverflow
+
+The reason the react application is still pointing at localhost:3000 is because of cache.
+To clear it , follow the steps below.
+
+1. Delete package-lock.json and node_modules in React app
+2. Turn off React Terminal and npm install all dependencies again on React App
+3. Turn back on React App and the proxy should now be working
+
+This problem has been haunting me for a long time; but if you follow the steps above it should get your React application pointing at the server correctly.

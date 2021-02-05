@@ -29,14 +29,12 @@ export const createForumPost = ({ title, body }) => async dispatch => {
       config
     )
 
-    await console.log(res.data)
-
     dispatch({
       type: CREATE_FORUM_POST,
       payload: res.data
     })
   } catch (e) {
-    console.log(`%c ${e}`, 'color: white; font-weight: bold') // Console warning
+    console.warn(`${e.message}`)
 
     dispatch({
       type: FORUM_ERROR

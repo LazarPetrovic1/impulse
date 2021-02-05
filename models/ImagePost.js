@@ -6,14 +6,11 @@ const ImagePostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "user"
   },
-  name: {
-    type: String,
-    required: true
-  },
   content: {
     type: String,
     required: true
   },
+  url: { type: String },
   date: {
     type: Date,
     default: Date.now
@@ -42,12 +39,18 @@ const ImagePostSchema = new Schema({
       }
     }
   ],
-  endorsements: {
-    type: Number
-  },
-  judgements: {
-    type: Number
-  }
+  endorsements: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user"
+    }
+  }],
+  judgements: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user"
+    }
+  }]
 });
 
 module.exports = ImagePost = model("image", ImagePostSchema);

@@ -22,7 +22,7 @@ function AddPost ({ forum, history, createForumPost }) {
   return loading ? (
     <Spinner />
   ) : (
-    <div className='container mb-4'>
+    <div className='container mb-4' style={{ pointerEvents: "all" }}>
       <h1 className='text-center text-primary display-3 my-2'>Add post</h1>
       <form onSubmit={onSubmit}>
         <div className='text-center'>

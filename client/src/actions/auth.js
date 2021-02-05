@@ -120,9 +120,6 @@ export const login = ({email, username, phone, password}) => async dispatch => {
 
   try {
     const res = await axios.post('/api/auth', body, config)
-
-    await console.log(res.data);
-
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data
@@ -141,3 +138,10 @@ export const login = ({email, username, phone, password}) => async dispatch => {
 export const logout = () => dispatch => {
   dispatch({ type: LOGOUT });
 };
+
+export const imageUploadDispatch = (item) => dispatch => {
+  dispatch({
+    type: USER_LOADED,
+    payload: item
+  });
+}

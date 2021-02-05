@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 const config = require('config')
 const { check, validationResult } = require('express-validator')
 const User = require('../../models/User')
+const auth = require('../../middleware/auth');
 
 // @route -- POST -- api/users
 // @desc -- -- Register a user
@@ -50,9 +51,6 @@ router.post(
       .not()
       .isEmpty(),
     check('security', 'Security.')
-      .not()
-      .isEmpty(),
-    check('imageTaken', 'Image taken?')
       .not()
       .isEmpty()
   ],
@@ -105,7 +103,8 @@ router.post(
         question,
         security,
         imageTaken,
-        dismissedPosts
+        dismissedPosts,
+        imgSrc: []
       })
 
       const salt = await bcrypt.genSalt(10)
@@ -134,5 +133,40 @@ router.post(
     }
   }
 )
+
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-imageTaken -phone -dismissedPosts -password -question -security")
+    return res.json(user)
+  } catch (e) {
+    console.error(e.message)
+    res.status(500).send('Internal server error')
+  }
+})
+
+router.post("/search", async (req, res) => {
+  let users;
+  try {
+    users = await User.find({ firstName: req.body.search }).select("-imageTaken -phone -dismissedPosts -password -question -security -bio -date -dob")
+    if (users.length <= 0) users = await User.find({ lastName: req.body.search }).select("-imageTaken -phone -dismissedPosts -password -question -security -bio -date -dob")
+    else if (users.length <= 0) users = await User.find({ username: req.body.search }).select("-imageTaken -phone -dismissedPosts -password -question -security -bio -date -dob")
+    else if (users.length <= 0) users = await User.find({ email: req.body.search }).select("-imageTaken -phone -dismissedPosts -password -question -security -bio -date -dob")
+    else if (users.length <= 0) res.json({ msg: "No users found, unfortunately" })
+    return res.json(users);
+  } catch (e) {
+    console.error(e.message)
+    res.status(500).send('Internal server error')
+  }
+})
+
+router.get("/postedby/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("firstName lastName")
+    return res.json(user)
+  } catch (e) {
+    console.error(e.message)
+    res.status(500).send('Internal server error')
+  }
+})
 
 module.exports = router

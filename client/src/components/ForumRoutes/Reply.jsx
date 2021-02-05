@@ -1,10 +1,10 @@
 import React, { useState, Fragment } from 'react'
-import Editor from '../Editor/Editor'
 import Autosaving from '../Editor/Autosaving'
 
 function Reply ({ comment }) {
   const [reply, setReply] = useState(false)
   const [edit, setEdit] = useState(false)
+  // eslint-disable-next-line
   const [replyText, setReplyText] = useState('')
   const [commentBody, setCommentBody] = useState(comment)
 

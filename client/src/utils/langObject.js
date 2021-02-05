@@ -228,9 +228,9 @@ export const registercomponent = {
 
 export const logincomponent = {
   choosemethod: {
-    en: 'Please, choose your login method',
-    sr: 'Molimo Vas izaberite nacin',
-    de: 'Bitte wählen Sie Ihre Anmeldemethode'
+    en: 'Alternatively log in via',
+    sr: 'Alternativno se ulogujte',
+    de: 'Alternativ können Sie sich auch über anmelden'
   },
   loginusing: {
     en: 'Log in using',
@@ -266,5 +266,195 @@ export const logincomponent = {
     en: 'e-mail',
     sr: 'imejlom',
     de: 'der Email'
+  }
+}
+
+export const navcomponent = {
+  _profile: {
+    en: "Profile",
+    sr: "Profil",
+    de: "Profil"
+  },
+  _settings: {
+    en: "Settings",
+    sr: "Podesavanja",
+    de: "Einstellungen"
+  },
+  _logout: {
+    en: "Log out",
+    sr: "Izlogujte se",
+    de: "Logge aus"
+  },
+  _register: {
+    en: "Registration",
+    sr: "Registracija",
+    de: "Anmeldung"
+  },
+  _login: {
+    en: "Log in",
+    sr: "Ulogujte se",
+    de: "Logge ein"
+  }
+}
+
+export const dashboardcomponent = {
+  _welcome: {
+    en: "Welcome",
+    sr: "Dobrodosli",
+    de: "Willkomme"
+  },
+  _yourinformation: {
+    en: "Your Information",
+    sr: "Vase Informacije",
+    de: "Deine Angaben"
+  },
+  _yourmedia: {
+    en: "Your Media (Files)",
+    sr: "Vasi Mediji (Fajlovi)",
+    de: "Ihre Medien (Dateien)"
+  }
+}
+
+export const sidemenucomponent = {
+  _forum: {
+    en: "Forum",
+    sr: "Forum",
+    de: "Forum"
+  },
+  _social: {
+    en: "Social",
+    sr: "Drustvo",
+    de: "Sozial"
+  },
+  _videos: {
+    en: "Videos",
+    sr: "Klipovi",
+    de: "Videos"
+  },
+}
+
+export const settingscomponent = {
+  _basicsettings: {
+    en: "Basic Settings",
+    sr: "Osnovna Podesavanja",
+    de: "Grundeinstellungen"
+  },
+  _item: {
+    en: "Item",
+    sr: "Stavka",
+    de: "Artikel"
+  },
+  _selectlanguage: {
+    en: "Select Language",
+    sr: "Izaberite jezik",
+    de: "Wähle die Sprache aus"
+  },
+  _changetheme: {
+    en: "Change Theme",
+    sr: "Promenite temu",
+    de: "Ändere die Theme"
+  },
+  _some: {
+    en: "Some",
+    sr: "Neka",
+    de: "Manche"
+  }
+}
+
+export const settingsthemecomponent = {
+  _impulse: {
+    en: "Impulse",
+    sr: "Impuls",
+    de: "Impuls"
+  },
+  _impulseplus: {
+    en: "Impulse+",
+    sr: "Impuls+",
+    de: "Impuls+"
+  },
+  _impulseplusplus: {
+    en: "Impulse++",
+    sr: "Impuls++",
+    de: "Impuls++"
+  },
+  _neuralcore: {
+    en: "Neural core",
+    sr: "Nervno jezgro",
+    de: "Neuronkern"
+  },
+  _fireworks: {
+    en: "Fireworks",
+    sr: "Vatromet",
+    de: "Feuerwerk"
+  },
+  _interstellar: {
+    en: "Interstellar",
+    sr: "Medjuzvezdani",
+    de: "Interstellar"
+  },
+  _painter: {
+    en: "Paint the canvas",
+    sr: "Bojite po platnu",
+    de: "Male die Leinwand"
+  },
+  _photons: {
+    en: "Photon dance",
+    sr: "Ples fotona",
+    de: "Photonentanz"
+  },
+  _rainbow: {
+    en: "Rainbow",
+    sr: "Duga",
+    de: "Regenbogen"
+  },
+  _space: {
+    en: "Space",
+    sr: "Svemir",
+    de: "Weltall"
+  },
+  _light: {
+    en: "Light",
+    sr: "Svetla",
+    de: "Licht"
+  },
+  _rain: {
+    en: "Rain",
+    sr: "Kisa",
+    de: "Regen"
+  },
+  _inferno: {
+    en: "Inferno",
+    sr: "Inferno",
+    de: "Inferno"
+  },
+  _snakes: {
+    en: "Snakes",
+    sr: "Zmijice",
+    de: "Schlangen"
+  },
+  _matrix: {
+    en: "Matrix",
+    sr: "Matrica",
+    de: "Matrix"
+  },
+  _fountain: {
+    en: "Fountain",
+    sr: "Fontana",
+    de: "Fontäne"
+  },
+  _spikegrid: {
+    en: "Spike Grid",
+    sr: "Siljasta mreza",
+    de: "Dorngitter"
+  },
+  _mountainsunrise: {
+    en: "Mountain Sunrise",
+    sr: "Izlazak Sunca na planini",
+    de: "Berg Sonnenaufgang"
+  },
+  _snow: {
+    en: "Snow",
+    sr: "Sneg",
+    de: "Schnee"
   }
 }

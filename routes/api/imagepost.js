@@ -5,42 +5,30 @@ const { check, validationResult } = require("express-validator");
 const User = require("../../models/User");
 const ImagePost = require("../../models/ImagePost");
 const Profile = require("../../models/Profile");
+const cloudinary = require('../../utils/cloudinary')
 
 // @route -- POST -- api/ImagePosts
 // @desc -- -- Create a post
 // @access -- -- Private
-router.post(
-  "/",
-  [
-    auth,
-    [
-      check("content", "Content (at least textual) is required for a post")
-        .not()
-        .isEmpty()
-    ]
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      const user = await User.findById(req.user.id).select("-password");
-
-      const newPost = new ImagePost({
-        content: req.body.content,
-        user: req.user.id
-      });
-
-      const post = await newPost.save();
-    } catch (e) {
-      console.error(e.message);
-      res.status(500).send("Internal server error.");
-    }
+router.post('/', auth, async (req, res) => {
+  try {
+    const fileStr = await req.body.data
+    const uploadResponse = await cloudinary.uploader.upload(fileStr)
+    const newPost = await new ImagePost({
+      user: req.user.id,
+      content: req.body.content,
+      url: uploadResponse.url, // || secure_url
+      comments: [],
+      endorsements: [],
+      judgements: []
+    })
+    const post = await newPost.save();
+    return res.json(post)
+  } catch (e) {
+    console.error(e.message)
+    res.status(500).send('Internal server error.')
   }
-);
+})
 
 // @route -- GET -- api/ImagePosts
 // @desc -- -- Get all posts
@@ -54,6 +42,32 @@ router.get("/", auth, async (req, res) => {
     res.status(500).json({ msg: "Internal server error." });
   }
 });
+
+// @route -- GET -- api/ImagePosts/mine
+// @desc -- -- Get all posts by me
+// @access -- -- Private
+router.get("/mine", auth, async (req, res) => {
+  try {
+    const posts = await ImagePost.find({ user: req.user.id }).sort({ date: -1 });
+    res.json(posts)
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ msg: "Internal server error." });
+  }
+})
+
+// @route -- GET -- api/ImagePosts/mine
+// @desc -- -- Get all posts by one user
+// @access -- -- Private
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const posts = await ImagePost.find({ user: req.params.id }).sort({ date: -1 });
+    res.json(posts)
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ msg: "Internal server error." });
+  }
+})
 
 // @route -- GET -- api/ImagePosts/:id
 // @desc -- -- Get a post by id
@@ -118,7 +132,13 @@ router.put("/like/:id", auth, async (req, res) => {
       post.endorsements.filter(end => end.user.toString() === req.user.id)
         .length > 0
     ) {
-      return res.status(400).json({ msg: "Post already liked." });
+      post.endorsements.splice(
+        post.endorsements
+          .map(end => end.user.toString())
+          .indexOf(req.user.id), 1
+      )
+      await post.save();
+      return res.json(post.endorsements);
     }
 
     post.endorsements.unshift({ user: req.user.id });
@@ -148,18 +168,23 @@ router.put("/like/:id", auth, async (req, res) => {
   }
 });
 
-// @route -- PUT -- api/ImagePosts/unlike/:id
+// @route -- PUT -- api/ImagePosts/dislike/:id
 // @desc -- -- Un-like a post
 // @access -- -- Private
 router.put("/dislike/:id", auth, async (req, res) => {
   try {
-    const post = Post.findById(req.params.id);
+    const post = await ImagePost.findById(req.params.id);
 
     if (
       post.judgements.filter(jud => jud.user.toString() === req.user.id)
         .length > 0
     ) {
-      return res.status(400).json({ msg: "Post already disliked." });
+      post.endorsements.splice(
+        post.judgements
+          .map(jud => jud.user.toString())
+          .indexOf(req.user.id), 1)
+      await post.save();
+      return res.json(post.judgements)
     }
 
     post.judgements.unshift({ user: req.user.id });
@@ -177,7 +202,7 @@ router.put("/dislike/:id", auth, async (req, res) => {
 
     await post.save();
 
-    res.json(post.endorsements);
+    res.json(post.judgements);
   } catch (e) {
     console.error(e.message);
 
@@ -215,14 +240,13 @@ router.post(
 
       const newComment = {
         text: req.body.text,
-        name: user.name,
-        user: req.user.id
+        name: user.username,
+        user: req.user.id,
+        date: Date.now()
       };
 
       post.comments.unshift(newComment);
-
       await post.save();
-
       res.json(post.comments);
     } catch (e) {
       console.error(e.message);

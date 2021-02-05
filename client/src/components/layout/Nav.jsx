@@ -5,37 +5,45 @@ import PropTypes from 'prop-types'
 import { logout } from '../../actions/auth'
 import { ThemeContext } from '../../contexts/ThemeContext'
 import { LanguageContext } from '../../contexts/LanguageContext'
-import logo from '../../assets/IMPULSE_LOGOS/photoshop-logos/medium.png'
+import SelectContainer from '../../styled/SelectContainer';
+import CenterListItem from './CenterListItem';
+import MediumLogo from '../../styled/Logo/MediumLogo';
+import { navcomponent } from '../../utils/langObject';
+
+const {
+  _profile,
+  _settings,
+  _logout,
+  _register,
+  _login
+} = navcomponent
 
 function Nav (props) {
   const {
     logout,
-    auth: { isAuthenticated, loading }
+    auth: { isAuthenticated }
   } = props
 
   const { toggleTheme, isDarkTheme } = useContext(ThemeContext)
-  const { language, changeLanguage } = useContext(LanguageContext)
+  const { changeLanguage, language } = useContext(LanguageContext)
 
   const { pathname } = props.location
 
   const authLinks = (
     <ul className='navbar-nav ml-auto'>
-      <li className='nav-item active px-1'>
-        <select
-          onChange={changeLanguage}
-          className='custom-select bg-light '
-          style={{ border: 'none', outline: 'none' }}
-          defaultValue={localStorage.getItem('language')}
-        >
-          <option value='en'>English</option>
-          <option value='sr'>Srpski</option>
-          <option value='de'>Deutsch</option>
-        </select>
-      </li>
-      <li className='nav-item px-1'>
-        <Link className='nav-link ' to='/dashboard'><i className='fas fa-user' /> <span className='hide-sm'>Profile</span> </Link>
-      </li>
-      <li className='nav-item px-1'>
+      <CenterListItem>
+        <Link className='nav-link' to='/'>
+          <i className='fas fa-user pr-2' />
+          <span className='hide-sm'>{_profile[language]}</span>
+        </Link>
+      </CenterListItem>
+      <CenterListItem>
+        <Link className='nav-link' to='/settings'>
+          <i className='fas fa-cog pr-2' />
+          <span className='hide-sm'>{_settings[language]}</span>
+        </Link>
+      </CenterListItem>
+      <CenterListItem>
         <a
           className='nav-link '
           href='#!'
@@ -43,51 +51,40 @@ function Nav (props) {
         >
           {' '}
           <i className='fas fa-sign-out-alt' />{' '}
-          <span className='hide-sm'>Logout</span>
+          <span className='hide-sm'>{_logout[language]}</span>
         </a>
-      </li>
-      <li className='nav-item px-1'>
-        <div className='custom-control custom-switch alignment mt-2'>
-          <input
-            onChange={toggleTheme}
-            type='checkbox'
-            className='custom-control-input'
-            id='theme'
-            checked={JSON.parse(localStorage.getItem('isDarkTheme'))}
-            />
-          <label className='custom-control-label' htmlFor='theme' />
-        </div>
-      </li>
+      </CenterListItem>
     </ul>
   )
 
   const guestLinks = (
     <ul className='navbar-nav ml-auto'>
-      <li className='nav-item active px-1'>
-        <select
-          onChange={changeLanguage}
-          className='custom-select bg-light '
-          style={{ border: 'none', outline: 'none' }}
-          defaultValue={localStorage.getItem('language')}
-        >
-          <option value='en'>English</option>
-          <option value='sr'>Srpski</option>
-          <option value='de'>Deutsch</option>
-        </select>
-      </li>
-      <li className='nav-item px-1'>
-        <Link className={pathname === 'register' ? `nav-link active` : `nav-link`} to='/register'>Register</Link>
-      </li>
-      <li className='nav-item px-1'>
-        <Link className={pathname === 'login' ? 'nav-link active' : 'nav-link'} to='/login'>Login</Link>
-      </li>
-      <li className='nav-item px-1'>
-        <Link className={pathname === 'asd' ? 'nav-link active' : 'nav-link'} to='/asd'>NotFound</Link>
-      </li>
-      <li className='nav-item px-1'>
-        <div className='custom-control custom-switch alignment mt-2'>
+      <CenterListItem>
+        <SelectContainer className="d-flex justify-content-center align-items-center" mrafter="1rem" isDarkTheme={isDarkTheme} padding="0">
+          <label className="d-flex justify-content-center align-items-center">
+            <select
+              onChange={changeLanguage}
+              className="d-flex justify-content-center align-items-center"
+              style={{ border: 'none', outline: 'none' }}
+              value={localStorage.getItem('language')}
+            >
+              <option value='en'>English</option>
+              <option value='sr'>Srpski</option>
+              <option value='de'>Deutsch</option>
+            </select>
+          </label>
+        </SelectContainer>
+      </CenterListItem>
+      <CenterListItem>
+        <Link className={pathname === 'register' ? `nav-link active` : `nav-link`} to='/register'>{_register[language]}</Link>
+      </CenterListItem>
+      <CenterListItem>
+        <Link className={pathname === 'login' ? 'nav-link active' : 'nav-link'} to='/login'>{_login[language]}</Link>
+      </CenterListItem>
+      <CenterListItem>
+        <div className='custom-control custom-switch alignment '>
           <input
-            onChange={toggleTheme}
+            onChange={() => toggleTheme(!isDarkTheme)}
             type='checkbox'
             className='custom-control-input'
             id='theme'
@@ -95,14 +92,14 @@ function Nav (props) {
             />
           <label className='custom-control-label' htmlFor='theme' />
         </div>
-      </li>
+      </CenterListItem>
     </ul>
   )
 
   return (
-    <nav className='navbar navbar-expand-lg navbar-light bg-light'>
+    <nav style={{ pointerEvents: "all" }} className={`navbar navbar-expand-lg navbar-${isDarkTheme ? 'dark' : 'light'}`}>
       <Link className='navbar-brand' to='/'>
-        <img src={logo} alt='Impulse: Make an impact. Change lives.' className='impulse-medium-logo' />
+        <MediumLogo />
       </Link>
       <button className='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
         <span className='navbar-toggler-icon' />

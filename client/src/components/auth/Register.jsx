@@ -9,6 +9,7 @@ import DatePicker from 'react-datepicker'
 import { LanguageContext } from '../../contexts/LanguageContext'
 import Moment from 'react-moment'
 import { registercomponent } from "../../utils/langObject"
+import TermsConditions from '../../styled/TermsConditions';
 
 // Stylesheets
 import 'react-datepicker/dist/react-datepicker.css'
@@ -83,23 +84,6 @@ const Register = props => {
 
     const phoneNr = `${callcode}${phone}`
     const imageTaken = image ? true : false
-
-    console.log({
-      firstName,
-      lastName,
-      email,
-      sex,
-      dob,
-      username,
-      password,
-      city,
-      country,
-      zip,
-      phone: phoneNr,
-      question,
-      security,
-      imageTaken
-    })
 
     register({
       firstName,
@@ -467,7 +451,7 @@ const Register = props => {
                         </div>
                       )}
                     </div>
-                    <div className='form-group rel'>
+                    <div className='form-group position-relative'>
                       <label
                         htmlFor='password'
 
@@ -507,7 +491,7 @@ const Register = props => {
                         </div>
                       )}
                     </div>
-                    <div className='form-group rel'>
+                    <div className='form-group position-relative'>
                       <label
                         htmlFor='password2'
 
@@ -769,14 +753,14 @@ const Register = props => {
               <div className='carousel-item'>
                 <div className='w-75 h-100 m-auto'>
                   <div style={{ marginTop: '10%' }}>
-                    <article
-                      className='container-md scroller'
+                    <TermsConditions
+                      className='container-md'
                       style={{ userSelect: 'none' }}
                     >
                       <h2 >
                         License, terms and conditions
                       </h2>
-                      <p className='lead '>
+                      <p className='lead'>
                         Lorem ipsum dolor sit amet, consectetur adipisicing
                         elit. Repellendus architecto ipsum eaque sit,
                         consectetur a laborum quod autem deserunt amet qui
@@ -813,7 +797,7 @@ const Register = props => {
                         aut harum consequatur, quas! Harum eveniet tempora
                         numquam natus ab tempore ducimus.
                       </p>
-                    </article>
+                    </TermsConditions>
                     <div className='custom-control custom-checkbox'>
                       <input
                         value={check}

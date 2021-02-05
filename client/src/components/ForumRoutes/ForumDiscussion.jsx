@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react'
-import forumPosts from '../../utils/forumPosts'
 import Spinner from '../layout/Spinner'
 import { getForumPostById } from '../../actions/forum'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 function ForumDiscussion ({ match: {params}, forum, getForumPostById }) {
+  // eslint-disable-next-line
   const [reply, setReply] = useState(false)
 
   const { post, loading } = forum
 
   useEffect(() => {
     getForumPostById(params.id)
+    // eslint-disable-next-line
   }, [])
 
   return post && !loading ? (
-    <div className='container'>
+    <div className='container' style={{ pointerEvents: "all" }}>
       {
         post.comments.map(
           comment => (
@@ -50,4 +51,3 @@ export default connect(
   mapStateToProps,
   { getForumPostById }
 )(ForumDiscussion)
-

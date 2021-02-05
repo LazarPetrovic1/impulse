@@ -13,11 +13,12 @@ function ForumEdit ({ match, history, forum, getForumPostById, editForumPost }) 
     getForumPostById(match.params.id)
 
     setValue(post.body)
+    // eslint-disable-next-line
   }, [getForumPostById])
 
   const onChange = (value) => setValue(value)
 
-  const save = () => history.push(`/forum/forum-post/${post._id}`)
+  // const save = () => history.push(`/forum/forum-post/${post._id}`)
 
   const changePost = () => {
     editForumPost(value, post._id)
@@ -27,7 +28,7 @@ function ForumEdit ({ match, history, forum, getForumPostById, editForumPost }) 
   return loading ? (
     <Spinner />
   ) : (
-    <div className='container'>
+    <div className='container' style={{ pointerEvents: "all" }}>
       <Autosaving value={post.body} onChange={onChange} />
       <button className='btn btn-primary btn-lg btn-block' onClick={changePost}>
         <i className='fas fa-save' />&nbsp; Save

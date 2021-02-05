@@ -1,5 +1,5 @@
-import React, { Fragment, useState, useEffect } from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import React, { Fragment, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { setAlert } from '../../actions/alert'
 import { getCurrentProfile } from '../../actions/profile'
 import Spinner from '../layout/Spinner'
@@ -18,15 +18,13 @@ function SocialProfile ({
   profile: { profile, loading },
   auth
 }) {
-  const [profileMake, setProfileMake] = useState(false)
   useEffect(() => {
     getCurrentProfile()
-
-    console.log(profile)
+    // eslint-disable-next-line
   }, [getCurrentProfile])
 
   return profile && !loading ? (
-    <div className='container'>
+    <div className='container' style={{ pointerEvents: "all" }}>
       <h1>Welcome, {auth.user.firstName}</h1>
       <ul className='list-group'>
         {
@@ -41,7 +39,7 @@ function SocialProfile ({
           profile.website === 'None' ? null : (
             <li className='list-group-item'>
               <i className='fas fa-globe' />&nbsp;&nbsp;
-              <a href={profile.website} target='_blank'>Website</a>
+              <a href={profile.website} target='_blank' rel="noopener noreferrer">Website</a>
             </li>
           )
         }
@@ -57,7 +55,7 @@ function SocialProfile ({
           profile.social.youtube && (
             <li className='list-group-item'>
               <i className='fab fa-youtube' />&nbsp;&nbsp;
-              <a href={profile.social.youtube} target='_blank'>YouTube</a>
+              <a href={profile.social.youtube} target='_blank' rel="noopener noreferrer">YouTube</a>
             </li>
           )
         }
@@ -65,7 +63,7 @@ function SocialProfile ({
           profile.social.twitter && (
             <li className='list-group-item'>
               <i className='fab fa-twitter' />&nbsp;&nbsp;
-              <a href={profile.social.twitter} target='_blank'>Twitter</a>
+              <a href={profile.social.twitter} target='_blank' rel="noopener noreferrer">Twitter</a>
             </li>
           )
         }
@@ -73,7 +71,7 @@ function SocialProfile ({
           profile.social.facebook && (
             <li className='list-group-item'>
               <i className='fab fa-facebook' />&nbsp;&nbsp;
-              <a href={profile.social.facebook} target='_blank'>Facebook</a>
+              <a href={profile.social.facebook} target='_blank' rel="noopener noreferrer">Facebook</a>
             </li>
           )
         }
@@ -81,7 +79,7 @@ function SocialProfile ({
           profile.social.instagram && (
             <li className='list-group-item'>
               <i className='fab fa-instagram' />&nbsp;&nbsp;
-              <a href={profile.social.instagram} target='_blank'>Instagram</a>
+              <a href={profile.social.instagram} target='_blank' rel="noopener noreferrer">Instagram</a>
             </li>
           )
         }
@@ -89,7 +87,7 @@ function SocialProfile ({
           profile.social.linkedin && (
             <li className='list-group-item'>
               <i className='fab fa-linkedin' />&nbsp;&nbsp;
-              <a href={profile.social.linkedin} target='_blank'>LinkedIn</a>
+              <a href={profile.social.linkedin} target='_blank' rel="noopener noreferrer">LinkedIn</a>
             </li>
           )
         }

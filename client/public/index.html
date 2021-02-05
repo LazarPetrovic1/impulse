@@ -26,13 +26,36 @@
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
       crossorigin="anonymous"
     />
+    <script src="./Vector2.js" charset="utf-8"></script>
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Impulse</title>
+    <style media="screen">
+    #canvas {
+      min-height: 100vh;
+      width: 100vw;
+      cursor: pointer;
+      pointer-events: all;
+    }
+
+    .canvas-wrapper {
+      position: fixed;
+      z-index: 0;
+      top: 0;
+      left: 0;
+      min-height: calc(100vh - 56px);
+      width: 100vw;
+    }
+    </style>
   </head>
   <body>
+    <div class="canvas-wrapper">
+      <canvas id="canvas"></canvas>
+    </div>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <script type="text/javascript">
       const title = document.title;
+      // const script = document.querySelector("script#theme")
+      // const theme = JSON.parse(localStorage.getItem('premiumTheme'))
       window.addEventListener("blur", () => {
         document.title = "Come back, I miss you.";
       });

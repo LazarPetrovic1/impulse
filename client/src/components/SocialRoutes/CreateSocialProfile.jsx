@@ -93,7 +93,7 @@ function CreateSocialProfile ({
   return loading ? (
     <Spinner />
   ) : (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} style={{ pointerEvents: "all" }}>
       <div className='container mb-4'>
         <div className='d-flex justify-content-between my-3'>
           <h1 className='text-primary d-inline-block m-0'>

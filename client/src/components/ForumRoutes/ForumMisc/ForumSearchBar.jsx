@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import ForumSearchBarCloseButton from '../../../styled/Forum/ForumSearchBarCloseButton';
 
 function ForumSearchBar ({ search, reset }) {
   const [val, setVal] = useState('')
@@ -13,7 +14,7 @@ function ForumSearchBar ({ search, reset }) {
       onSubmit={onSubmit}
       className='form-inline my-2 my-lg-0 justify-content-center'
     >
-      <span className='rel'>
+      <span className='position-relative'>
         <input
           type='text'
           value={val}
@@ -24,10 +25,7 @@ function ForumSearchBar ({ search, reset }) {
       />
         {
       val && (
-        <i
-          className='fas fa-times forum-searchbar-close-button'
-          onClick={() => reset(setVal)}
-        />
+        <ForumSearchBarCloseButton onClick={() => reset(setVal)} />
       )
     }
       </span>

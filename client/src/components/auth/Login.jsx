@@ -1,12 +1,13 @@
 import React, { useState, useContext } from 'react'
-import { Link, Redirect } from 'react-router-dom'
-import axios from 'axios'
+import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { login } from '../../actions/auth'
 import { LanguageContext } from '../../contexts/LanguageContext'
 import { logincomponent } from '../../utils/langObject'
 import { registercomponent } from '../../utils/langObject'
+import LoginOptionsContainer from '../../styled/LoginOptionsContainer';
+import AuthPassword from '../../styled/AuthPassword';
 
 const Login = props => {
   const [data, setData] = useState({
@@ -15,7 +16,7 @@ const Login = props => {
     phone: '',
     username: ''
   })
-  const [loginType, setLoginType] = useState('')
+  const [loginType, setLoginType] = useState('email')
   const [viewPass, setViewPass] = useState(false)
   const [remember, setRemember] = useState(false)
 
@@ -73,7 +74,7 @@ const Login = props => {
           required
           />
       </div>
-      <div className='form-group rel'>
+      <div className='form-group position-relative'>
         <label htmlFor='password' className='white'>
           {_password[language]}
         </label>
@@ -88,13 +89,13 @@ const Login = props => {
           placeholder={_password[language]}
           />
         {viewPass ? (
-          <i
-            className='fas fa-eye-slash abs'
+          <AuthPassword
+            className='fas fa-eye-slash'
             onClick={() => setViewPass(false)}
             />
           ) : (
-            <i
-              className='fas fa-eye abs'
+            <AuthPassword
+              className='fas fa-eye'
               onClick={() => setViewPass(true)}
             />
           )}
@@ -138,7 +139,7 @@ const Login = props => {
           required
         />
       </div>
-      <div className='form-group rel'>
+      <div className='form-group position-relative'>
         <label htmlFor='password' className='white'>
           {_password[language]}
         </label>
@@ -153,13 +154,13 @@ const Login = props => {
           placeholder={_password[language]}
           />
         {viewPass ? (
-          <i
-            className='fas fa-eye-slash abs'
+          <AuthPassword
+            className='fas fa-eye-slash'
             onClick={() => setViewPass(false)}
             />
           ) : (
-            <i
-              className='fas fa-eye abs'
+            <AuthPassword
+              className='fas fa-eye'
               onClick={() => setViewPass(true)}
             />
           )}
@@ -203,7 +204,7 @@ const Login = props => {
           required
           />
       </div>
-      <div className='form-group rel'>
+      <div className='form-group position-relative'>
         <label htmlFor='password' className='white'>
           {_password[language]}
         </label>
@@ -218,13 +219,13 @@ const Login = props => {
           placeholder={_password[language]}
           />
         {viewPass ? (
-          <i
-            className='fas fa-eye-slash abs'
+          <AuthPassword
+            className='fas fa-eye-slash'
             onClick={() => setViewPass(false)}
             />
           ) : (
-            <i
-              className='fas fa-eye abs'
+            <AuthPassword
+              className='fas fa-eye'
               onClick={() => setViewPass(true)}
             />
           )}
@@ -251,22 +252,25 @@ const Login = props => {
   )
 
   return (
-    <div className='container'>
-      <div className='pop-up bg-info'>
-        <h2 className='bg-primary text-light py-4' style={{margin: 0}}><b>{choosemethod[language]}:</b></h2>
-        <div className='flexer'>
-          <div className='custom-control custom-radio bg' onClick={() => setLoginType('email')}>
-            <i className='fas fa-envelope fa-5x mb-4 white' />
-            <p className='lead white'>{loginusing[language]} {_email[language]}.</p>
-          </div>
-          <div className='custom-control custom-radio bg' onClick={() => setLoginType('username')}>
-            <i className='fas fa-user-tag fa-5x mb-4 white' />
-            <p className='lead white'>{loginusing[language]} {_username[language]}.</p>
-          </div>
-          <div className='custom-control custom-radio bg' onClick={() => setLoginType('phone')}>
-            <i className='fas fa-mobile-alt fa-5x mb-4 white' />
-            <p className='lead white'>{loginusing[language]} {yourphonenumber[language]}.</p>
-          </div>
+    <div className='container' style={{ pointerEvents: "all" }}>
+      <div className='text-center bg-info'>
+        <div className='bg-primary text-light py-2' style={{margin: 0}}>
+          <h4 className="d-inline-block">
+            <b>
+              {choosemethod[language]}:
+            </b>
+          </h4>
+          <LoginOptionsContainer>
+            <div className='custom-radio bg' onClick={() => setLoginType('email')}>
+              <i className='fas fa-envelope white' title={`${loginusing[language]} ${_email[language]}`} />
+            </div>
+            <div className='custom-radio bg' onClick={() => setLoginType('username')}>
+              <i className='fas fa-user-tag white' title={`${loginusing[language]} ${_username[language]}`} />
+            </div>
+            <div className='custom-radio bg' onClick={() => setLoginType('phone')}>
+              <i className='fas fa-mobile-alt white' title={`${loginusing[language]} ${yourphonenumber[language]}`} />
+            </div>
+          </LoginOptionsContainer>
         </div>
       </div>
 
@@ -295,7 +299,7 @@ const Login = props => {
             type='submit'
             className='btn btn-primary btn-block btn-lg'
           >
-            <i className='fas fa-door-open' />&nbsp;&nbsp;Log me in!
+            <i className='fas fa-door-open' />&nbsp;&nbsp;{logmein[language]}!
           </button>
         )}
       </form>

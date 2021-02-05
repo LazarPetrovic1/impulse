@@ -3,10 +3,12 @@ import alert from './alert'
 import auth from './auth'
 import profile from './profile'
 import forum from './forum'
+import image from './image'
 
 export default combineReducers({
   alert,
   auth,
   profile,
-  forum
+  forum,
+  image
 })

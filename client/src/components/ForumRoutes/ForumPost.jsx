@@ -1,8 +1,6 @@
-import React, { useState, useEffect, Fragment } from 'react'
-import forumPosts from '../../utils/forumPosts'
+import React, { useEffect, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import Editor from '../Editor/Editor'
 import Reply from './Reply'
 import PropTypes from 'prop-types'
 import { getForumPostById, deleteForumPost } from '../../actions/forum'
@@ -20,10 +18,11 @@ function ForumPost ({
 
   useEffect(() => {
     getForumPostById(params.id)
+    // eslint-disable-next-line
   }, [getForumPostById])
 
   return post && !loading ? (
-    <div className='container'>
+    <div className='container' style={{ pointerEvents: "all" }}>
       <h1 className='text-primary text-center display-3'>{post.title}</h1>
       <p className='lead text-right display-4'>- by {post.author}</p>
       <MarkdownRenderer markdown={post.body} />
