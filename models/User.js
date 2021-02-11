@@ -75,6 +75,12 @@ const UserSchema = new Schema({
   dismissedPosts: [{
     type: Schema.Types.ObjectId,
     ref: 'forumpost'
+  }],
+  friends: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'user'
+    }
   }]
 })
 

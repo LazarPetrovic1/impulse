@@ -270,11 +270,6 @@ export const logincomponent = {
 }
 
 export const navcomponent = {
-  _profile: {
-    en: "Profile",
-    sr: "Profil",
-    de: "Profil"
-  },
   _settings: {
     en: "Settings",
     sr: "Podesavanja",
@@ -331,6 +326,11 @@ export const sidemenucomponent = {
     sr: "Klipovi",
     de: "Videos"
   },
+  _chat: {
+    en: "Chat",
+    sr: "Ćaskanje",
+    de: "Chatten"
+  }
 }
 
 export const settingscomponent = {

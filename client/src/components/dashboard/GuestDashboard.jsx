@@ -13,7 +13,8 @@ function GuestDashboard (props) {
   const {
     getImages,
     image: { images },
-    match
+    match,
+    auth
   } = props
   const [isSlider, setIsSlider] = useState([false, 0])
   const [guest, setGuest] = useState({})
@@ -43,13 +44,20 @@ function GuestDashboard (props) {
       <div className="text-center">
         <img
           className="rounded-circle"
-          src="https://randomuser.me/api/portraits/men/7.jpg"
+          src={`https://robohash.org/${guest._id}?set=set4&size=350x350`}
           alt={`${guest.firstName}'s avatar`}
         />
       </div>
       <div className="text-center mt-3">
         <h3>{guest.firstName} {guest.lastName}</h3>
         <h4 className="text-muted">(@{guest.username})</h4>
+      </div>
+      <div className="d-flex justify-content-end">
+        <button className="btn btn-secondary" onClick={() => console.log("Adding or removing friends...")}>
+          {auth.user.friends.find(frid => frid.user === match.params.id) ? (
+            <i className="fas fa-check-double" />
+          ) : <i className="fas fa-user-plus" />}
+        </button>
       </div>
       <div className="p-5">
         <h4 className="my-3">
@@ -97,10 +105,12 @@ function GuestDashboard (props) {
 GuestDashboard.propTypes = {
   getImages: PropTypes.func.isRequired,
   image: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
-  image: state.image
+  image: state.image,
+  auth: state.auth
 })
 
 export default connect(

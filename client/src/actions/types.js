@@ -34,3 +34,8 @@ export const GET_IMAGES = "GET_IMAGES";
 export const DELETE_IMAGE = "DELETE_IMAGE";
 export const IMAGE_ERROR = "IMAGE_ERROR";
 export const ADD_COMMENT = "ADD_COMMENT";
+// Notifications
+export const GET_NOTIFS = "GET_NOTIFS";
+export const GET_NOTIF = "GET_NOTIF";
+export const NOTIF_ERROR = "NOTIF_ERROR";
+export const POST_NOTIF = "POST_NOTIF";

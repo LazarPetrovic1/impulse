@@ -7,6 +7,7 @@ const SettingsListItem = styled.li`
   ${props => props.getCenter && `
     align-items: center
   `}
+  overflow: auto;
 `
 
 export default SettingsListItem;

@@ -11,22 +11,20 @@ import MediumLogo from '../../styled/Logo/MediumLogo';
 import { navcomponent } from '../../utils/langObject';
 
 const {
-  _profile,
   _settings,
   _logout,
   _register,
-  _login
+  _login,
 } = navcomponent
 
 function Nav (props) {
   const {
     logout,
-    auth: { isAuthenticated }
+    auth
   } = props
-
+  const { isAuthenticated } = auth
   const { toggleTheme, isDarkTheme } = useContext(ThemeContext)
   const { changeLanguage, language } = useContext(LanguageContext)
-
   const { pathname } = props.location
 
   const authLinks = (
@@ -34,7 +32,7 @@ function Nav (props) {
       <CenterListItem>
         <Link className='nav-link' to='/'>
           <i className='fas fa-user pr-2' />
-          <span className='hide-sm'>{_profile[language]}</span>
+          <span className='hide-sm'>{auth && auth.user && auth.user.firstName}</span>
         </Link>
       </CenterListItem>
       <CenterListItem>
@@ -44,8 +42,9 @@ function Nav (props) {
         </Link>
       </CenterListItem>
       <CenterListItem>
+        {/* eslint-disable-next-line */}
         <a
-          className='nav-link '
+          className='nav-link'
           href='#!'
           onClick={logout}
         >

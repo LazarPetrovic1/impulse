@@ -17,6 +17,7 @@ function ImageSlider({ images, i, setIsSlider, auth }) {
     setIndex((index + 1) % images.length)
   }
 
+  // CHAT-REPEAT
   const getUserById = async (id) => {
     try {
       const res = await axios.get(`/api/users/postedby/${id}`)

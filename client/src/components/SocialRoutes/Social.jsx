@@ -62,7 +62,7 @@ function Social({ auth }) {
       />
       <h2>From your city</h2>
       {fromCountry && fromCountry.length > 0 && fromCountry.filter(fs => fs.city === city && fs._id !== user._id).map(fs => (
-        <SocialSearchItem fs={fs} key={fs._id} src="https://randomuser.me/api/portraits/men/3.jpg" />
+        <SocialSearchItem fs={fs} key={fs._id} src={`https://robohash.org/${fs._id}?set=set4&size=150x150`} />
       ))}
       {fromCountry && fromCountry.filter(fs => fs.city === city && fs._id !== user._id).length <= 0 && (
         <h5>
@@ -72,7 +72,7 @@ function Social({ auth }) {
       <hr/>
       <h2>From your country</h2>
       {fromCountry && fromCountry.filter(fs => fs._id !== user._id).map(fs => (
-        <SocialSearchItem fs={fs} key={fs._id} src="https://randomuser.me/api/portraits/men/5.jpg" />
+        <SocialSearchItem fs={fs} key={fs._id} src={`https://robohash.org/${fs._id}?set=set4&size=150x150`} />
       ))}
       {fromCountry && fromCountry.filter(fs => fs._id !== user._id).length <= 0 && (
         <h5>

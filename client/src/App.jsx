@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 // import 'tachyons'
 import './App.css'
 import Nav from './components/layout/Nav'
+import Chat from './components/chat/Chat'
 import Register from './components/auth/NewRegister'
 import Login from './components/auth/Login'
 import Alert from './components/layout/Alert'
@@ -58,6 +59,7 @@ function App () {
                   path='/profile-overview'
                   component={ProfileOverview}
                 />
+                <PrivateRoute exact path='/chat' component={Chat} />
                 <PrivateRoute exact path='/forum' component={Forum} />
                 <PrivateRoute exact path='/forum/forum-add-post' component={AddPost} />
                 <PrivateRoute exact path='/forum/forum-post/:id' component={ForumPost} />

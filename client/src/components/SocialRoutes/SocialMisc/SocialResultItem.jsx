@@ -18,7 +18,7 @@ function SocialResultItem({ sr }) {
     <div className="d-flex">
       <img
         className="img-thumbnail rounded-circle"
-        src="https://randomuser.me/api/portraits/men/8.jpg"
+        src={`https://robohash.org/${_id}?set=set4&size=150x150`}
         alt={`${firstName}'s avatar`}
       />
       <div className="d-flex flex-column ml-5">

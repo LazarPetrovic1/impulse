@@ -7,7 +7,8 @@ import DashboardSideMenuUl from '../../styled/DashboardSideMenuUl';
 const {
   _forum,
   _social,
-  _videos
+  _videos,
+  _chat
 } = sidemenucomponent
 
 function SideMenu() {
@@ -29,6 +30,11 @@ function SideMenu() {
             to='/social'
           >
             <i className='fas fa-users pr-2' />{' '}{_social[language]}
+          </Link>
+        </li>
+        <li className='nav-item bg-light m-1 px-5 text-center'>
+          <Link className='nav-link text-primary lead' to='/chat'>
+            <i className='fas fa-comment pr-2' />{" "}{_chat[language]}
           </Link>
         </li>
         <li className='nav-item bg-light m-1 px-5 text-center'>

@@ -104,7 +104,8 @@ router.post(
         security,
         imageTaken,
         dismissedPosts,
-        imgSrc: []
+        imgSrc: [],
+        friends: []
       })
 
       const salt = await bcrypt.genSalt(10)
