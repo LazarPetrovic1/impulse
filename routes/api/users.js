@@ -170,4 +170,14 @@ router.get("/postedby/:id", async (req, res) => {
   }
 })
 
+router.get("/uname/:username", async (req, res) => {
+  console.log(req.params.username);
+  try {
+    const user = await User.findOne({ username: req.params.username }).select("-imageTaken -phone -dismissedPosts -password -question -security -bio -date -dob")
+    res.json(user)
+  } catch (e) {
+    console.error(e.message);
+  }
+})
+
 module.exports = router

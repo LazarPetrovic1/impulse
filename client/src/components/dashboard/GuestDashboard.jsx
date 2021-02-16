@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import Spinner from '../layout/Spinner';
 import Moment from 'react-moment';
@@ -7,6 +7,8 @@ import DashCenter from '../../styled/DashCenter';
 import Post from '../layout/Post';
 import { connect } from 'react-redux';
 import { getImages } from '../../actions/image';
+import { sendNotif } from '../../actions/notifs';
+import { LanguageContext } from '../../contexts/LanguageContext';
 import PropTypes from 'prop-types';
 
 function GuestDashboard (props) {
@@ -14,10 +16,15 @@ function GuestDashboard (props) {
     getImages,
     image: { images },
     match,
-    auth
+    auth,
+    sendNotif
   } = props
+  const { language } = useContext(LanguageContext)
   const [isSlider, setIsSlider] = useState([false, 0])
   const [guest, setGuest] = useState({})
+  const [isFriend, setIsFriend] = useState(
+    auth.user.friends.find(frid => frid.user === match.params.id) ? true : false
+  )
   const getGuest = async (id) => {
     try {
       const res = await axios.get(`/api/users/${id}`)
@@ -39,6 +46,17 @@ function GuestDashboard (props) {
     // eslint-disable-next-line
   }, [guest])
 
+  const addFriend = (e) => {
+    setIsFriend('pending')
+    sendNotif({
+      userId: match.params.id,
+      type: 'friendrequest',
+      language,
+      username: auth.user.username,
+      name: `${auth.user.firstName} ${auth.user.lastName}`
+    })
+  }
+
   return !guest ? <Spinner /> : (
     <div className="container pt-5" style={{ pointerEvents: "all" }}>
       <div className="text-center">
@@ -53,8 +71,12 @@ function GuestDashboard (props) {
         <h4 className="text-muted">(@{guest.username})</h4>
       </div>
       <div className="d-flex justify-content-end">
-        <button className="btn btn-secondary" onClick={() => console.log("Adding or removing friends...")}>
-          {auth.user.friends.find(frid => frid.user === match.params.id) ? (
+        <button className="btn btn-secondary" onClick={addFriend}>
+          {isFriend === 'pending' ? (
+            <div className="spinner-border text-success" role="status">
+              <span className="sr-only">Loading...</span>
+            </div>
+          ) : isFriend ? (
             <i className="fas fa-check-double" />
           ) : <i className="fas fa-user-plus" />}
         </button>
@@ -87,6 +109,7 @@ function GuestDashboard (props) {
               setIsSlider={setIsSlider}
               key={image._id}
               i={i}
+              match={match}
             />
           ))
         }
@@ -106,6 +129,7 @@ GuestDashboard.propTypes = {
   getImages: PropTypes.func.isRequired,
   image: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired,
+  sendNotif: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -115,5 +139,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getImages }
+  { getImages, sendNotif }
 )(GuestDashboard)

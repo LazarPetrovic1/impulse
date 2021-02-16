@@ -8,6 +8,11 @@ const ChatContainer = styled.article`
   & div[name="messages"] {
     grid-column: span 4 / auto;
     position: relative;
+    & div[name="message-holder"] {
+      padding: 0 2rem;
+      height: calc(100vh - 86px - 38px);
+      overflow: auto;
+    }
     & form {
       position: absolute;
       bottom: 0;

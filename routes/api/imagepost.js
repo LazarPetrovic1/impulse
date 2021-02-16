@@ -72,25 +72,25 @@ router.get("/:id", auth, async (req, res) => {
 // @route -- GET -- api/ImagePosts/:id
 // @desc -- -- Get a post by id
 // @access -- -- Private
-router.get("/:id", auth, async (req, res) => {
-  try {
-    const post = await ImagePost.findById(req.params.id);
-
-    if (!post) {
-      return res.status(404).json({ msg: "Post not found." });
-    }
-
-    res.json(post);
-  } catch (e) {
-    console.error(e.message);
-
-    if (e.kind === "ObjectId") {
-      return res.status(404).json({ msg: "Post not found" });
-    }
-
-    res.status(500).send("Internal server error.");
-  }
-});
+// router.get("/:id", auth, async (req, res) => {
+//   try {
+//     const post = await ImagePost.findById(req.params.id);
+//
+//     if (!post) {
+//       return res.status(404).json({ msg: "Post not found." });
+//     }
+//
+//     res.json(post);
+//   } catch (e) {
+//     console.error(e.message);
+//
+//     if (e.kind === "ObjectId") {
+//       return res.status(404).json({ msg: "Post not found" });
+//     }
+//
+//     res.status(500).send("Internal server error.");
+//   }
+// });
 
 // @route -- DELETE -- api/ImagePosts/:id
 // @desc -- -- Delete a post
@@ -126,31 +126,32 @@ router.delete("/:id", auth, async (req, res) => {
 // @access -- -- Private
 router.put("/like/:id", auth, async (req, res) => {
   try {
+    await console.log(req.body)
     const post = await ImagePost.findById(req.params.id);
 
     if (
-      post.endorsements.filter(end => end.user.toString() === req.user.id)
+      post.endorsements.filter(end => end.user.toString() === req.body.likerId)
         .length > 0
     ) {
       post.endorsements.splice(
         post.endorsements
           .map(end => end.user.toString())
-          .indexOf(req.user.id), 1
+          .indexOf(req.body.likerId), 1
       )
       await post.save();
       return res.json(post.endorsements);
     }
 
-    post.endorsements.unshift({ user: req.user.id });
+    post.endorsements.unshift({ user: req.body.likerId });
 
     if (
-      post.judgements.filter(jud => jud.user.toString() === req.user.id)
+      post.judgements.filter(jud => jud.user.toString() === req.body.likerId)
         .length > 0
     ) {
       // Get remove index
       const removeIndex = post.judgements
         .map(jud => jud.user.toString())
-        .indexOf(req.user.id);
+        .indexOf(req.body.likerId);
       post.judgements.splice(removeIndex, 1);
     }
 
@@ -176,27 +177,27 @@ router.put("/dislike/:id", auth, async (req, res) => {
     const post = await ImagePost.findById(req.params.id);
 
     if (
-      post.judgements.filter(jud => jud.user.toString() === req.user.id)
+      post.judgements.filter(jud => jud.user.toString() === req.body.likerId)
         .length > 0
     ) {
       post.endorsements.splice(
         post.judgements
           .map(jud => jud.user.toString())
-          .indexOf(req.user.id), 1)
+          .indexOf(req.body.likerId), 1)
       await post.save();
       return res.json(post.judgements)
     }
 
-    post.judgements.unshift({ user: req.user.id });
+    post.judgements.unshift({ user: req.body.likerId });
 
     if (
-      post.endorsements.filter(end => end.user.toString() === req.user.id)
+      post.endorsements.filter(end => end.user.toString() === req.body.likerId)
         .length > 0
     ) {
       // Get remove index
       const removeIndex = post.endorsements
         .map(end => end.user.toString())
-        .indexOf(req.user.id);
+        .indexOf(req.body.likerId);
       post.endorsements.splice(removeIndex, 1);
     }
 

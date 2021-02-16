@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from 'react'
+import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -9,23 +9,35 @@ import SelectContainer from '../../styled/SelectContainer';
 import CenterListItem from './CenterListItem';
 import MediumLogo from '../../styled/Logo/MediumLogo';
 import { navcomponent } from '../../utils/langObject';
+import { findNotifs } from '../../actions/notifs';
+import Notification from '../notifs/Notif';
+import NotifCounter from '../notifs/NotifCounter';
 
 const {
   _settings,
   _logout,
   _register,
   _login,
+  _notifs
 } = navcomponent
 
 function Nav (props) {
   const {
     logout,
-    auth
+    auth,
+    findNotifs,
+    notifs: notifications
   } = props
   const { isAuthenticated } = auth
+  const [dropdown, setDropdown] = useState(false)
+  const { notifs } = notifications
   const { toggleTheme, isDarkTheme } = useContext(ThemeContext)
   const { changeLanguage, language } = useContext(LanguageContext)
   const { pathname } = props.location
+  useEffect(() => {
+    if (auth && auth.user && auth.user._id) findNotifs(auth.user._id)
+    // eslint-disable-next-line
+  }, [auth])
 
   const authLinks = (
     <ul className='navbar-nav ml-auto'>
@@ -34,6 +46,25 @@ function Nav (props) {
           <i className='fas fa-user pr-2' />
           <span className='hide-sm'>{auth && auth.user && auth.user.firstName}</span>
         </Link>
+      </CenterListItem>
+      <CenterListItem>
+        <div className='nav-link pointer position-relative'>
+          <div onClick={() => setDropdown(!dropdown)}>
+            {notifs && <NotifCounter notifs={notifs} />}
+            <div>
+              <i className="far fa-bell pr-2" />
+              <span className='hide-sm pr-1'>{_notifs[language]}</span>
+              <i className="fas fa-caret-down pl-2" />
+            </div>
+          </div>
+          {dropdown && (
+            <div className="position-absolute m-0 p-0" style={{ minWidth: "300px" }}>
+              {notifs && notifs.map(not => (
+                <Notification not={not} key={not._id} />
+              ))}
+            </div>
+          )}
+        </div>
       </CenterListItem>
       <CenterListItem>
         <Link className='nav-link' to='/settings'>
@@ -115,14 +146,17 @@ function Nav (props) {
 
 Nav.propTypes = {
   logout: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
+  findNotifs: PropTypes.func.isRequired,
+  notifs: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
+  notifs: state.notifs
 })
 
 export default connect(
   mapStateToProps,
-  { logout }
+  { logout, findNotifs }
 )(withRouter(Nav))

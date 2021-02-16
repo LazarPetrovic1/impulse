@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ImagePostContainer from '../../styled/ImagePost/ImagePostContainer';
 import LikesAndComments from './LikesAndComments';
 
-function Post({ image, setIsSlider, auth, i }) {
+function Post({ image, setIsSlider, auth, i, match }) {
   const { user } = auth
   const { url } = image
 
@@ -20,7 +20,7 @@ function Post({ image, setIsSlider, auth, i }) {
           onClick={() => setIsSlider([true, i])}
         />
       </ImagePostContainer>
-      <LikesAndComments i={i} />
+      <LikesAndComments i={i} match={match} />
     </Fragment>
   )
 }

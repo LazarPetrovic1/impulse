@@ -23,6 +23,12 @@ const {
   _snow,
 } = settingsthemecomponent
 
+const style = {
+  label: {
+    whiteSpace: 'nowrap'
+  }
+}
+
 function SettingsTheme() {
   const { language } = useContext(LanguageContext)
   const { toggleTheme } = useContext(ThemeContext)
@@ -45,7 +51,7 @@ function SettingsTheme() {
           onClick={onClick}
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'impulse'}
         />
-        <label className="form-check-label" htmlFor="impulse">
+        <label className="form-check-label" style={style.label} htmlFor="impulse">
           {_impulse[language]}
         </label>
       </div>
@@ -57,7 +63,7 @@ function SettingsTheme() {
           onClick={onClick}
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'impulseplus'}
         />
-        <label className="form-check-label" htmlFor="impulseplus">
+        <label className="form-check-label" style={style.label} htmlFor="impulseplus">
           {_impulseplus[language]}
         </label>
       </div>
@@ -69,7 +75,7 @@ function SettingsTheme() {
           onClick={onClick}
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'impulseplusplus'}
         />
-        <label className="form-check-label" htmlFor="impulseplusplus">
+        <label className="form-check-label" htmlFor="impulseplusplus" style={style.label}>
           {_impulseplusplus[language]}
         </label>
       </div>
@@ -81,7 +87,7 @@ function SettingsTheme() {
           onClick={onClick}
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'neuralcore'}
         />
-        <label className="form-check-label" htmlFor="neuralcore">
+        <label className="form-check-label" htmlFor="neuralcore" style={style.label}>
           {_neuralcore[language]}
         </label>
       </div>
@@ -93,7 +99,7 @@ function SettingsTheme() {
           onClick={onClick}
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'fireworks'}
         />
-        <label className="form-check-label" htmlFor="fireworks">
+        <label className="form-check-label" htmlFor="fireworks" style={style.label}>
           {_fireworks[language]}
         </label>
       </div>
@@ -105,7 +111,7 @@ function SettingsTheme() {
           onClick={onClick}
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'interstellar'}
         />
-        <label className="form-check-label" htmlFor="interstellar">
+        <label className="form-check-label" htmlFor="interstellar" style={style.label}>
           {_interstellar[language]}
         </label>
       </div>
@@ -117,7 +123,7 @@ function SettingsTheme() {
           onClick={onClick}
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'painter'}
         />
-        <label className="form-check-label" htmlFor="painter">
+        <label className="form-check-label" htmlFor="painter" style={style.label}>
           {_painter[language]}
         </label>
       </div>
@@ -129,7 +135,7 @@ function SettingsTheme() {
           onClick={onClick}
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'photons'}
         />
-        <label className="form-check-label" htmlFor="photons">
+        <label className="form-check-label" htmlFor="photons" style={style.label}>
           {_photons[language]}
         </label>
       </div>
@@ -141,7 +147,7 @@ function SettingsTheme() {
           onClick={onClick}
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'rainbow'}
         />
-        <label className="form-check-label" htmlFor="rainbow">
+        <label className="form-check-label" htmlFor="rainbow" style={style.label}>
           {_rainbow[language]}
         </label>
       </div>
@@ -153,7 +159,7 @@ function SettingsTheme() {
           onClick={onClick}
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'space'}
         />
-        <label className="form-check-label" htmlFor="space">
+        <label className="form-check-label" htmlFor="space" style={style.label}>
           {_space[language]}
         </label>
       </div>
@@ -165,7 +171,7 @@ function SettingsTheme() {
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'light'}
           onClick={onClick}
         />
-        <label className="form-check-label" htmlFor="false">
+        <label className="form-check-label" htmlFor="false" style={style.label}>
           {_light[language]}
         </label>
       </div>
@@ -177,7 +183,7 @@ function SettingsTheme() {
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'rain'}
           onClick={onClick}
         />
-        <label className="form-check-label" htmlFor="rain">
+        <label className="form-check-label" htmlFor="rain" style={style.label}>
           {_rain[language]}
         </label>
       </div>
@@ -189,7 +195,7 @@ function SettingsTheme() {
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'inferno'}
           onClick={onClick}
         />
-        <label className="form-check-label" htmlFor="inferno">
+        <label className="form-check-label" htmlFor="inferno" style={style.label}>
           {_inferno[language]}
         </label>
       </div>
@@ -201,7 +207,7 @@ function SettingsTheme() {
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'snakes'}
           onClick={onClick}
         />
-        <label className="form-check-label" htmlFor="snakes">
+        <label className="form-check-label" htmlFor="snakes" style={style.label}>
           {_snakes[language]}
         </label>
       </div>
@@ -213,7 +219,7 @@ function SettingsTheme() {
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'matrix'}
           onClick={onClick}
         />
-        <label className="form-check-label" htmlFor="matrix">
+        <label className="form-check-label" htmlFor="matrix" style={style.label}>
           {_matrix[language]}
         </label>
       </div>
@@ -225,7 +231,7 @@ function SettingsTheme() {
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'fountain'}
           onClick={onClick}
         />
-        <label className="form-check-label" htmlFor="fountain">
+        <label className="form-check-label" htmlFor="fountain" style={style.label}>
           {_fountain[language]}
         </label>
       </div>
@@ -237,7 +243,7 @@ function SettingsTheme() {
           checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'snow'}
           onClick={onClick}
         />
-        <label className="form-check-label" htmlFor="snow">
+        <label className="form-check-label" htmlFor="snow" style={style.label}>
           {_snow[language]}
         </label>
       </div>

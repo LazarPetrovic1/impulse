@@ -48,7 +48,7 @@ export const addComment = ({ id, text, ownedById }) => async dispatch => {
     const body = JSON.stringify({ text })
     const config = { headers: { "Content-Type": "application/json" } }
     await axios.post(`/api/imageposts/comment/${id}`, body, config)
-    const res = await axios.get(`api/imageposts/${ownedById}`)
+    const res = await axios.get(`/api/imageposts/${ownedById}`)
     dispatch({
       type: GET_IMAGES,
       payload: res.data
@@ -61,10 +61,16 @@ export const addComment = ({ id, text, ownedById }) => async dispatch => {
   }
 }
 
-export const like = (postId, ownedById) => async dispatch => {
+export const like = (postId, ownedById, likerId) => async dispatch => {
   try {
-    await axios.put(`/api/imageposts/like/${postId}`)
-    const res = await axios.get(`api/imageposts/${ownedById}`)
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+    const body = JSON.stringify({ likerId })
+    await axios.put(`/api/imageposts/like/${postId}`, body, config)
+    const res = await axios.get(`/api/imageposts/${ownedById}`)
     dispatch({
       type: GET_IMAGES,
       payload: res.data
@@ -77,10 +83,16 @@ export const like = (postId, ownedById) => async dispatch => {
   }
 };
 
-export const dislike = (postId, ownedById) => async dispatch => {
+export const dislike = (postId, ownedById, likerId) => async dispatch => {
   try {
-    await axios.put(`/api/imageposts/dislike/${postId}`)
-    const res = await axios.get(`api/imageposts/${ownedById}`)
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+    const body = JSON.stringify({ likerId })
+    await axios.put(`/api/imageposts/dislike/${postId}`, body, config)
+    const res = await axios.get(`/api/imageposts/${ownedById}`)
     dispatch({
       type: GET_IMAGES,
       payload: res.data

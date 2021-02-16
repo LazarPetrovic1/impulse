@@ -27,24 +27,17 @@ const notiflangs = {
 }
 
 function getText({ type, language, username, name }) {
-  let text;
   switch (type) {
     case "like":
-      text = `${notiflangs.like[language][0]} ${name} (@${username}) ${notiflangs.like[language][1]}`
-      break;
+      return `${notiflangs.like[language][0]} ${name} (@${username}) ${notiflangs.like[language][1]}`
     case "dislike":
-      text = `${notiflangs.dislike[language][0]} ${name} (@${username}) ${notiflangs.dislike[language][1]}`
-      break;
+      return `${notiflangs.dislike[language][0]} ${name} (@${username}) ${notiflangs.dislike[language][1]}`
     case "friendrequest":
-      text = `${notiflangs.friendrequest[language]} ${name} (@${username})`
-      break;
+      return `${notiflangs.friendrequest[language]} ${name} (@${username})`
     case "friendrequest":
-      text = `${notiflangs.comment[language][0]} ${name} (@${username}) ${notiflangs.comment[language][1]}`
-      break;
+      return `${notiflangs.comment[language][0]} ${name} (@${username}) ${notiflangs.comment[language][1]}`
     default:
-      text = notiflangs.notif[language]
-
-    return text
+      return notiflangs.notif[language]
   }
 }
 

@@ -13,6 +13,6 @@ body { overflow-x: hidden; }
 .span-col-8 { grid-column: span 8 / auto; }
 .bg { cursor: pointer; transition: 200ms all linear; }
 ::selection { background-color: yellow; color: black; }
-::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: #4287f5; }
 ::-webkit-scrollbar-thumb { background: #68b06f; }

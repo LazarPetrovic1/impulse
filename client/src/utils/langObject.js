@@ -289,6 +289,11 @@ export const navcomponent = {
     en: "Log in",
     sr: "Ulogujte se",
     de: "Logge ein"
+  },
+  _notifs: {
+    en: "Notifications",
+    sr: "Obavestenja",
+    de: "Benachrichtigungen"
   }
 }
 

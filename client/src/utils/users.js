@@ -8,3 +8,12 @@ export const getUserById = async (id) => {
     console.warn("Error, buddy", e.message);
   }
 }
+
+export const getUserByUsername = async (username) => {
+  try {
+    const res = await axios.get(`/api/users/uname/${username}`)
+    return res.data
+  } catch (e) {
+    console.warn("Error, buddy", e.message);
+  }
+}
