@@ -10,7 +10,12 @@ const VideoPostSchema = new Schema({
     type: String,
     required: true
   },
-  content: {
+  description: {
+    type: String,
+    required: true
+  },
+  by: {
+    // username
     type: String,
     required: true
   },
@@ -18,36 +23,61 @@ const VideoPostSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  comments: [
-    {
+  url: { type: String },
+  comments: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user"
+    },
+    text: { // content
+      type: String,
+      required: true
+    },
+    name: { // by
+      // username
+      type: String
+    },
+    date: {
+      type: Date,
+      default: Date.now
+    },
+    replies: [{
       user: {
         type: Schema.Types.ObjectId,
-        ref: "user"
+        ref: 'user'
       },
-      text: {
+      content: {
         type: String,
         required: true
       },
-      name: {
+      by: {
         // username
-        type: String
-      },
-      avatar: {
-        // user avatar
         type: String
       },
       date: {
         type: Date,
         default: Date.now
       }
+    }]
+  }],
+  endorsements: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user"
     }
-  ],
-  endorsements: {
-    type: Number
-  },
-  judgements: {
-    type: Number
-  }
+  }],
+  judgements: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user"
+    }
+  }],
+  impulsions: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user"
+    }
+  }]
 });
 
 module.exports = VideoPost = model("video", VideoPostSchema);

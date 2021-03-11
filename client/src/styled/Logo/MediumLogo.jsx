@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import mediumLogo from '../../assets/IMPULSE_LOGOS/photoshop-logos/medium.png';
+import mediumLogo from '../../assets/impulse-logos-redesigned/Impulse_logo_medium.png';
 
 const MediumLogo = styled.img.attrs(() => ({
   alt: 'Impulse: Make an impact. Change lives.',

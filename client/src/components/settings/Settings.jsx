@@ -2,10 +2,12 @@ import React, { useState, useContext } from 'react';
 import SettingsSideNav from '../../styled/Settings/SettingsSideNav';
 import SettingsListItem from '../../styled/Settings/SettingsListItem';
 import { LanguageContext } from '../../contexts/LanguageContext'
-import SelectContainer from '../../styled/SelectContainer';
 import { ThemeContext } from '../../contexts/ThemeContext'
+import { FontContext } from '../../contexts/FontContext'
 import SettingsTheme from './SettingsTheme';
 import { settingscomponent } from '../../utils/langObject';
+import ContentPolicy from './ContentPolicy';
+import SettingsLanguages from './SettingsLanguages';
 
 const settingsBarWidth = "250px"
 const {
@@ -13,13 +15,16 @@ const {
   _item,
   _selectlanguage,
   _changetheme,
-  _some
+  _some,
+  _contentpolicy,
+  _uselegacyfont
 } = settingscomponent
 
 function Settings() {
   const [selectedSetting, setSelectedSetting] = useState(1)
   const { isDarkTheme } = useContext(ThemeContext)
-  const { changeLanguage, language } = useContext(LanguageContext)
+  const { language } = useContext(LanguageContext)
+  const { isLegacyFont, toggleLegacyFont } = useContext(FontContext)
 
   return (
     <div style={{ pointerEvents: "all" }}>
@@ -35,7 +40,7 @@ function Settings() {
             className={selectedSetting === 2 ? 'selected' : ''}
             onClick={() => setSelectedSetting(2)}
           >
-            {_item[language]} 2
+            {_contentpolicy[language]}
           </li>
           <li
             className={selectedSetting === 3 ? 'selected' : ''}
@@ -67,33 +72,35 @@ function Settings() {
                 borderBottom: `1px solid ${isDarkTheme ? "#ddd" : "#111"}`
               }}
             >
-              <SettingsListItem className="list-group-item" isDarkTheme={isDarkTheme} getCenter>
+              <SettingsListItem className="list-group-item d-flex align-items-center" isDarkTheme={isDarkTheme} getCenter>
                 {_selectlanguage[language]}:
-                <SelectContainer mrafter="1rem" className="ml-5" isDarkTheme={isDarkTheme} padding="0">
-                  <label>
-                    <select
-                      onChange={changeLanguage}
-                      // className={`custom-select bg-${isDarkTheme ? 'dark' : 'light'} text-${isDarkTheme ? 'light' : 'dark'}`}
-                      style={{ border: 'none', outline: 'none' }}
-                      value={localStorage.getItem('language')}
-                    >
-                      <option value='en'>English</option>
-                      <option value='sr'>Srpski</option>
-                      <option value='de'>Deutsch</option>
-                    </select>
-                  </label>
-                </SelectContainer>
+                <SettingsLanguages />
               </SettingsListItem>
               <SettingsListItem className="list-group-item" isDarkTheme={isDarkTheme}>
-                {_changetheme[language]}:
+                <span style={{ whiteSpace: "nowrap" }}>{_changetheme[language]}:</span>
                 <SettingsTheme />
               </SettingsListItem>
-              <SettingsListItem isDarkTheme={isDarkTheme} className="list-group-item">{_some[language]} {_item[language]}</SettingsListItem>
+              <SettingsListItem isDarkTheme={isDarkTheme} className="list-group-item">
+                <div className="d-flex mr-2 justify-content-center align-items-center">
+                  <input
+                    type="checkbox"
+                    name="useLegacyFont"
+                    id="useLegacyFont"
+                    value={isLegacyFont}
+                    checked={isLegacyFont}
+                    onChange={toggleLegacyFont}
+                  />
+                </div>
+                <span style={{ whiteSpace: "nowrap" }}>{_uselegacyfont[language]}</span>
+              </SettingsListItem>
               <SettingsListItem isDarkTheme={isDarkTheme} className="list-group-item">{_some[language]} {_item[language]}</SettingsListItem>
               <SettingsListItem isLast isDarkTheme={isDarkTheme} className="list-group-item">{_some[language]} {_item[language]}</SettingsListItem>
             </ul>
           </div>
         )
+      }
+      {
+        selectedSetting === 2 && <ContentPolicy settingsBarWidth={settingsBarWidth} />
       }
     </div>
   )

@@ -4,10 +4,16 @@ import {
   GET_FORUM_POST_BY_ID,
   DELETE_FORUM_POST_SUCCESS,
   EDIT_FORUM_POST,
+  SAVE_FORUM_POST,
   FORUM_POST_ADD_COMMENT,
   FORUM_POST_DELETE_COMMENT,
   FORUM_POST_DISMISS,
-  FORUM_ERROR
+  FORUM_ERROR,
+  FORUM_POST_GET_COMMENTS,
+  FORUM_POST_ADD_REPLY,
+  FORUM_POST_EDIT_COMMENT,
+  FORUM_POST_DELETE_REPLY,
+  FORUM_POST_EDIT_REPLY
 } from '../actions/types'
 
 const initialState = {
@@ -25,6 +31,12 @@ export default (state = initialState, action) => {
         ...state,
         loading: false,
         posts: [...state.posts, payload]
+      }
+    case SAVE_FORUM_POST:
+      return {
+        ...state,
+        loading: false,
+        posts: state.posts.filter(post => post._id === payload._id ? payload : post)
       }
     case GET_ALL_FORUM_POSTS:
       return {
@@ -44,7 +56,7 @@ export default (state = initialState, action) => {
         ...state,
         loading: false,
         post: null,
-        posts: null
+        posts: state.posts.filter(post => post.id !== payload)
       }
     case EDIT_FORUM_POST:
       return {
@@ -78,6 +90,41 @@ export default (state = initialState, action) => {
         post: {
           ...state.post,
           isDismissed: payload.isDismissed
+        }
+      }
+    case FORUM_POST_GET_COMMENTS:
+      return {
+        ...state,
+        loading: false,
+        post: {
+          ...state.post,
+          comments: payload
+        }
+      }
+    case FORUM_POST_EDIT_COMMENT:
+    case FORUM_POST_ADD_REPLY:
+    case FORUM_POST_EDIT_REPLY:
+      return {
+        ...state,
+        loading: false,
+        post: {
+          ...state.post,
+          comments: state.post.comments.map(comm =>
+            comm._id === payload.id ? { ...payload } : comm
+          )
+        }
+      }
+    case FORUM_POST_DELETE_REPLY:
+      return {
+        ...state,
+        post: {
+          ...state.post,
+          comments: state.post.comments.map(
+            comm => comm._id === payload.comment_id ? {
+              ...comm,
+              replies: comm.replies.filter(rep => rep._id !== payload.reply_id)
+            } : comm
+          )
         }
       }
     case FORUM_ERROR:

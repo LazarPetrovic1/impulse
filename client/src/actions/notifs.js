@@ -2,7 +2,8 @@ import {
   GET_NOTIFS,
   // GET_NOTIF,
   // NOTIF_ERROR,
-  POST_NOTIF
+  POST_NOTIF,
+  USER_LOADED
 } from './types';
 import io from 'socket.io-client';
 
@@ -29,5 +30,16 @@ export const sendNotif = ({ userId, type, language, username, name }) => async d
   dispatch({
     type: POST_NOTIF,
     payload: notif
+  })
+  dispatch(findNotifs(userId))
+};
+
+export const sendFriendRequest = ({ senderId, accepterId }) => async dispatch => {
+  await socket.emit("sendFriendRequest", { senderId, accepterId })
+  await socket.on("sentFriendRequest", (user) => {
+    dispatch({
+      type: USER_LOADED,
+      payload: user
+    })
   })
 };

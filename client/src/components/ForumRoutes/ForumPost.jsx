@@ -1,11 +1,12 @@
-import React, { useEffect, Fragment } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import Reply from './Reply'
+import ForumComment from './ForumComment'
 import PropTypes from 'prop-types'
 import { getForumPostById, deleteForumPost } from '../../actions/forum'
 import MarkdownRenderer from 'react-markdown-renderer'
 import Spinner from '../layout/Spinner'
+import ForumDiscussion from './ForumDiscussion';
 
 function ForumPost ({
   match: {params},
@@ -15,6 +16,7 @@ function ForumPost ({
   forum
 }) {
   const { post, loading } = forum
+  const [isCommenting, setIsCommenting] = useState(false)
 
   useEffect(() => {
     getForumPostById(params.id)
@@ -42,12 +44,13 @@ function ForumPost ({
             </Fragment>
           )
         }
-        <Link className='btn btn-lg btn-info mx-2' to={`/forum/forum-post/${post._id}/discuss`}>Discussion</Link>
+        <button className='btn btn-lg btn-info mx-2' onClick={() => setIsCommenting(!isCommenting)}>{isCommenting ? "Cancel" : "Discussion"}</button>
         <Link className='btn btn-lg btn-secondary mx-2' to='/forum'>Go back</Link>
       </div>
+      {isCommenting && <ForumDiscussion params={params} setIsCommenting={setIsCommenting} />}
       {
         post.comments && post.comments.map(comment => (
-          <Reply comment={comment} key={comment.id} />
+          <ForumComment comment={comment} postid={post._id} key={comment._id} />
         ))
       }
     </div>

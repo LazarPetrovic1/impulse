@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function useToggle (initialValue = false) {
+function useToggle (initialValue = "impulse") {
   const [state, setState] = useState(JSON.parse(localStorage.getItem('isDarkTheme')) || initialValue)
   const toggle = (value) => {
     if (value) {

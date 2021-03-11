@@ -21,6 +21,8 @@ const {
   _matrix,
   _fountain,
   _snow,
+  _network,
+  _wave
 } = settingsthemecomponent
 
 const style = {
@@ -245,6 +247,30 @@ function SettingsTheme() {
         />
         <label className="form-check-label" htmlFor="snow" style={style.label}>
           {_snow[language]}
+        </label>
+      </div>
+      <div className="form-check form-check-inline">
+        <input
+          className="form-check-input"
+          type="radio"
+          value="network"
+          checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'network'}
+          onClick={onClick}
+        />
+        <label className="form-check-label" htmlFor="network" style={style.label}>
+          {_network[language]}
+        </label>
+      </div>
+      <div className="form-check form-check-inline">
+        <input
+          className="form-check-input"
+          type="radio"
+          value="waves"
+          checked={JSON.parse(localStorage.getItem('isDarkTheme')) === 'waves'}
+          onClick={onClick}
+        />
+        <label className="form-check-label" htmlFor="waves" style={style.label}>
+          {_wave[language]}
         </label>
       </div>
     </Fragment>

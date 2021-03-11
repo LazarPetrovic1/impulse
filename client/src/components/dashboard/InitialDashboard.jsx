@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom';
 import Spinner from '../layout/Spinner'
 import { connect } from 'react-redux'
@@ -7,38 +7,58 @@ import SideMenu from './SideMenu'
 import DashCenter from '../../styled/DashCenter';
 import ImageSlider from '../layout/ImageSlider'
 import { LanguageContext } from '../../contexts/LanguageContext'
-import { getImages, createImage } from '../../actions/image';
+import { getImages, createImage, wipeImages } from '../../actions/image';
+import { uploadProfileImage } from '../../actions/auth';
 import AddMediaButton from '../../styled/AddMediaButton';
+import AddProfileImage from '../../styled/ImagePost/AddProfileImage';
 import AddMediaModal from '../layout/AddMediaModal';
 import Post from '../layout/Post';
 import { dashboardcomponent } from '../../utils/langObject';
+import { POST_DELIMITER } from '../../utils/nonReduxConstants';
 
 const {
-  _welcome,
+  // _welcome,
   _yourinformation,
-  _yourmedia
+  _yourmedia,
+  _placeholder
 } = dashboardcomponent
 
 function InitialDashboard (props) {
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
   const {
     auth: { user, loading },
     history,
     getImages,
+    // eslint-disable-next-line
     createImage,
+    // eslint-disable-next-line
+    uploadProfileImage,
+    wipeImages,
     image: { images }
   } = props
   const { language } = useContext(LanguageContext)
 
   useEffect(() => {
-    (async function() {
-      try {
-        getImages("mine")
-      } catch(e) {
-        console.warn(e.message);
-      }
-    }());
+    wipeImages()
     // eslint-disable-next-line
   }, [])
+
+  const gettingImages = async () => {
+    try {
+      if (hasMore) {
+        const hasMoreValue = await getImages("mine", page, POST_DELIMITER)
+        await setHasMore(hasMoreValue);
+      }
+    } catch(e) {
+      console.warn(e.message);
+    }
+  }
+
+  useEffect(() => {
+    gettingImages()
+    // eslint-disable-next-line
+  }, [page])
 
   const [selectedFile, setSelectedFile] = useState()
   // eslint-disable-next-line
@@ -47,25 +67,41 @@ function InitialDashboard (props) {
   const [isSlider, setIsSlider] = useState([false, 0])
   const [addFilesModal, setAddFilesModal] = useState(false)
   const [content, setContent] = useState("")
+  const [fn, setFn] = useState("")
+  const [profileUploadButton, setProfileUploadButton] = useState(false)
+  const [profileSlider, setProfileSlider] = useState([false, 0])
+  const observer = useRef()
+
+  const infiniteScrollPost = useCallback((node) => {
+    if (!hasMore) return
+    if (observer.current) observer.current.disconnect()
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage((prevPage) => prevPage + 1)
+      }
+    })
+    if (node) observer.current.observe(node)
+    // eslint-disable-next-line
+  }, [hasMore])
 
   const onImageUpload = (e) => {
 		setSelectedFile(e.target.files[0])
 		setIsSelected(true)
 	}
 
-  const onSubmit = (e) => {
+  const onSubmit = (e, fn) => {
     e.preventDefault()
     if (!selectedFile) return
     const reader = new FileReader()
     reader.readAsDataURL(selectedFile)
-    reader.onloadend = () => uploadImage(reader.result)
+    reader.onloadend = () => uploadImage(reader.result, fn)
     reader.onerror = () => console.error('AHHHHHHHH!!')
     setAddFilesModal(false)
   }
 
-  const uploadImage = async (base64EncodedImage) => {
+  const uploadImage = async (base64EncodedImage, fn) => {
     try {
-      await createImage(base64EncodedImage, content)
+      await fn(base64EncodedImage, content)
       await setSelectedFile('')
       await setPreviewSource('')
       await history.push("/")
@@ -85,7 +121,39 @@ function InitialDashboard (props) {
   ) : user ? (
     <div>
       <div className='container'>
-        <h1 className='text-primary text-center display-4'>{_welcome[language]}, {user.firstName}</h1>
+        <div className="text-center" style={{ pointerEvents: "all" }}>
+          <div className="d-inline-block position-relative rounded-circle" style={{ overflow: "hidden" }}>
+            {user.profileImages.length > 0 ? (
+              <img
+                alt="Featured on profile"
+                style={{ userSelect: "none", width: "350px", height: "350px", cursor: "pointer" }}
+                src={user.profileImages[user.profileImages.length - 1].url}
+                onMouseEnter={() => setProfileUploadButton(true)}
+                onMouseLeave={() => setProfileUploadButton(false)}
+                onClick={() => setProfileSlider([true, 0])}
+              />
+            ) : (
+              <img
+                style={{ userSelect: "none" }}
+                src={`https://robohash.org/${user._id}?set=set4&size=350x350`}
+                alt={_placeholder[language]}
+                onMouseEnter={() => setProfileUploadButton(true)}
+                onMouseLeave={() => setProfileUploadButton(false)}
+              />
+            )}
+            {profileUploadButton && (
+              <AddProfileImage
+                className="btn btn-secondary btn-block"
+                onMouseEnter={() => setProfileUploadButton(true)}
+                onMouseLeave={() => setProfileUploadButton(false)}
+                onClick={() => { setFn("profile"); setAddFilesModal(true) }}
+              >
+                <i className="fas fa-plus fa-2x" />
+              </AddProfileImage>
+            )}
+          </div>
+        </div>
+        <h1 className='text-primary text-center display-4 mt-3'>{user.firstName} {user.lastName}</h1>
       </div>
       <div className='row'>
         <div className='col-md-3 col-sm-5 col-xs-7'><SideMenu /></div>
@@ -97,7 +165,7 @@ function InitialDashboard (props) {
         <AddMediaButton
           className="btn btn-secondary ml-2"
           title="Add Files"
-          onClick={() => setAddFilesModal(true)}
+          onClick={() => { setFn("post"); setAddFilesModal(true) }}
         >
           <i className="fas fa-plus"></i>
         </AddMediaButton>
@@ -114,12 +182,20 @@ function InitialDashboard (props) {
             />
           ))
         }
+        <div ref={infiniteScrollPost} />
       </DashCenter>
       {
         images &&
         images.length > 0 &&
         isSlider[0] && (
           <ImageSlider images={images} i={isSlider[1]} setIsSlider={setIsSlider} />
+        )
+      }
+      {
+        user.profileImages &&
+        user.profileImages.length > 0 &&
+        profileSlider[0] && (
+          <ImageSlider images={user.profileImages} i={profileSlider[1]} setIsSlider={setProfileSlider} />
         )
       }
       {
@@ -134,6 +210,7 @@ function InitialDashboard (props) {
               onSubmit={onSubmit}
               previewFile={previewFile}
               selectedFile={selectedFile}
+              fn={fn}
             />
           </div>
         )
@@ -147,6 +224,7 @@ InitialDashboard.propTypes = {
   getImages: PropTypes.func.isRequired,
   createImage: PropTypes.func.isRequired,
   image: PropTypes.object.isRequired,
+  wipeImages: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -156,5 +234,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getImages, createImage }
+  { getImages, createImage, uploadProfileImage, wipeImages }
 )(InitialDashboard)

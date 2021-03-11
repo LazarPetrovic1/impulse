@@ -8,13 +8,14 @@ const {
   _forum,
   _social,
   _videos,
-  _chat
+  _chat,
+  _upgrade
 } = sidemenucomponent
 
 function SideMenu() {
   const { language } = useContext(LanguageContext)
   return (
-    <nav className='navbar navbar-light d-block custom-sidenav position-relative' style={{ pointerEvents: "all" }}>
+    <nav className='navbar navbar-light d-block custom-sidenav position-relative' style={{ pointerEvents: "all", bottom: "250px" }}>
       <DashboardSideMenuUl>
         <li className='nav-item bg-light m-1 px-5 text-center'>
           <Link
@@ -40,9 +41,17 @@ function SideMenu() {
         <li className='nav-item bg-light m-1 px-5 text-center'>
           <Link
             className='nav-link text-primary lead'
-            to='/videos'
+            to='/videos-all'
           >
             <i className='fas fa-video pr-2' />{' '}{_videos[language]}
+          </Link>
+        </li>
+        <li className='nav-item bg-light m-1 px-5 text-center'>
+          <Link
+            className='nav-link text-primary lead'
+            to='/upgrade'
+          >
+            <i className="fas fa-hand-point-up pr-2" />{' '}{_upgrade[language]}
           </Link>
         </li>
       </DashboardSideMenuUl>

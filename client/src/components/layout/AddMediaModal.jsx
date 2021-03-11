@@ -1,5 +1,10 @@
 import React, { useContext } from 'react';
 import { ThemeContext } from '../../contexts/ThemeContext';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { createImage } from '../../actions/image';
+import { uploadProfileImage } from '../../actions/auth';
 
 const flex = {
   f1: { flex: 1 },
@@ -14,7 +19,10 @@ function AddMediaModal({
   previewFile,
   selectedFile,
   content,
-  setContent
+  setContent,
+  fn,
+  createImage,
+  uploadProfileImage
 }) {
   const { isDarkTheme } = useContext(ThemeContext)
 
@@ -42,7 +50,7 @@ function AddMediaModal({
             </button>
           </div>
           <div className="modal-body" style={{ backgroundColor: isDarkTheme ? '#111' : '#fff' }}>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={(e) => onSubmit(e, fn === "post" ? createImage : uploadProfileImage)}>
               <div className="form-group mb-4">
                 <label htmlFor="content">Post status</label>
                 <input
@@ -55,6 +63,7 @@ function AddMediaModal({
               <div className="form-group d-flex">
                 <label htmlFor="file" />
                 <input
+                  required
                   style={flex.f3}
                   onChange={onImageUpload}
                   type="file"
@@ -79,6 +88,7 @@ function AddMediaModal({
                 />
               )}
             </form>
+            <Link to="/video/upload">Add a video instead!</Link>
           </div>
           <div className="modal-footer" style={{ backgroundColor: isDarkTheme ? '#111' : '#fff' }}>
             <button
@@ -96,4 +106,12 @@ function AddMediaModal({
   )
 }
 
-export default AddMediaModal;
+AddMediaModal.propTypes = {
+  createImage: PropTypes.func.isRequired,
+  uploadProfileImage: PropTypes.object.isRequired,
+}
+
+export default connect(
+  null,
+  { createImage, uploadProfileImage }
+)(AddMediaModal);

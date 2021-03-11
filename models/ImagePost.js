@@ -50,6 +50,12 @@ const ImagePostSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: "user"
     }
+  }],
+  impulsions: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user"
+    }
   }]
 });
 

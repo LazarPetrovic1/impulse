@@ -1,35 +1,31 @@
-import React, { Component } from "react"
+import React, { useState } from "react"
 import SimpleMDEReact from "react-simplemde-editor"
+import 'easymde/dist/easymde.min.css';
+import placeholder from '../../utils/markdown';
 
-class Autosaving extends Component {
-  static defaultProps = {
-    delay: 1000,
-    value: ''
-  }
-
-  state = {
-    value: localStorage.getItem(`smde_${this.props.id}`) || this.props.value
-  }
-
-  render() {
-    const { options, delay, id, onChange, ...rest } = this.props
-    return (
-      <SimpleMDEReact
-        {...rest}
-        onChange={onChange}
-        id={id}
-        value={this.state.value}
-        options={{
-          autosave: {
-            enabled: true,
-            uniqueId: id,
-            delay
-          },
-          ...options
-        }}
-      />
-    )
-  }
+function Autosaving(props) {
+  const { options, id, onChange, ...rest } = props
+  const [value] = useState(props.value)
+  return (
+    <SimpleMDEReact
+      {...rest}
+      onChange={onChange}
+      id={id}
+      style={{ background: "#ddd" }}
+      value={value}
+      options={{
+        placeholder,
+        autofocus: true,
+        minHeight: '550px',
+        autosave: {
+          enabled: true,
+          uniqueId: id,
+          delay: 1000,
+        },
+        ...options
+      }}
+    />
+  )
 }
 
 export default Autosaving

@@ -4,6 +4,7 @@ import CloseImageSlider from '../../styled/ImageSlider/CloseImageSlider'
 import { ThemeContext } from '../../contexts/ThemeContext';
 import Moment from 'react-moment';
 import LikesAndComments from './LikesAndComments';
+import Comment from './Comment';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios'
@@ -57,10 +58,10 @@ function ImageSlider({ images, i, setIsSlider, auth }) {
         <button onClick={slideLeft} name="slider">
           <i className="fas fa-chevron-left"></i>
         </button>
-        <article className="d-flex flex-column">
-          <div className="d-flex">
+        <article className="d-flex flex-column" style={{ flex: 4 }}>
+          <div className="d-flex justify-content-center">
             <img
-              style={{ maxHeight: window.innerHeight }}
+              style={{ maxHeight: `calc(${window.innerHeight}px - 10rem)` }}
               src={images[index].url}
               alt={index}
             />
@@ -72,19 +73,7 @@ function ImageSlider({ images, i, setIsSlider, auth }) {
                 images[index].comments &&
                 images[index].comments.length > 0 &&
                 images[index].comments.map(comm => (
-                  <div key={comm.user}>
-                    <p>@{comm.name}</p>
-                    <img
-                      src={comm.avatar}
-                      height={50}
-                      width={50}
-                      alt={`${comm.name}'s avatar`}
-                    />
-                    <p>{comm.text}</p>
-                    <p>
-                      On <Moment format="DD.MM.YYYY">{comm.date}</Moment>
-                    </p>
-                  </div>
+                  <Comment key={comm.user} comm={comm} />
                 ))
               }
             </div>

@@ -18,6 +18,9 @@ const LeftSideNavigation = styled.nav`
       transition: all 150ms;
       &:hover {
         background-color: ${props => props.isDarkTheme ? '#eee' : '#111'};
+        & > a {
+          color: ${props => props.isDarkTheme ? '#111' : '#eee'};
+        }
         &::before {
           transform: scaleX(1);
         }
@@ -58,9 +61,6 @@ const LeftSideNavigation = styled.nav`
         margin: 0 10px;
         position: relative;
         transition: all 150ms;
-        &:hover {
-          color: ${props => props.isDarkTheme ? '#111' : '#eee'};
-        }
       }
     }
   }

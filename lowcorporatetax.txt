@@ -1,0 +1,14 @@
+# | Country | Corporate Tax | Income tax lowest | Income tax highest | VAT
+
+1   Anguilla        0                0                    0             0
+2   Bahamas         0                0                   8.8           12
+3   Bahrain         0                0                    0             5
+4   Bermuda         0                0                    0             0
+5   Cayman Isl.     0                0                    0             0
+6   Guernsey        0                0                   20             0
+7   Isle of Man     0               10                   20            25
+8   UAE             0                0                    0             5
+9   Virgin Isl.     0                0                    0            N/A
+10  Jersey          0                0                   20             5
+11  St. Kitts...    0                0                    0            N/A
+12  Sark            0                0                 (max 6500 BP)    0

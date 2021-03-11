@@ -15,7 +15,7 @@ const NotifSchema = new Schema({
     type: Boolean,
     default: false
   },
-  type: { type: String }
+  type: { type: String },
 })
 
 module.exports = Notif = model('notif', NotifSchema)

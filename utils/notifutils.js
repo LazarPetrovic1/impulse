@@ -1,13 +1,18 @@
 const notiflangs = {
   like: {
     en: ['The user', 'likes your post'],
-    sr: ['Korisniku', 'se svidja vasa objava'],
+    sr: ['Korisniku', 'se svidja Vasa objava'],
     de: ['Dem Benutzer', 'gefällt Ihr Beitrag']
   },
   dislike: {
     en: ['The user', "does't like your post"],
-    sr: ['Korisniku', 'se ne svidja vasa objava'],
+    sr: ['Korisniku', 'se ne svidja Vasa objava'],
     de: ['Dem Benutzer', 'gefällt Ihr Beitrag nicht']
+  },
+  impulse: {
+    en: ['The user', "loves your post"],
+    sr: ['Korisnik', 'obozava Vasu objavu'],
+    de: ['Der Benutzer', 'liebt deinen Beitrag']
   },
   friendrequest: {
     en: 'You have a friend request from',
@@ -17,7 +22,12 @@ const notiflangs = {
   comment: {
     en: ['The user', 'has commented on your post'],
     sr: ['Korisnik', 'je komentarisao na Vasoj objavi'],
-    de: ['Der Benutzer', 'hat Ihren Beitrag kommentiert']
+    de: ['Der Benutzer', 'hat deinen Beitrag kommentiert']
+  },
+  forumpostreply: {
+    en: ['The user', 'has replied to your comment'],
+    sr: ['Korisnik', 'je odgovorio na Vas komentar'],
+    de: ['Der Benutzer', 'hat auf deinen Kommentar geantwortet']
   },
   notif: {
     en: "You have a notification",
@@ -32,10 +42,14 @@ function getText({ type, language, username, name }) {
       return `${notiflangs.like[language][0]} ${name} (@${username}) ${notiflangs.like[language][1]}`
     case "dislike":
       return `${notiflangs.dislike[language][0]} ${name} (@${username}) ${notiflangs.dislike[language][1]}`
+    case "impulse":
+      return `${notiflangs.impulse[language][0]} ${name} (@${username}) ${notiflangs.impulse[language][1]}`
     case "friendrequest":
       return `${notiflangs.friendrequest[language]} ${name} (@${username})`
     case "friendrequest":
       return `${notiflangs.comment[language][0]} ${name} (@${username}) ${notiflangs.comment[language][1]}`
+    case "forumpostreply":
+      return `${notiflangs.forumpostreply[language][0]} ${name} (@${username}) ${notiflangs.forumpostreply[language][1]}`
     default:
       return notiflangs.notif[language]
   }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useRef, useCallback } from 'react'
 import axios from 'axios'
 import Spinner from '../layout/Spinner';
 import Moment from 'react-moment';
@@ -6,25 +6,53 @@ import ImageSlider from '../layout/ImageSlider'
 import DashCenter from '../../styled/DashCenter';
 import Post from '../layout/Post';
 import { connect } from 'react-redux';
-import { getImages } from '../../actions/image';
-import { sendNotif } from '../../actions/notifs';
+import { getImages, wipeImages } from '../../actions/image';
+import { sendNotif, sendFriendRequest } from '../../actions/notifs';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import PropTypes from 'prop-types';
+import { POST_DELIMITER } from '../../utils/nonReduxConstants';
 
 function GuestDashboard (props) {
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
   const {
     getImages,
     image: { images },
     match,
     auth,
-    sendNotif
+    sendNotif,
+    sendFriendRequest,
+    wipeImages
   } = props
   const { language } = useContext(LanguageContext)
   const [isSlider, setIsSlider] = useState([false, 0])
   const [guest, setGuest] = useState({})
-  const [isFriend, setIsFriend] = useState(
-    auth.user.friends.find(frid => frid.user === match.params.id) ? true : false
-  )
+  const observer = useRef()
+
+  const infiniteScrollPost = useCallback((node) => {
+    if (!hasMore) return
+    if (observer.current) observer.current.disconnect()
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage((prevPage) => prevPage + 1)
+        console.log("Visible");
+      }
+    })
+    if (node) observer.current.observe(node)
+    // eslint-disable-next-line
+  }, [hasMore])
+
+  const gettingImages = async () => {
+    try {
+      if (hasMore) {
+        const hasMoreValue = await getImages(match.params.id, page, POST_DELIMITER)
+        await setHasMore(hasMoreValue);
+      }
+    } catch(e) {
+      console.warn(e.message);
+    }
+  }
+
   const getGuest = async (id) => {
     try {
       const res = await axios.get(`/api/users/${id}`)
@@ -35,19 +63,34 @@ function GuestDashboard (props) {
   }
 
   useEffect(() => {
-    getGuest(match.params.id)
+    if (guest) {
+      gettingImages()
+    }
+    // eslint-disable-next-line
+  }, [page])
+
+  useEffect(() => {
+    if (match.params.id === auth.user._id) {
+      props.history.push("/")
+    } else {
+      wipeImages()
+    }
     // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
-    if (guest) {
-      getImages(match.params.id)
-    }
+    getGuest(match.params.id)
     // eslint-disable-next-line
-  }, [guest])
+  }, [])
+
+  // useEffect(() => {
+  //   if (guest) {
+  //     getImages(match.params.id)
+  //   }
+  //   // eslint-disable-next-line
+  // }, [guest])
 
   const addFriend = (e) => {
-    setIsFriend('pending')
     sendNotif({
       userId: match.params.id,
       type: 'friendrequest',
@@ -55,6 +98,7 @@ function GuestDashboard (props) {
       username: auth.user.username,
       name: `${auth.user.firstName} ${auth.user.lastName}`
     })
+    sendFriendRequest({ senderId: auth.user._id, accepterId: match.params.id })
   }
 
   return !guest ? <Spinner /> : (
@@ -72,11 +116,11 @@ function GuestDashboard (props) {
       </div>
       <div className="d-flex justify-content-end">
         <button className="btn btn-secondary" onClick={addFriend}>
-          {isFriend === 'pending' ? (
+          {auth.user.friendRequestsSent.find(user => user.user === match.params.id) ? (
             <div className="spinner-border text-success" role="status">
               <span className="sr-only">Loading...</span>
             </div>
-          ) : isFriend ? (
+          ) : auth.user.friends.find(fr => fr.id === match.params.id) ? (
             <i className="fas fa-check-double" />
           ) : <i className="fas fa-user-plus" />}
         </button>
@@ -113,6 +157,7 @@ function GuestDashboard (props) {
             />
           ))
         }
+        <div ref={infiniteScrollPost} />
       </DashCenter>
       {
         images &&
@@ -130,6 +175,8 @@ GuestDashboard.propTypes = {
   image: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired,
   sendNotif: PropTypes.func.isRequired,
+  sendFriendRequest: PropTypes.func.isRequired,
+  wipeImages: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -139,5 +186,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getImages, sendNotif }
+  { getImages, sendNotif, sendFriendRequest, wipeImages }
 )(GuestDashboard)

@@ -312,6 +312,11 @@ export const dashboardcomponent = {
     en: "Your Media (Files)",
     sr: "Vasi Mediji (Fajlovi)",
     de: "Ihre Medien (Dateien)"
+  },
+  _placeholder: {
+    en: "This image is a randomly generated. You can change it by clicking on it.",
+    sr: "Ova slika je nasumicno generisana. Mozete je promeniti klikom na nju.",
+    de: "Dieses Bild ist zufällig generiert. Du kannst es ändern, indem du darauf klickst."
   }
 }
 
@@ -335,6 +340,11 @@ export const sidemenucomponent = {
     en: "Chat",
     sr: "Ćaskanje",
     de: "Chatten"
+  },
+  _upgrade: {
+    en: "Upgrade",
+    sr: "Unapredite",
+    de: "Verbessere"
   }
 }
 
@@ -343,6 +353,11 @@ export const settingscomponent = {
     en: "Basic Settings",
     sr: "Osnovna Podesavanja",
     de: "Grundeinstellungen"
+  },
+  _contentpolicy: {
+    en: "Content policy",
+    sr: "Politika sadrzaja",
+    de: "Inhaltsrichtlinie"
   },
   _item: {
     en: "Item",
@@ -363,6 +378,11 @@ export const settingscomponent = {
     en: "Some",
     sr: "Neka",
     de: "Manche"
+  },
+  _uselegacyfont: {
+    en: "Use legacy font",
+    sr: "Koristite nas font",
+    de: "Verwenden Sie unsere Schriftart"
   }
 }
 
@@ -461,5 +481,128 @@ export const settingsthemecomponent = {
     en: "Snow",
     sr: "Sneg",
     de: "Schnee"
+  },
+  _network: {
+    en: "Network",
+    sr: "Mreza",
+    de: "Netzwerk"
+  },
+  _wave: {
+    en: "Wave",
+    sr: "Talas",
+    de: "Welle"
   }
 }
+
+export const policycomponent = {
+  _contentpolicy: {
+    en: "Content policy",
+    sr: "Politika sadrzaja",
+    de: "Inhaltsrichtlinie"
+  },
+  _one: {
+    en: "Promotion of the independence of the autonomous province of Kosovo (and Chinese Taipei) are prohibited",
+    sr: "Zabranjeno je promovisanje nezavisnosti autonomne provincije Kosova (i Kineske Taipei).",
+    de: "Es gibt keine Förderung der Unabhängigkeit der autonomen Provinz Kosovo und (des chinesischen Taipeh)."
+  },
+  _two: {
+    en: "There is no certain cross/swastika that causes bad feelings in Slavic people. Accounts that support the views of Balkan and other fascist and nationalist ideologies will be removed immediately without the possibility of account restoration.",
+    sr: "Nema odredjenog krsta/svastike koji izaziva losa osecanja kod Slovena. Nalozi koji podrzavaju poglede Balkanskih i drugih fasistickih i nacionalistickih ideologija ce biti ugaseni istog trenutka bez mogucnosti povratka naloga.",
+    de: "Kein bestimmtes Kreuz / Hakenkreuz, das bei slawischen Menschen schlechte Gefühle hervorruft. Konten, die die Ansichten des Balkans und anderer faschistischer und nationalistischer Ideologien unterstützen, werden sofort entfernt, ohne dass eine Wiederherstellung der Konten möglich ist."
+  },
+  _three: {
+    en: "Violent content must emphasize that it is violent content. Sexual content must emphasize that it is sexual content.",
+    sr: "Nasilan sadrzaj mora da naglasi da je nasilan sadrzaj. Seksualni sadrzaj mora da naglasi da je seksualni sadrzaj.",
+    de: "Gewalttätige Inhalte müssen betonen, dass es sich um gewalttätige Inhalte handelt. Sexuelle Inhalte müssen betonen, dass es sich um sexuelle Inhalte handelt."
+  },
+  _four: {
+    en: 'All accounts that actively participate in the "cancel culture" will be removed immediately without the possibility of restoration',
+    sr: 'Svi nalozi koji aktivno ucestvuju u "kulturi otkazivanja" bice odmah otkazani bez mogucnosti povratka.',
+    de: 'Alle Konten, die aktiv an der "Kultur der Löschung" teilnehmen, werden sofort ohne die Möglichkeit einer Rückgabe storniert.'
+  },
+  _five: {
+    en: 'All accounts that actively call for violence and a "culture of cancellation" will be removed immediately without the possibility of restoration.',
+    sr: 'Svi nalozi koji aktivno pozivaju na nasilje i "kulturu otkazivanja" ce biti ugaseni istog trenutka bez mogucnosti povratka.',
+    de: 'Alle Konten, die aktiv zu Gewalt und einer "Kultur der Löschung" aufrufen, werden ohne die Möglichkeit einer Wiederherstellung sofort entfernt.'
+  },
+  _six: {
+    en: "Any crime, as well as a call for a violation of the law found on Impulse, will be reported to the police. That includes:",
+    sr: "Svako krivicno delo, kao i poziv na krsenje zakona pronadjeno na Impulsu ce biti prijavljeno policiji. To ukljucuje:",
+    de: "Jedes Verbrechen sowie die Forderung nach einem Verstoß gegen das auf Impulse festgestellte Gesetz wird der Polizei gemeldet. Das schließt ein:"
+  },
+  _sixone: {
+    en: "People who livestream law violations",
+    sr: "Osobe koje uzivo prenose krsenje zakona",
+    de: "Menschen, die einen strengen Verstoß gegen das Gesetz genießen"
+  },
+  _sixtwo: {
+    en: "Videos (and livestreams) that promote breaking the law",
+    sr: "Video klipove (i strimovi) koji promovisu krsenje zakona",
+    de: "Videos (und Streams), die Gesetzesverstöße fördern"
+  },
+  _sixthree: {
+    en: "Videos (and livestreams) that promote the deprivation of human rights to other people",
+    sr: "Video klipove (i strimovi) koji promovisu oduzimanja ljudskih prava drugim ljudima",
+    de: "Videos (und Streams), die die Verletzung der Menschenrechte für andere Menschen fördern"
+  },
+  _sixfour: {
+    en: "Violence against children and adults in videos (and livestreams)",
+    sr: "Nasilje nad decom i odraslima u video klipovima (i strimovima)",
+    de: "Gewalt gegen Kinder und Erwachsene in Videos (und Streams)"
+  },
+  _sixfive: {
+    en: "Any evidence of organized crime found on Impulse",
+    sr: "Bilo koji dokaz organizovanog kriminala pronadjen na Impulsu",
+    de: "Alle Hinweise auf organisiertes Verbrechen auf Impulse gefunden"
+  },
+  _sixsix: {
+    en: 'Promoting dangerous actions that can lead to death or dangerous bodily injury without emphasizing what it is about (eg "shooting", "skydiving", etc.)',
+    sr: 'Promovisanje opasnih akcija koje mogu dovesti do smrti ili opasnih telesnih povreda bez naglasavanja o cemu se radi (npr "pucanje", "padobranstvo" itd.)',
+    de: 'Förderung gefährlicher Handlungen, die zum Tod oder zu gefährlichen Körperverletzungen führen können, ohne zu betonen, worum es geht (z. B. "Schießen", "Fallschirmspringen" usw.)'
+  },
+  _sixseven: {
+    en: "Harassment and Cyberbullying",
+    sr: "Uznemiravanje i sajber maltretiranje",
+    de: "Belästigung und Cybermobbing"
+  },
+  _seven: {
+    en: 'Spamming and subscribing to services that offer free subscriptions, friends and followers will not be tolerated. This includes the so-called "sub-for-sub" schemes.',
+    sr: 'Spamovanje i pretplacivanje na usluge koje nude besplatne subove, prijatelje i followere nece biti tolerisano. Ovo ukljucuje i "sub-for-sub" seme.',
+    de: 'Spam und das Abonnieren von Diensten, die kostenlose Abonnements, Freunde und Follower anbieten, werden nicht toleriert. Dies schließt die sogenannten "Sub-für-Sub" -Schemata ein.'
+  },
+  _eight: {
+    en: "If you are a company and someone infringes on your copyright, you MUST inform the person in a timely manner that you are planning further action if they do not make changes to their content (eg by using chat or sending an e-mail to that person). The content must include the following:",
+    sr: "Ukoliko ste firma i neko krsi Vasa autorska prava, MORATE blagovremeno obavestiti osobu o tome da planirate dalju akciju ukoliko ne naprave promene u svom kontentu (npr. koriscenjem chata ili slanjem e-maila toj osobi). Sadrzaj mora ukljuciti sledece:",
+    de: "Wenn Sie ein Unternehmen sind und jemand gegen Ihr Urheberrecht verstößt, MÜSSEN Sie die Person rechtzeitig darüber informieren, dass Sie weitere Maßnahmen planen, wenn sie keine Änderungen an ihrem Inhalt vornimmt (z. B. durch Chat oder Senden einer E-Mail an diese Person) ). Der Inhalt muss Folgendes enthalten:"
+  },
+  _eightone: {
+    en: "If it's a matter of an image - a link to it, which part of it infringes copyright - explained in text format, as well as an emphasized part of the image, the name of that property, a link to that property and proof that it is actually your property; the infringing portion must be NOT LESS THAN 20px in height and width combined",
+    sr: "Ukoliko je u pitanju slika - link do nje, koji deo nje krsi autorska prava - objasnjeno u tekstualnom formatu, kao i zaokruzen deo slike, ime tog vlasnistva, link do tog vlasnistva kao i dokaz da je to zapravo Vase vlasnistvo; deo koji krsi autorska prava mora biti NE MANJI OD 20px u visini i sirini zajedno",
+    de: "Wenn es sich um ein Bild handelt - ein Link dazu, welcher Teil davon das Urheberrecht verletzt -, der im Textformat erklärt wird, sowie ein hervorgehobener Teil des Bildes, der Name dieser Eigenschaft, ein Link zu dieser Eigenschaft und der Beweis, dass es ist eigentlich dein Eigentum; Der verletzende Teil darf in Höhe und Breite NICHT WENIGER ALS 20 Pixel sein"
+  },
+  _eighttwo: {
+    en: "If it's a matter of a video - is a link to it, the time from - to the copyright infringement ([hr:] min: sec - [hr:] min: sec), which content infringes the copyright sound [audio / song eg] / visual aspect [video taken from one of your properties]), name of that property, link to that property as well as proof that it belongs to you; the infringing snippet must NOT BE SHORTER than 1 second",
+    sr: "Ukoliko je video klip - link do njega, vreme od - do krsenja autorskog prava ([hr:]min:sec - [hr:]min:sec), koji sadrzaj krsi autorska prava (tekst koji je u tom trenutku na klipu prikazan/zvuk [audio/pesma npr.]/vizuelni aspekat [video preuzet iz nekog od Vasih vlasnistva]), ime tog vlasnistva, link do tog vlasnistva kao i dokaz da pripada Vama; deo koji krsi autorska prava mora biti NE KRACI od 1 sekunde",
+    de: "Wenn es sich um einen Videoklip handelt - der Link dazu ist, die Zeit von - bis zur Urheberrechtsverletzung ([hr:] min: sec - [hr:] min: sec), wobei der Inhalt den Copyright-Sound [Audio / Song zB] / visuell verletzt Aspekt [Video aus einer Ihrer Eigenschaften]), Name dieser Eigenschaft, Link zu dieser Eigenschaft sowie Nachweis, dass sie Ihnen gehört; Der Teil, der das Urheberrecht verletzt, darf NICHT WENIGER als 1 Sekunde sein"
+  },
+  _eightthree: {
+    en: "If it's a matter of an audio/podcast is e.g. - link to it, time from - to the copyright infringement ([hr:] min: sec - [hr:] min: sec), name of that property, link to that property as well as proof that it belongs to you; the part that infringes copyright must be NOT LESS than 1 second",
+    sr: "Ukoliko je audio/podkast npr. - link do njega, vreme od - do krsenja autorskog prava ([hr:]min:sec - [hr:]min:sec), ime tog vlasnistva, link do tog vlasnistva kao i dokaz da pripada Vama; deo koji krsi autorska prava mora biti NE KRACI od 1 sekunde",
+    de: "Wenn es sich um ein Audio/Podcast, z.B. handelt - Link dazu, Zeit von - bis zur Urheberrechtsverletzung ([hr:] min: sec - [hr:] min: sec), Name dieser Eigenschaft, Link zu dieser Eigenschaft sowie Nachweis, dass sie Ihnen gehört; Der Teil, der das Urheberrecht verletzt, darf NICHT WENIGER als 1 Sekunde sein"
+  },
+  _nine: {
+    en: "If the user refuses to remove your property from their content, you have the following options:",
+    sr: "Ukoliko korisnik odbije da ukloni Vase vlasnistvo sa svog sadrzaja, imate sledece opcije:",
+    de: "Wenn der Benutzer sich weigert, Ihr Eigentum aus seinem Inhalt zu entfernen, haben Sie folgende Möglichkeiten:"
+  },
+  _nineone: {
+    en: "If the content is not monetized, you can request that Impulse remove that content",
+    sr: "Ukoliko sadrzaj nije monetizovan, mozete zatraziti da Impulse ukloni taj sadrzaj",
+    de: "Wenn der Inhalt nicht monetarisiert ist, können Sie Impulse auffordern, diesen Inhalt zu entfernen"
+  },
+  _ninetwo: {
+    en: "If the content is monetized, you can split the earnings proportionally with the user - e.g. if your content accounts to 20% of the user's content, you will share the earnings 80/20, where 80% goes to the user, and 20% to you",
+    sr: "Ukoliko je sadrzaj monetizovan, mozete proporcionalno podeliti zaradu sa korisnikom - npr. ukoliko Vas sadrzaj zauzima 20% sadrzaja korisnika, podelicete zaradu 80/20, gde 80% ide korisniku, a 20% Vama",
+    de: "Wenn der Inhalt monetarisiert ist, können Sie die Einnahmen proportional zum Benutzer aufteilen - z. Wenn Ihr Inhalt 20% des Inhalts des Benutzers ausmacht, teilen Sie die Einnahmen zu 80/20, wobei 80% an den Benutzer und 20% an Sie gehen"
+  }
+};

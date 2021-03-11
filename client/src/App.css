@@ -1,4 +1,9 @@
-* { font-family: "Montserrat", sans-serif; }
+@font-face {
+  font-family: "Impulse";
+  src: url("./assets/impulse-font/Impulse-Regular.ttf");
+}
+
+/* * { font-family: "Impulse", sans-serif; } */
 body { overflow-x: hidden; }
 .bg-overlay { background-color: rgba(0, 0, 0, 0.45); }
 .darkbackground { background-color: rgba(17, 17, 17, 0.75); }

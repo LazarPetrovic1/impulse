@@ -53,7 +53,7 @@ function Nav (props) {
             {notifs && <NotifCounter notifs={notifs} />}
             <div>
               <i className="far fa-bell pr-2" />
-              <span className='hide-sm pr-1'>{_notifs[language]}</span>
+              <span className='hide-sm pr-1' style={{ userSelect: "none" }}>{_notifs[language]}</span>
               <i className="fas fa-caret-down pl-2" />
             </div>
           </div>

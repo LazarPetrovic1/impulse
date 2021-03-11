@@ -6,7 +6,8 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
-  DELETE_ACCOUNT
+  DELETE_ACCOUNT,
+  ADD_PROFILE_IMAGE
 } from "../actions/types";
 
 const initialState = {
@@ -20,6 +21,7 @@ export default (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
     case USER_LOADED:
+    case ADD_PROFILE_IMAGE:
       return {
         ...state,
         isAuthenticated: true,

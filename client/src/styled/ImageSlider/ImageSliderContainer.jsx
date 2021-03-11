@@ -10,6 +10,7 @@ const ImageSliderContainer = styled.article`
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: auto;
   & button[name="slider"] {
     border: 0;
     outline: 0;

@@ -1,4 +1,5 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useState, useEffect, useRef, useCallback } from 'react';
+import { CHAT_DELIMITER } from '../../utils/nonReduxConstants';
 import ChatContainer from '../../styled/Chat/ChatContainer';
 import { ThemeContext } from '../../contexts/ThemeContext'
 import { SocketContext } from '../../contexts/SocketContext'
@@ -10,43 +11,74 @@ import ReactEmoji from 'react-emoji';
 
 function Chat(props) {
   const { auth: { user } } = props
+  const [page, setPage] = useState(1)
   const { isDarkTheme } = useContext(ThemeContext)
   const { socket } = useContext(SocketContext)
+  const [hasMore, setHasMore] = useState(true)
   const [msg, setMsg] = useState("")
   const [chat, setChat] = useState({})
   const [selected, setSelected] = useState(
     user.friends.length > 0 ? user.friends[0] : null
   )
-  const selectFriend = (i) => setSelected(user.friends[i])
+  const selectFriend = async (i) => {
+    await setPage(1)
+    await setChat({})
+    await setSelected(user.friends[i])
+    setHasMore(true)
+  }
   const scroller = useRef()
-
-  useEffect(() => {
-    (async function() {
-      try {
-        await socket.emit('getChat', {
+  const observer = useRef()
+  const firstChatElementRef = useCallback((node) => {
+    if (!hasMore) return
+    if (observer.current) observer.current.disconnect()
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        socket.emit("getInitialChatState", {
           userId: user && user._id,
-          theirId: selected && selected.user && selected.user
+          theirId: selected && selected.user && selected.user,
+          page,
+          limit: CHAT_DELIMITER
         })
-        if (!chat) {
-          await socket.emit('getChat', {
-            userId: selected && selected.user && selected.user,
-            theirId: user && user._id
-          })
-        }
-      } catch(e) {
-        console.warn(e);
+        setPage((prevPage) => prevPage + 1)
       }
-    }());
+    })
+    if (node) observer.current.observe(node)
     // eslint-disable-next-line
-  }, [selected])
+  }, [selected, hasMore, page])
+
+  const sortChat = (prevChat, newChat) => {
+    let newChatResult;
+    let newChatResultMessages;
+    if (prevChat && prevChat.messages && prevChat.messages.length > 0) {
+      newChatResultMessages = [...new Set([ ...newChat.messages, ...prevChat.messages ])]
+      newChatResult = {
+        ...prevChat,
+        messages: newChatResultMessages
+      }
+    } else {
+      newChatResultMessages = [...new Set([...newChat.messages])]
+      newChatResult = {
+        ...newChat,
+        messages: newChatResultMessages
+      }
+    }
+    return newChatResult
+  }
 
   useEffect(() => {
-    socket.on('message', ({chatStuff, userId}) => {
-      setChat(chatStuff)
+    socket.on('message', ({ message }) => {
+      setChat((prevChat) => ({ ...prevChat, messages: [ ...prevChat.messages, message ] }))
     })
-    socket.on('getChat', (chat) => setChat(chat))
+    socket.on("gotInitialChatState", ({ newChat, hasMoreValue }) => {
+      if (newChat && newChat.messages.length < 1) {
+        setHasMore(false)
+        return
+      }
+      setChat((prevChat) => sortChat(prevChat, newChat))
+      setHasMore(true)
+    })
     // eslint-disable-next-line
-  }, [chat])
+  }, [])
 
   const onMessageSubmit = (e) => {
     e.preventDefault()
@@ -54,14 +86,13 @@ function Chat(props) {
       socket.emit('message', { _id: chat._id, body: msg, userId: user._id })
     } else if (selected && selected.user && (!chat || !chat._id)) {
       socket.emit('spawnChat', { people: [user._id, selected.user], message: msg, userId: user._id })
-      socket.emit('getChat', { userId: user._id, theirId: selected.user })
     }
     setMsg("")
   }
 
   useEffect(() => {
     scroller.current.scrollIntoView({ behavior: 'smooth' })
-  }, [chat])
+  }, [chat, selected, hasMore, page])
 
   return (
     <ChatContainer isDarkTheme={isDarkTheme}>
@@ -80,7 +111,17 @@ function Chat(props) {
       </div>
       <div name="messages">
         <div name="message-holder">
-          {chat && chat.messages && chat.messages.map(message => (
+          <div ref={firstChatElementRef} />
+          {chat && chat.messages && chat.messages.map((message, i) => i === 0 ? (
+            <div key={message._id}>
+              <div className={`d-flex my-3 ${message.user === user._id && "justify-content-end"}`}>
+                <span style={{ borderRadius: '10px' }} className={`px-3 py-2 ${message.user === user._id ? "bg-primary" : "bg-secondary"}`}>{ReactEmoji.emojify(message.body)}</span>
+                <sup className="text-muted d-inline-block px-2">
+                  <Moment format="DD.MM.YYYY">{message.date}</Moment>
+                </sup>
+              </div>
+            </div>
+          ) : (
             <div key={message._id}>
               <div className={`d-flex my-3 ${message.user === user._id && "justify-content-end"}`}>
                 <span style={{ borderRadius: '10px' }} className={`px-3 py-2 ${message.user === user._id ? "bg-primary" : "bg-secondary"}`}>{ReactEmoji.emojify(message.body)}</span>

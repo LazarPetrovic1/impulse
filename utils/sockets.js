@@ -2,6 +2,7 @@ const Chat = require('../models/Chat');
 const Notif = require('../models/Notif');
 const { getText } = require('./notifutils');
 const User = require('../models/User');
+const { getLastX, dateSort } = require('./arr');
 
 const socketHolder = (io) =>
   io.on("connection", (socket) => {
@@ -18,11 +19,35 @@ const socketHolder = (io) =>
       await chat.save()
       io.emit('chatSpawned', chat)
     })
+    socket.on("getInitialChatState", async ({ userId, theirId, page, limit }) => {
+      let chat;
+      let messages = [];
+      chat = await Chat.find({ people: [userId, theirId] })
+      const startIndex = await chat[0].messages.length - (limit * page)
+      const endIndex = await chat[0].messages.length - ((page - 1) * limit)
+      if (!chat || chat.length < 1) chat = await Chat.find({ people: [theirId, userId] })
+      await console.log("STARTINDEX", startIndex);
+      await console.log("ENDINDEX", endIndex);
+      if (!chat) return
+      if (endIndex > 0 && startIndex < 0) messages = await chat[0].messages.slice(0, endIndex)
+      else if (endIndex > 0 && startIndex > 0) messages = await chat[0].messages.slice(startIndex, endIndex)
+      else if (endIndex < 0 && startIndex < 0) messages = []
+      const hasMoreValue = startIndex < chat[0].messages.length
+      const newChat = {
+        people: chat[0].people,
+        messages,
+        date: chat[0].date,
+        _id: chat[0].id
+      }
+      // await console.log("NEWCHAT", newChat);
+      io.emit('gotInitialChatState', { newChat, hasMoreValue })
+    })
     socket.on("message", async ({ _id, body, userId }) => {
       const chat = await Chat.findById(_id)
       await chat.messages.push({ user: userId, body, date: Date.now() })
       await chat.save()
-      io.emit('message', { chatStuff: chat, userId })
+      const message = chat.messages[chat.messages.length - 1]
+      io.emit('message', { message })
     });
     socket.on("getChat", async ({ userId, theirId }) => {
       let chat;
@@ -64,9 +89,15 @@ const socketHolder = (io) =>
       await io.emit('friendAccepted', accepterUser)
     })
     socket.on('rejectFriend', async ({ notifId }) => {
-      await Notif.deleteOne({ id: notifId })
+      await Notif.findByIdAndDelete(notifId)
       await io.emit('friendRejected')
     });
+    socket.on('sendFriendRequest', async ({ senderId, accepterId }) => {
+      const senderUser = await User.findById(senderId)
+      await senderUser.friendRequestsSent.push({ user: accepterId })
+      await senderUser.save()
+      await io.emit("sentFriendRequest", senderUser)
+    })
   })
 
 module.exports = socketHolder;

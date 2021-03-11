@@ -1,27 +1,33 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import ImagePostContainer from '../../styled/ImagePost/ImagePostContainer';
 import LikesAndComments from './LikesAndComments';
+import Comment from './Comment';
 
 function Post({ image, setIsSlider, auth, i, match }) {
   const { user } = auth
-  const { url } = image
+  const { url, comments } = image
 
   return (
-    <Fragment>
-      <ImagePostContainer className="p-2 my-2 d-flex flex-column">
-        <img
-          src={url}
-          style={{ cursor: 'pointer' }}
-          height="auto"
-          width="80%"
-          alt={`Media uploaded by user ${user.firstName}`}
-          onClick={() => setIsSlider([true, i])}
-        />
-      </ImagePostContainer>
-      <LikesAndComments i={i} match={match} />
-    </Fragment>
+    <div style={{ width: "100%" }}>
+      <div>
+        <ImagePostContainer className="p-2 my-2 d-flex flex-column">
+          <img
+            src={url}
+            style={{ cursor: 'pointer' }}
+            height="auto"
+            width="80%"
+            alt={`Media uploaded by user ${user.firstName}`}
+            onClick={() => setIsSlider([true, i])}
+          />
+        </ImagePostContainer>
+        <LikesAndComments i={i} match={match} />
+      </div>
+      <div className="p-2 d-flex flex-column" style={{ width: "80%", margin: "auto" }}>
+        {comments.map(comm => <Comment comm={comm} key={comm._id} />)}
+      </div>
+    </div>
   )
 }
 

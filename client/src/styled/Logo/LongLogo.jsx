@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import longLogo from '../../assets/IMPULSE_LOGOS/photoshop-logos/long.png';
+import longLogo from '../../assets/impulse-logos-redesigned/Impulse_logo_long.png';
 
 const LongLogo = styled.img.attrs(() => ({
   alt: 'Impulse: Make an impact. Change lives.',

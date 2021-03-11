@@ -21,8 +21,30 @@ const ForumPostSchema = new Schema({
     type: String,
     required: true
   },
-  comments: [
-    {
+  savedBy: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'user'
+    }
+  }],
+  comments: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'user'
+    },
+    content: {
+      type: String,
+      required: true
+    },
+    by: {
+      // username
+      type: String
+    },
+    date: {
+      type: Date,
+      default: Date.now
+    },
+    replies: [{
       user: {
         type: Schema.Types.ObjectId,
         ref: 'user'
@@ -34,13 +56,9 @@ const ForumPostSchema = new Schema({
       by: {
         // username
         type: String
-      },
-      date: {
-        type: Date,
-        default: Date.now
       }
-    }
-  ]
+    }]
+  }]
 })
 
 module.exports = ForumPost = model('forumpost', ForumPostSchema)

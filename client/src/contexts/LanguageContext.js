@@ -5,8 +5,13 @@ export const LanguageContext = createContext()
 export function LanguageProvider (props) {
   const [language, setLang] = useState(localStorage.getItem('language') || 'en')
   const changeLanguage = e => {
-    localStorage.setItem('language', e.target.value)
-    setLang(e.target.value)
+    if (e && e.target && e.target.value) {
+      localStorage.setItem('language', e.target.value)
+      setLang(e.target.value)
+    } else {
+      localStorage.setItem('language', e)
+      setLang(e)
+    }
   }
 
   return (

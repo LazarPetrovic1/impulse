@@ -13,10 +13,12 @@ import GuestDashboard from './components/dashboard/GuestDashboard'
 import PrivateRoute from './components/routing/PrivateRoute'
 import ProfileOverview from './components/profile-rest/ProfileOverview'
 import { ThemeProvider } from './contexts/ThemeContext'
+import { FontProvider } from './contexts/FontContext'
 import { LanguageProvider } from './contexts/LanguageContext'
 import { SocketProvider } from './contexts/SocketContext';
 import PageContent from './components/layout/Themes/PageContent'
 import NotFound from './components/layout/NotFound'
+import Upgrade from './components/layout/Upgrade'
 import Forum from './components/ForumRoutes/Forum'
 import AddPost from './components/ForumRoutes/AddPost'
 import ForumPost from './components/ForumRoutes/ForumPost'
@@ -26,6 +28,10 @@ import SocialProfile from './components/SocialRoutes/SocialProfile'
 import Social from './components/SocialRoutes/Social'
 import CreateSocialProfile from './components/SocialRoutes/CreateSocialProfile'
 import Settings from './components/settings/Settings';
+import UploadVideo from './components/VideoRoutes/UploadVideo'
+import Video from './components/VideoRoutes/Video'
+import VideoAll from './components/VideoRoutes/VideoNav/VideoAll'
+import VideoPerson from './components/VideoRoutes/VideoNav/VideoPerson'
 // Redux stuff
 import { Provider } from 'react-redux'
 import store from './store'
@@ -44,40 +50,47 @@ function App () {
 
   return (
     <Provider store={store}>
-      <SocketProvider>
-        <ThemeProvider>
-          <LanguageProvider>
-            <PageContent>
-              <Router>
-                <Nav />
-                <Alert />
-                <Switch>
-                  <Route exact path='/login' component={Login} />
-                  <Route exact path='/register' component={Register} />
-                  <PrivateRoute exact path='/' component={InitialDashboard} />
-                  <PrivateRoute exact path="/settings" component={Settings} />
-                  <PrivateRoute
-                    exact
-                    path='/profile-overview'
-                    component={ProfileOverview}
-                  />
-                  <PrivateRoute exact path='/chat' component={Chat} />
-                  <PrivateRoute exact path='/forum' component={Forum} />
-                  <PrivateRoute exact path='/forum/forum-add-post' component={AddPost} />
-                  <PrivateRoute exact path='/forum/forum-post/:id' component={ForumPost} />
-                  <PrivateRoute exact path='/forum/forum-post/:id/discuss' component={ForumDiscussion} />
-                  <PrivateRoute exact path='/forum/forum-post/:id/edit' component={ForumEdit} />
-                  <PrivateRoute exact path='/social' component={Social} />
-                  <PrivateRoute exact path='/social/social-profile' component={SocialProfile} />
-                  <PrivateRoute exact path='/social/profile/:id' component={GuestDashboard} />
-                  <PrivateRoute exact path='/social/create-social-profile' component={CreateSocialProfile} />
-                  <Route component={NotFound} />
-                </Switch>
-              </Router>
-            </PageContent>
-          </LanguageProvider>
-        </ThemeProvider>
-      </SocketProvider>
+      <FontProvider>
+        <SocketProvider>
+          <ThemeProvider>
+            <LanguageProvider>
+              <PageContent>
+                <Router>
+                  <Nav />
+                  <Alert />
+                  <Switch>
+                    <Route exact path='/login' component={Login} />
+                    <Route exact path='/register' component={Register} />
+                    <PrivateRoute exact path='/' component={InitialDashboard} />
+                    <PrivateRoute exact path="/settings" component={Settings} />
+                    <PrivateRoute
+                      exact
+                      path='/profile-overview'
+                      component={ProfileOverview}
+                    />
+                    <PrivateRoute exact path='/chat' component={Chat} />
+                    <PrivateRoute exact path='/forum' component={Forum} />
+                    <PrivateRoute exact path='/forum/forum-add-post' component={AddPost} />
+                    <PrivateRoute exact path='/forum/forum-post/:id' component={ForumPost} />
+                    <PrivateRoute exact path='/forum/forum-post/:id/discuss' component={ForumDiscussion} />
+                    <PrivateRoute exact path='/forum/forum-post/:id/edit' component={ForumEdit} />
+                    <PrivateRoute exact path='/social' component={Social} />
+                    <PrivateRoute exact path='/social/social-profile' component={SocialProfile} />
+                    <PrivateRoute exact path='/social/profile/:id' component={GuestDashboard} />
+                    <PrivateRoute exact path='/social/create-social-profile' component={CreateSocialProfile} />
+                    <PrivateRoute exact path='/upgrade' component={Upgrade} />
+                    <PrivateRoute exact path='/videos-all' component={VideoAll} />
+                    <PrivateRoute exact path='/videos-mine' component={VideoPerson} />
+                    <PrivateRoute exact path='/videos/:id' component={Video} />
+                    <PrivateRoute exact path='/video/upload' component={UploadVideo} />
+                    <Route component={NotFound} />
+                  </Switch>
+                </Router>
+              </PageContent>
+            </LanguageProvider>
+          </ThemeProvider>
+        </SocketProvider>
+      </FontProvider>
     </Provider>
   )
 }

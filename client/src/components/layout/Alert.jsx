@@ -11,6 +11,7 @@ const Alert = ({ alerts }) =>
       className={`alert alert-${alert.alertType} alert-dismissible fade show`}
       role="alert"
       key={alert.id}
+      style={{ pointerEvents: "all" }}
     >
       {alert.msg}
       <button

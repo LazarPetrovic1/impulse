@@ -13,7 +13,6 @@ function Notification({ not, auth }) {
   const addFriend = async () => {
     if (not.type === 'friendrequest') {
       const senderUser = await getUserByUsername(not.text.split("@")[1].split(")")[0])
-      await console.log(senderUser);
       await socket.emit('acceptFriend', { senderId: senderUser._id, accepterId: auth.user._id })
       await socket.emit("rejectFriend", { notifId: not._id }) // deletes notif
       await socket.on('friendAccepted', (accepterUser) => window.location.reload())
@@ -26,22 +25,24 @@ function Notification({ not, auth }) {
   }
 
   return (
-    <div className={`m-0 p-2 d-flex justify-content-center align-items-center ${!not.read && "bg-info text-light"}`}>
+    <div className={`m-0 p-2 d-flex justify-content-center align-items-center border-bottom ${!not.read && "bg-info text-light"}`}>
       <i className="fas fa-envelope-open px-3" />
-      <p className="m-0">
-        <span className="pr-2">{not.text}</span>
-        (<Moment format="DD.MM.YYYY">{not.date}</Moment>)
-      </p>
-      {not.type === 'friendrequest' && (
-        <div>
-          <button className="btn btn-success" onClick={addFriend}>
-            <i className="fas fa-check" />
-          </button>
-          <button className="btn btn-danger">
-            <i className="fas fa-times" />
-          </button>
-        </div>
-      )}
+      <div className="d-flex flex-column">
+        <p className="m-0">
+          <span className="pr-2">{not.text}</span>
+          (<Moment format="DD.MM.YYYY">{not.date}</Moment>)
+        </p>
+        {not.type === 'friendrequest' && (
+          <div className="pt-2 d-flex justify-content-around">
+            <button className="btn btn-success" onClick={addFriend}>
+              <i className="fas fa-check" />
+            </button>
+            <button className="btn btn-danger" onClick={rejectFriend}>
+              <i className="fas fa-times" />
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

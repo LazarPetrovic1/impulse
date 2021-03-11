@@ -1,8 +1,10 @@
 import React, { useContext, useEffect } from 'react'
 import { ThemeContext } from '../../../contexts/ThemeContext'
+import { FontContext } from '../../../contexts/FontContext'
 
 function PageContent (props) {
   const { isDarkTheme, toggleTheme } = useContext(ThemeContext)
+  const { isLegacyFont } = useContext(FontContext)
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -29,7 +31,8 @@ function PageContent (props) {
     padding: 0,
     position: 'relative',
     zIndex: 1,
-    pointerEvents: "none"
+    pointerEvents: "none",
+    fontFamily: `${isLegacyFont ? "Impulse" : "Roboto"}, sans-serif`
   }
   return <div style={styles}>{props.children}</div>
 }

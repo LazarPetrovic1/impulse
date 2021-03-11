@@ -81,6 +81,16 @@ const UserSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'user'
     }
+  }],
+  friendRequestsSent: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'user'
+    }
+  }],
+  profileImages: [{
+    url: String,
+    content: String
   }]
 })
 

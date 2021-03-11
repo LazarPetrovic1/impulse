@@ -5,15 +5,20 @@ import {
   // eslint-disable-next-line
   DELETE_IMAGE,
   IMAGE_ERROR,
+  WIPE_IMAGES
 } from './types'
 
-export const getImages = (id) => async dispatch => {
+export const wipeImages = () => async dispatch => dispatch({ type: WIPE_IMAGES })
+
+export const getImages = (id, page, limit) => async dispatch => {
   try {
-    const res = await axios.get(`/api/imageposts/${id}`)
+    const res = await axios.get(`/api/imageposts/${id}?page=${page}&limit=${limit}`)
+    await console.log(res.data);
     dispatch({
       type: GET_IMAGES,
-      payload: res.data
+      payload: res.data.results
     })
+    return res.data.next.hasMore
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
@@ -22,7 +27,7 @@ export const getImages = (id) => async dispatch => {
   }
 }
 
-export const createImage = (base64EncodedImage, content) => async (dispatch, getState) => {
+export const createImage = (base64EncodedImage, content) => async dispatch => {
   try {
     const body = JSON.stringify({ data: base64EncodedImage, content })
     const config = {
@@ -60,6 +65,28 @@ export const addComment = ({ id, text, ownedById }) => async dispatch => {
     })
   }
 }
+
+export const impulsify = (postId, ownedById, likerId) => async dispatch => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+    const body = JSON.stringify({ likerId })
+    await axios.put(`/api/imageposts/impulse/${postId}`, body, config)
+    const res = await axios.get(`/api/imageposts/${ownedById}`)
+    dispatch({
+      type: GET_IMAGES,
+      payload: res.data
+    })
+  } catch (e) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: e.message }
+    })
+  }
+};
 
 export const like = (postId, ownedById, likerId) => async dispatch => {
   try {

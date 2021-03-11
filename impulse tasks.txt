@@ -1,0 +1,128 @@
+------------------ MY TASKS HERE ------------------
+
+M          M        II        N     N        EEEEEE
+M M      M M        II        N N   N        EE
+M  M    M  M        II        N  N  N        EEEEEE
+M   M  M   M        II        N   N N        EE
+M    M     M        II        N     N        EEEEEE
+
+------------------ MY TASKS HERE ------------------
+
+Implement pagination
+Implement pagination for user-posted content and limit to 15 posts max
+Backend (general)
+
+Favourite Forum Post
+Add the ability to favourite a forum post, which will appear in the forum side-navigation, under the "New Post" button
+Fullstack (general)
+
+Forum discussion overhaul
+After adding forum discussion routes, make the discussion on the same route instead of on different ones. Copy-pasting should do it!
+Frontend (forumroutes)
+
+Stop the rape
+Add pagination to chat - show the most recent posts and earlier ones if the user scrolls back enough
+Fullstack (new features)
+
+Putting it all together
+Link notifications to their respective points of origin - to an endorsed/judged post or someone's account if they sent a friend request
+Frontend (notifications)
+
+Break the mold
+Do a model/schema overhaul - ongoing
+Backend (general)
+
+--------------------- THEIR TASKS HERE ---------------------
+
+TTTTTTTT     H    H      EEEEEE      II      RRRR      SSSS
+   TT        H    H      EE          II      R   R     SS
+   TT        HHHHHH      EEEEEE      II      RRRR      SSSS
+   TT        H    H      EE          II      R  R        SS
+   TT        H    H      EEEEEE      II      R   R     SSSS
+
+--------------------- THEIR TASKS HERE ---------------------
+
+Search & discovery
+Improve the Search & Discovery algorithm (currently just in Social Routes)
+Backend (general)
+
+Parlez-vous français?
+Add French language to Impulse
+Fullstack (new features)
+
+Search & discovery 2 - Electric Boogaloo
+Add or revamp Search & discovery functionality in forums
+Fullstack (new features)
+
+Love-hate relationship
+Add endorsements (likes), judgements (dislikes) to forum routes to be used by Search & discovery algorithm
+Fullstack (new features)
+
+Target practice
+Write unit, integration, systems and acceptance tests (if applicable) for everything
+General bug fixes
+
+------------------ DONE TASKS HERE ------------------
+
+DDD             OO            N     N           EEEEE
+D  D           O  O           N N   N           E
+D  D           O  O           N  N  N           EEEEE
+D  D           O  O           N   N N           E
+DDD             OO            N     N           EEEEE
+
+------------------ DONE TASKS HERE ------------------
+
+!!!DONE!!!
+Wait a minute
+Add a "Friend request sent" step between "Add friend" and "Friends" steps
+Backend (users)
+
+!!!DONE!!!
+Fits like a glove
+If the image takes full height of the screen, make it smaller in order to make a comment <input /> fit to screen (or add overflow)
+Frontend (styling)
+
+!!!DONE!!!
+Forum text editor
+Style the text editor used for making forums accordingly (add border around it & change blinking cursor & text color according to theme)
+Frontend (styling)
+
+!!!DONE!!!
+Phantom friend request
+Make friend request disappear after either accepting or rejecting. If accepted, add to friends. If rejected, prompt user to block the sender if they wish
+Fullstack (general)
+
+!!!DONE!!!
+Impulsive behaviour
+Add Impulsion (custom reaction) to endorsements & judgements (Impulse's likes & dislikes)
+Fullstack (new features)
+
+!!!DONE!!!
+Ultimate transparency
+Show comments & replies to comments under images & other posts
+Frontend (general)
+
+!!!DONE!!!
+We're all unique
+Fix overlapping routes in Express.js (e.g /:id and /:username are interpreted as the same route)
+Backend (general)
+
+!!!DONE!!!
+Is that you?
+Add the ability to post a profile picture, as well as a slider to list all previous profile images (or not - friends' call)
+Fullstack (new features)
+
+!!!DONE!!!
+Add popup alerts on action success and fail
+After an action (e.g signing up, registering, adding a friend) succeeds, show a green popup with a success message. Otherwise, show a red popup with a failure message.
+Fullstack (general)
+
+!!!DONE!!!
+Add videos
+Implement capabilities to add videos to Impulse
+Frontend (videoroutes)
+
+!!!DONE!!!
+Forum discussion
+Add forum discussion route with CRUD functionality, for starters
+Frontend (new routes)

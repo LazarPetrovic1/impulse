@@ -2,7 +2,8 @@ import {
   CREATE_IMAGE,
   GET_IMAGES,
   DELETE_IMAGE,
-  IMAGE_ERROR
+  IMAGE_ERROR,
+  WIPE_IMAGES
 } from '../actions/types';
 
 const initialState = {
@@ -15,6 +16,8 @@ const initialState = {
 export default (state = initialState, action) => {
   const { type, payload } = action
   switch (type) {
+    case WIPE_IMAGES:
+      return initialState
     case CREATE_IMAGE:
       return {
         ...state,
@@ -25,7 +28,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        images: payload
+        images: [...state.images, ...payload]
       }
     case DELETE_IMAGE:
       return {

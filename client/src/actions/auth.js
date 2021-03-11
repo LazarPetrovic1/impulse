@@ -1,9 +1,11 @@
 import axios from "axios";
 import { setAlert } from "./alert";
 import {
+  ADD_PROFILE_IMAGE,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
   AUTH_ERROR,
+  IMAGE_ERROR,
   USER_LOADED,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
@@ -89,10 +91,9 @@ export const register = ({
 
     dispatch(loadUser());
   } catch (e) {
-    console.warn(e.message); // Console warning
     const errors = e.response.data.errors;
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(e.message, "danger")));
+      errors.forEach(error => dispatch(setAlert(error.msg, "danger")));
     }
     dispatch({
       type: REGISTER_FAIL
@@ -120,6 +121,7 @@ export const login = ({email, username, phone, password}) => async dispatch => {
 
   try {
     const res = await axios.post('/api/auth', body, config)
+    await console.log(res);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data
@@ -127,7 +129,10 @@ export const login = ({email, username, phone, password}) => async dispatch => {
 
     dispatch(loadUser())
   } catch (e) {
-    console.warn(e)
+    const errors = e.response.data.errors;
+    if (errors) {
+      errors.forEach(error => dispatch(setAlert(error.msg, "danger")));
+    }
     dispatch({
       type: LOGIN_FAIL
     })
@@ -145,3 +150,24 @@ export const imageUploadDispatch = (item) => dispatch => {
     payload: item
   });
 }
+
+export const uploadProfileImage = (base64EncodedImage, content) => async dispatch => {
+  try {
+    const body = JSON.stringify({ data: base64EncodedImage, content })
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+    const res = await axios.put('/api/auth/profileImage', body, config)
+    dispatch({
+      type: ADD_PROFILE_IMAGE,
+      payload: res.data
+    })
+  } catch (e) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: e.message }
+    })
+  }
+};
