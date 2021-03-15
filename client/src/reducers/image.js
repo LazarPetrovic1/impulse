@@ -3,7 +3,10 @@ import {
   GET_IMAGES,
   DELETE_IMAGE,
   IMAGE_ERROR,
-  WIPE_IMAGES
+  WIPE_IMAGES,
+  LIKE_IMAGE,
+  DISLIKE_IMAGE,
+  IMPULSIFY_IMAGE
 } from '../actions/types';
 
 const initialState = {
@@ -35,6 +38,33 @@ export default (state = initialState, action) => {
         ...state,
         loading: false,
         images: state.images.filter(img => img._id !== payload)
+      }
+    case LIKE_IMAGE:
+      return {
+        ...state,
+        loading: false,
+        images: state.images.map(img => img._id === payload.id ? {
+          ...img,
+          endorsements: payload.endorsements
+        } : img)
+      }
+    case DISLIKE_IMAGE:
+      return {
+        ...state,
+        loading: false,
+        images: state.images.map(img => img._id === payload.id ? {
+          ...img,
+          judgements: payload.judgements
+        } : img)
+      }
+    case IMPULSIFY_IMAGE:
+      return {
+        ...state,
+        loading: false,
+        images: state.images.map(img => img._id === payload.id ? {
+          ...img,
+          impulsions: payload.impulsions
+        } : img)
       }
     case IMAGE_ERROR:
       return {

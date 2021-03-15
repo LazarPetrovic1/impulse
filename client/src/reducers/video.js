@@ -9,7 +9,8 @@ import {
   VIDEO_EDIT_REPLY,
   VIDEO_DELETE_REPLY,
   VIDEO_EDIT_COMMENT,
-  VIDEO_GET_COMMENTS
+  VIDEO_GET_COMMENTS,
+  VIDEO_SEARCH
 } from '../actions/types';
 
 const initialState = {
@@ -84,6 +85,12 @@ export default (state = initialState, action) => {
         ...state,
         error: payload,
         loading: false
+      }
+    case VIDEO_SEARCH:
+      return {
+        ...state,
+        loading: false,
+        videos: state.videos.filter(vid => vid.name.includes(payload))
       }
     default:
       return state

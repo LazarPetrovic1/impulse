@@ -3,6 +3,7 @@ const Notif = require('../models/Notif');
 const { getText } = require('./notifutils');
 const User = require('../models/User');
 const { getLastX, dateSort } = require('./arr');
+const cloudinary = require('./cloudinary')
 
 const socketHolder = (io) =>
   io.on("connection", (socket) => {
@@ -26,8 +27,6 @@ const socketHolder = (io) =>
       const startIndex = await chat[0].messages.length - (limit * page)
       const endIndex = await chat[0].messages.length - ((page - 1) * limit)
       if (!chat || chat.length < 1) chat = await Chat.find({ people: [theirId, userId] })
-      await console.log("STARTINDEX", startIndex);
-      await console.log("ENDINDEX", endIndex);
       if (!chat) return
       if (endIndex > 0 && startIndex < 0) messages = await chat[0].messages.slice(0, endIndex)
       else if (endIndex > 0 && startIndex > 0) messages = await chat[0].messages.slice(startIndex, endIndex)
@@ -39,15 +38,26 @@ const socketHolder = (io) =>
         date: chat[0].date,
         _id: chat[0].id
       }
-      // await console.log("NEWCHAT", newChat);
       io.emit('gotInitialChatState', { newChat, hasMoreValue })
     })
-    socket.on("message", async ({ _id, body, userId }) => {
-      const chat = await Chat.findById(_id)
-      await chat.messages.push({ user: userId, body, date: Date.now() })
-      await chat.save()
-      const message = chat.messages[chat.messages.length - 1]
-      io.emit('message', { message })
+    socket.on("message", async ({ _id, body, userId, isMedia, media }) => {
+      try {
+        const chat = await Chat.findById(_id)
+        let urls = []
+        if (isMedia) {
+          for await (const item of media) {
+            const uploadResponse = await cloudinary.uploader.upload(item.res, { resource_type: item.type })
+            await urls.push({ name: item.name, type: item.type, src: uploadResponse.url})
+          }
+          await chat.messages.push({ user: userId, body, date: Date.now(), isMedia, media: urls })
+        }
+        else await chat.messages.push({ user: userId, body, date: Date.now(), isMedia: false, media: [] })
+        await chat.save()
+        const message = chat.messages[chat.messages.length - 1]
+        io.emit('message', { message })
+      } catch (e) {
+        console.warn(e);
+      }
     });
     socket.on("getChat", async ({ userId, theirId }) => {
       let chat;

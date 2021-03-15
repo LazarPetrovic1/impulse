@@ -91,7 +91,8 @@ const UserSchema = new Schema({
   profileImages: [{
     url: String,
     content: String
-  }]
+  }],
+  hidden: { type: String }
 })
 
 module.exports = User = model('user', UserSchema)

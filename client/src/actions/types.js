@@ -39,6 +39,9 @@ export const FORUM_POST_DISMISS = 'FORUM_POST_DISMISS'
 export const FORUM_ERROR = 'FORUM_ERROR'
 // Images
 export const CREATE_IMAGE = "CREATE_IMAGE";
+export const LIKE_IMAGE = "LIKE_IMAGE";
+export const DISLIKE_IMAGE = "DISLIKE_IMAGE";
+export const IMPULSIFY_IMAGE = "IMPULSIFY_IMAGE";
 export const GET_IMAGES = "GET_IMAGES";
 export const DELETE_IMAGE = "DELETE_IMAGE";
 export const IMAGE_ERROR = "IMAGE_ERROR";
@@ -58,6 +61,7 @@ export const VIDEO_GET_REPLIES = 'VIDEO_GET_REPLIES'
 export const VIDEO_GET_REPLY = 'VIDEO_GET_REPLY'
 export const VIDEO_EDIT_REPLY = 'VIDEO_EDIT_REPLY'
 export const VIDEO_DELETE_REPLY = 'VIDEO_DELETE_REPLY'
+export const VIDEO_SEARCH = 'VIDEO_SEARCH'
 export const VIDEO_ERROR = "VIDEO_ERROR";
 // Notifications
 export const GET_NOTIFS = "GET_NOTIFS";

@@ -36,7 +36,7 @@ function Comment({ comm }) {
       <div name="content" className="my-2">
         <p className="m-0">{comm.text}</p>
         <p className="m-0" name="date" style={{ fontSize: "12px" }}>
-          On <Moment format="DD.MM.YYYY">{comm.date}</Moment>
+          On <Moment className="pl-2" format="DD.MM.YYYY">{comm.date}</Moment>
         </p>
       </div>
     </CommentContainer>

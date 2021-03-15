@@ -261,7 +261,7 @@ function SettingsTheme() {
           {_network[language]}
         </label>
       </div>
-      <div className="form-check form-check-inline">
+      <div className="form-check form-check-inline pr-4">
         <input
           className="form-check-input"
           type="radio"

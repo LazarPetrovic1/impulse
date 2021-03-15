@@ -53,6 +53,8 @@ router.post(
 
 router.get("/:id", user.getUserById)
 
+router.post("/hide/:id", user.hideUsersInfo)
+
 router.post("/search", user.searchUsers)
 
 router.get("/postedby/:id", user.getAuthor)

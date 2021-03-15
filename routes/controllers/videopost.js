@@ -17,7 +17,10 @@ async function uploadVideo(req, res) {
       comments: [],
       endorsements: [],
       judgements: [],
-      impulsions: []
+      impulsions: [],
+      isVideo: true,
+      meta: req.body.meta,
+      category: req.body.category
     });
     const post = await newPost.save();
     res.json(post);

@@ -18,7 +18,13 @@ const ChatPostSchema = new Schema({
     date: {
       type: Date,
       default: Date.now
-    }
+    },
+    isMedia: { type: Boolean },
+    media: [{
+      name: { type: String },
+      type: { type: String },
+      src: { type: String },
+    }]
   }],
   date: {
     type: Date,

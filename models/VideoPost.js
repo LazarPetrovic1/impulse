@@ -6,10 +6,16 @@ const VideoPostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "user"
   },
+  isVideo: {
+    type: Boolean,
+    default: true
+  },
   name: {
     type: String,
     required: true
   },
+  category: { type: String },
+  views: { type: Number },
   description: {
     type: String,
     required: true
@@ -24,6 +30,11 @@ const VideoPostSchema = new Schema({
     default: Date.now
   },
   url: { type: String },
+  meta: {
+    duration: { type: Number },
+    width: { type: Number },
+    height: { type: Number },
+  },
   comments: [{
     user: {
       type: Schema.Types.ObjectId,

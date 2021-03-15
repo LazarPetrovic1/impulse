@@ -5,7 +5,7 @@ import { policycomponent } from '../../utils/langObject';
 const {
   _contentpolicy,
   _one,
-  // _two,
+  _two,
   _three,
   _four,
   _five,
@@ -35,7 +35,7 @@ function ContentPolicy({ settingsBarWidth }) {
       <div className="my-4 px-3">
         <ol>
           <li className="p-2" style={{ fontSize: "1.4rem" }}>{_one[language]}</li>
-          {/* <li className="p-2" style={{ fontSize: "1.4rem" }}>{_two[language]}</li> */}
+          <li className="p-2" style={{ fontSize: "1.4rem" }}>{_two[language]}</li>
           <li className="p-2" style={{ fontSize: "1.4rem" }}>{_three[language]}</li>
           <li className="p-2" style={{ fontSize: "1.4rem" }}>{_four[language]}</li>
           <li className="p-2" style={{ fontSize: "1.4rem" }}>{_five[language]}</li>

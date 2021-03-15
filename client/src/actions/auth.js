@@ -39,6 +39,31 @@ export const loadUser = () => async dispatch => {
   }
 };
 
+export const hideSelected = (hidden, id) => async dispatch => {
+  const body = JSON.stringify({ hidden })
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  };
+  try {
+    const res = await axios.post(`/api/users/hide/${id}`, body, config)
+    dispatch({
+      type: USER_LOADED,
+      payload: res.data
+    })
+  } catch (e) {
+    console.warn(e.message); // Console warning
+    dispatch({
+      type: CLEAR_PROFILE
+    });
+
+    dispatch({
+      type: AUTH_ERROR
+    });
+  }
+};
+
 // Register a user
 export const register = ({
   firstName,

@@ -10,6 +10,10 @@ const ImagePostSchema = new Schema({
     type: String,
     required: true
   },
+  isVideo: {
+    type: Boolean,
+    default: false
+  },
   url: { type: String },
   date: {
     type: Date,

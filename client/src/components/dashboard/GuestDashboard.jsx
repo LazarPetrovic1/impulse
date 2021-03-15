@@ -83,13 +83,6 @@ function GuestDashboard (props) {
     // eslint-disable-next-line
   }, [])
 
-  // useEffect(() => {
-  //   if (guest) {
-  //     getImages(match.params.id)
-  //   }
-  //   // eslint-disable-next-line
-  // }, [guest])
-
   const addFriend = (e) => {
     sendNotif({
       userId: match.params.id,
@@ -101,7 +94,9 @@ function GuestDashboard (props) {
     sendFriendRequest({ senderId: auth.user._id, accepterId: match.params.id })
   }
 
-  return !guest ? <Spinner /> : (
+  console.log("GEST", guest);
+
+  return guest && guest.hidden ? (
     <div className="container pt-5" style={{ pointerEvents: "all" }}>
       <div className="text-center">
         <img
@@ -126,24 +121,37 @@ function GuestDashboard (props) {
         </button>
       </div>
       <div className="p-5">
-        <h4 className="my-3">
-          <i className="fas fa-map-marker pr-3"></i>From: {guest.zip}, {guest.city}, {guest.country}
-        </h4>
-        <h4 className="my-3">
-          <i className="fas fa-envelope pr-3"></i>E-mail: {guest.email}
-        </h4>
-        <h4 className="my-3">
-          <i className={`pr-3 fas fa-${guest.sex === 'm' ? "mars" : guest.sex === 'f' ? "venus" : "genderless"}`} />
-          Sex: {guest.sex === 'm' ? "Male" : guest.sex === 'f' ? "Female" : '<Redacted>'}
-        </h4>
-        <h4 className="my-3">
-          <i className="fas fa-birthday-cake pr-3"></i>
-          Date of birth: <Moment format="DD.MM.YYYY">{guest.dob}</Moment>
-        </h4>
-        <h4 className="my-3">
-          <i className="fas fa-info-circle pr-3"></i>
-          Bio: {guest.bio}
-        </h4>
+        {!guest.hidden.includes("zip") && !guest.hidden.includes("country") && !guest.hidden.includes("city") && (
+          <h4 className="my-3">
+            <i className="fas fa-map-marker pr-3" />
+            From: {guest.hidden.includes("zip") ? "" : `${guest.zip},`}
+            {guest.hidden.includes("city") ? "" : `${guest.city},`}
+            {guest.hidden.includes("country") ? "" : guest.country}
+          </h4>
+        )}
+        {!guest.hidden.includes("email") && (
+          <h4 className="my-3">
+            <i className="fas fa-envelope pr-3"></i>E-mail: {guest.email}
+          </h4>
+        )}
+        {!guest.hidden.includes("sex") && (
+          <h4 className="my-3">
+            <i className={`pr-3 fas fa-${guest.sex === 'm' ? "mars" : guest.sex === 'f' ? "venus" : "genderless"}`} />
+            Sex: {guest.sex === 'm' ? "Male" : guest.sex === 'f' ? "Female" : '<Redacted>'}
+          </h4>
+        )}
+        {!guest.hidden.includes("dob") && (
+          <h4 className="my-3">
+            <i className="fas fa-birthday-cake pr-3"></i>
+            Date of birth: <Moment format="DD.MM.YYYY">{guest.dob}</Moment>
+          </h4>
+        )}
+        {!guest.hidden.includes("bio") && (
+          <h4 className="my-3">
+            <i className="fas fa-info-circle pr-3"></i>
+            Bio: {guest.bio}
+          </h4>
+        )}
       </div>
       <DashCenter justification="flex-start" maxw="1300px" style={{ pointerEvents: "all" }}>
         {
@@ -167,7 +175,7 @@ function GuestDashboard (props) {
         )
       }
     </div>
-  )
+  ) : <Spinner />
 }
 
 GuestDashboard.propTypes = {

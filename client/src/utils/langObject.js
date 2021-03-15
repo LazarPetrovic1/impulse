@@ -359,6 +359,11 @@ export const settingscomponent = {
     sr: "Politika sadrzaja",
     de: "Inhaltsrichtlinie"
   },
+  _accountinformation: {
+    en: "Account information",
+    sr: "Informacije o nalogu",
+    de: "Kontoinformationen"
+  },
   _item: {
     en: "Item",
     sr: "Stavka",
@@ -506,9 +511,9 @@ export const policycomponent = {
     de: "Es gibt keine Förderung der Unabhängigkeit der autonomen Provinz Kosovo und (des chinesischen Taipeh)."
   },
   _two: {
-    en: "There is no certain cross/swastika that causes bad feelings in Slavic people. Accounts that support the views of Balkan and other fascist and nationalist ideologies will be removed immediately without the possibility of account restoration.",
-    sr: "Nema odredjenog krsta/svastike koji izaziva losa osecanja kod Slovena. Nalozi koji podrzavaju poglede Balkanskih i drugih fasistickih i nacionalistickih ideologija ce biti ugaseni istog trenutka bez mogucnosti povratka naloga.",
-    de: "Kein bestimmtes Kreuz / Hakenkreuz, das bei slawischen Menschen schlechte Gefühle hervorruft. Konten, die die Ansichten des Balkans und anderer faschistischer und nationalistischer Ideologien unterstützen, werden sofort entfernt, ohne dass eine Wiederherstellung der Konten möglich ist."
+    en: "Promotion of fascism and nazism is prohibited. People caught engaging in such activities will be reported to the police.",
+    sr: "Promocija fasizma i nacizma je zabranjena. Vlasnici naloga koji su uhvaceni u ovim delima ce biti prijavljeni policiji.",
+    de: "Die Förderung von Faschismus und Nazismus ist verboten. Personen, die bei solchen Aktivitäten erwischt wurden, werden der Polizei gemeldet."
   },
   _three: {
     en: "Violent content must emphasize that it is violent content. Sexual content must emphasize that it is sexual content.",

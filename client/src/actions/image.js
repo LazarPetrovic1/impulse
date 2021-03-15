@@ -5,7 +5,10 @@ import {
   // eslint-disable-next-line
   DELETE_IMAGE,
   IMAGE_ERROR,
-  WIPE_IMAGES
+  WIPE_IMAGES,
+  LIKE_IMAGE,
+  DISLIKE_IMAGE,
+  IMPULSIFY_IMAGE
 } from './types'
 
 export const wipeImages = () => async dispatch => dispatch({ type: WIPE_IMAGES })
@@ -74,11 +77,10 @@ export const impulsify = (postId, ownedById, likerId) => async dispatch => {
       }
     }
     const body = JSON.stringify({ likerId })
-    await axios.put(`/api/imageposts/impulse/${postId}`, body, config)
-    const res = await axios.get(`/api/imageposts/${ownedById}`)
+    const res = await axios.put(`/api/imageposts/impulse/${postId}`, body, config)
     dispatch({
-      type: GET_IMAGES,
-      payload: res.data
+      type: IMPULSIFY_IMAGE,
+      payload: { impulsions: res.data, id: postId }
     })
   } catch (e) {
     dispatch({
@@ -96,11 +98,10 @@ export const like = (postId, ownedById, likerId) => async dispatch => {
       }
     }
     const body = JSON.stringify({ likerId })
-    await axios.put(`/api/imageposts/like/${postId}`, body, config)
-    const res = await axios.get(`/api/imageposts/${ownedById}`)
+    const res = await axios.put(`/api/imageposts/like/${postId}`, body, config)
     dispatch({
-      type: GET_IMAGES,
-      payload: res.data
+      type: LIKE_IMAGE,
+      payload: { endorsements: res.data, id: postId }
     })
   } catch (e) {
     dispatch({
@@ -118,11 +119,10 @@ export const dislike = (postId, ownedById, likerId) => async dispatch => {
       }
     }
     const body = JSON.stringify({ likerId })
-    await axios.put(`/api/imageposts/dislike/${postId}`, body, config)
-    const res = await axios.get(`/api/imageposts/${ownedById}`)
+    const res = await axios.put(`/api/imageposts/dislike/${postId}`, body, config)
     dispatch({
-      type: GET_IMAGES,
-      payload: res.data
+      type: DISLIKE_IMAGE,
+      payload: { judgements: res.data, id: postId }
     })
   } catch (e) {
     dispatch({

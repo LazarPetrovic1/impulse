@@ -58,7 +58,7 @@ function Nav (props) {
             </div>
           </div>
           {dropdown && (
-            <div className="position-absolute m-0 p-0" style={{ minWidth: "300px" }}>
+            <div className="position-absolute m-0 p-0" style={{ minWidth: "300px", zIndex: 10 }}>
               {notifs && notifs.map(not => (
                 <Notification not={not} key={not._id} />
               ))}

@@ -11,7 +11,6 @@ import Alert from './components/layout/Alert'
 import InitialDashboard from './components/dashboard/InitialDashboard'
 import GuestDashboard from './components/dashboard/GuestDashboard'
 import PrivateRoute from './components/routing/PrivateRoute'
-import ProfileOverview from './components/profile-rest/ProfileOverview'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { FontProvider } from './contexts/FontContext'
 import { LanguageProvider } from './contexts/LanguageContext'
@@ -63,11 +62,6 @@ function App () {
                     <Route exact path='/register' component={Register} />
                     <PrivateRoute exact path='/' component={InitialDashboard} />
                     <PrivateRoute exact path="/settings" component={Settings} />
-                    <PrivateRoute
-                      exact
-                      path='/profile-overview'
-                      component={ProfileOverview}
-                    />
                     <PrivateRoute exact path='/chat' component={Chat} />
                     <PrivateRoute exact path='/forum' component={Forum} />
                     <PrivateRoute exact path='/forum/forum-add-post' component={AddPost} />
@@ -81,8 +75,8 @@ function App () {
                     <PrivateRoute exact path='/upgrade' component={Upgrade} />
                     <PrivateRoute exact path='/videos-all' component={VideoAll} />
                     <PrivateRoute exact path='/videos-mine' component={VideoPerson} />
-                    <PrivateRoute exact path='/videos/:id' component={Video} />
                     <PrivateRoute exact path='/video/upload' component={UploadVideo} />
+                    <PrivateRoute exact path='/videos/:id' component={Video} />
                     <Route component={NotFound} />
                   </Switch>
                 </Router>

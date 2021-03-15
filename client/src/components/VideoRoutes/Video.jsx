@@ -15,6 +15,7 @@ import { getUserByUsername } from '../../utils/users';
 import VideoComment from './VideoMisc/VideoComment';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { sendNotif } from '../../actions/notifs';
+import truncate from 'truncate';
 
 const maxw = { maxWidth: "1280px" }
 
@@ -34,6 +35,7 @@ function Video({
   const [byUser, setByUser] = useState(null)
   const [comment, setComment] = useState("")
   const { language } = useContext(LanguageContext)
+  const [seeMore, setSeeMore] = useState(false)
 
   useEffect(() => {
     (async function() {
@@ -190,6 +192,31 @@ function Video({
                 </span>
               </div>
             </div>
+          </div>
+          <div className="d-flex flex-column">
+            {video.video.description && (
+              <article>
+                <div className="my-3 lead">
+                  {
+                    seeMore ?
+                    video.video.description :
+                    truncate(video.video.description, 130)
+                  }
+                </div>
+                {video.video.description.length >= 130 && (
+                  <button
+                    className="btn btn-block btn-outline-secondary my-3 font-weight-bold"
+                    onClick={() => setSeeMore(!seeMore)}
+                    style={{ letterSpacing: "1.5px" }}
+                  >
+                    {seeMore ? "See less" : "See more"}
+                  </button>
+                )}
+                {video.video.category && (
+                  <h4 className="text-secondary my-3">Category: {video.video.category}</h4>
+                )}
+              </article>
+            )}
           </div>
           <div className="shadow border border-secondary p-3 rounded">
             <Link

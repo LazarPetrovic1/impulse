@@ -1,7 +1,15 @@
-import React, { Fragment } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { searchVideos, getUsersVideo, getAllVideos } from '../../actions/video';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-function Videos({ location }) {
+function Videos({ location, searchVideos, getUsersVideo, getAllVideos }) {
+  const [search, setSearch] = useState("")
+  const onSearch = (e) => {
+    setSearch(e.target.value);
+    searchVideos(e.target.value, location.pathname)
+  }
   return (
     <div className="container">
       <nav>
@@ -25,8 +33,28 @@ function Videos({ location }) {
           </li>
         </ul>
       </nav>
+      <div className="d-flex mb-4 mt-2">
+        <input
+          type="search"
+          value={search}
+          onChange={onSearch}
+          className="form-control"
+          placeholder="Type a message"
+        />
+        {/* <button className="btn btn-secondary" type="submit">
+          <i className="fas fa-search" />
+        </button> */}
+      </div>
     </div>
   )
 }
 
-export default Videos;
+Videos.propTypes = {
+  // video: PropTypes.object.isRequired,
+  searchVideos: PropTypes.func.isRequired,
+  getUsersVideo: PropTypes.func.isRequired,
+  getAllVideos: PropTypes.func.isRequired,
+}
+
+// const mapStateToProps = state => ({ video: state.video })
+export default connect(null, { searchVideos, getUsersVideo, getAllVideos })(Videos);

@@ -9,7 +9,8 @@ import {
   VIDEO_EDIT_REPLY,
   VIDEO_DELETE_REPLY,
   VIDEO_EDIT_COMMENT,
-  VIDEO_GET_COMMENTS
+  VIDEO_GET_COMMENTS,
+  VIDEO_SEARCH
 } from './types';
 import axios from 'axios'
 
@@ -58,9 +59,9 @@ export const getAllVideos = () => async dispatch => {
   }
 };
 
-export const createVideo = (base64EncodedVideo, name, description) => async dispatch => {
+export const createVideo = (base64EncodedVideo, name, description, meta, category) => async dispatch => {
   try {
-    const body = JSON.stringify({ data: base64EncodedVideo, name, description })
+    const body = JSON.stringify({ data: base64EncodedVideo, name, description, meta, category })
     const config = {
       headers: {
         "Content-Type": "application/json"
@@ -272,6 +273,21 @@ export const videoEditReplyToComment = (id, comment_id, reply_id, replyText) => 
   } catch (e) {
     console.warn(e.message)
     dispatch({ type: VIDEO_ERROR })
+  }
+};
+
+export const searchVideos = (val, pathname) => dispatch => {
+  if (val.length < 2) {
+    if (pathname === "/videos-all") {
+      dispatch(getAllVideos())
+    } else if (pathname === "/videos-mine") {
+      dispatch(getUsersVideo("mine"))
+    }
+  } else {
+    dispatch({
+      type: VIDEO_SEARCH,
+      payload: val
+    })
   }
 };
 

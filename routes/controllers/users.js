@@ -42,6 +42,18 @@ async function getUserById(req, res) {
   }
 }
 
+async function hideUsersInfo(req, res) {
+  try {
+    const user = await User.findById(req.params.id)
+    user.hidden = req.body.hidden
+    await user.save()
+    return res.json(user)
+  } catch (e) {
+    console.error(e.message)
+    res.status(500).send('Internal server error')
+  }
+}
+
 async function searchUsers(req, res) {
   let users;
   try {
@@ -81,7 +93,8 @@ const user = {
   getUserById,
   searchUsers,
   getAuthor,
-  getUserByUsername
+  getUserByUsername,
+  hideUsersInfo
 }
 
 module.exports = user;

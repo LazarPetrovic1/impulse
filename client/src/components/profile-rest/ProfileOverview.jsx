@@ -8,8 +8,31 @@ import EditArea from '../misc/EditArea'
 import EditButtons from '../misc/EditButtons'
 import EditDatePicker from '../misc/EditDatePicker'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import { hideSelected } from '../../actions/auth';
 
-function ProfileOverview () {
+const {
+  _firstname,
+  _lastname,
+  _email,
+  goback,
+  yoursex,
+  male,
+  female,
+  nospecify,
+  _username,
+  yourbio,
+  dateofbirth,
+  yourphonenumber,
+  overview,
+  securityquestion,
+  _city,
+  _country,
+  zipcode
+} = registercomponent
+
+function ProfileOverview ({ auth: { user }, hideSelected }) {
   // Disassembled state pieces
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -23,6 +46,9 @@ function ProfileOverview () {
   const [phone, setPhone] = useState('')
   const [question, setQuestion] = useState('')
   const [bio, setBio] = useState('')
+  const [hidden, setHidden] = useState(
+    user && user.hidden ? user.hidden.split(" ") : []
+  )
 
   // Checkbox pieces
   const [checkFirstName, setCheckFirstName] = useState(true)
@@ -34,29 +60,9 @@ function ProfileOverview () {
   const [checkZip, setCheckZip] = useState(true)
   const [checkEmail, setCheckEmail] = useState(true)
   const [checkPhone, setCheckPhone] = useState(true)
-  const [checkQuestion, setCheckQuestion] = useState(true)
+  // const [checkQuestion, setCheckQuestion] = useState(true)
   const [checkSex, setCheckSex] = useState(true)
   const [checkBio, setCheckBio] = useState(true)
-
-  const {
-    _firstname,
-    _lastname,
-    _email,
-    goback,
-    yoursex,
-    male,
-    female,
-    nospecify,
-    _username,
-    yourbio,
-    dateofbirth,
-    yourphonenumber,
-    overview,
-    securityquestion,
-    _city,
-    _country,
-    zipcode
-  } = registercomponent
 
   const { language } = useContext(LanguageContext)
 
@@ -73,9 +79,7 @@ function ProfileOverview () {
           'Content-Type': 'application/json'
         }
       }
-
       let res
-
       switch (stateInformationString) {
         case 'firstName':
           res = await axios.put(`/api/auth/firstName`, { firstName }, config)
@@ -162,6 +166,11 @@ function ProfileOverview () {
     e.preventDefault()
   }
 
+  const hideSelectedInformation = (e) => {
+    const realHidden = hidden.join(" ")
+    hideSelected(realHidden, user._id)
+  }
+
   return (
     <div className='mb-5' style={{ pointerEvents: "all" }}>
       <form onSubmit={onSubmit}>
@@ -185,12 +194,12 @@ function ProfileOverview () {
                   value={firstName}
                 />
               )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() =>
-                  changeView(checkFirstName, setCheckFirstName, 'firstName')
-                }
-              />
+                <i
+                  className='fas fa-edit pointer pl-4'
+                  onClick={() =>
+                    changeView(checkFirstName, setCheckFirstName, 'firstName')
+                  }
+                />
             </li>
             <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
               {checkLastName ? (
@@ -201,7 +210,7 @@ function ProfileOverview () {
                 <EditField type='text' setter={setLastName} value={lastName} />
               )}
               <i
-                className='fas fa-edit pointer'
+                className='fas fa-edit pointer pl-4'
                 onClick={() =>
                   changeView(checkLastName, setCheckLastName, 'lastName')
                 }
@@ -220,10 +229,16 @@ function ProfileOverview () {
               ) : (
                 <EditButtons setter={setSex} />
               )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkSex, setCheckSex, 'sex')}
-              />
+              <div className="d-flex justify-content-end" style={{ width: "70px" }}>
+                <i
+                  className={`fas fa-${hidden.includes("sex") ? "eye-slash" : "eye"} pointer`}
+                  onClick={() => setHidden([...hidden, "sex"])}
+                />
+                <i
+                  className='fas fa-edit pointer pl-4'
+                  onClick={() => changeView(checkSex, setCheckSex, 'sex')}
+                />
+              </div>
             </li>
             <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
               {checkEmail ? (
@@ -233,10 +248,16 @@ function ProfileOverview () {
               ) : (
                 <EditField type='email' setter={setEmail} value={email} />
               )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkEmail, setCheckEmail, 'email')}
-              />
+              <div className="d-flex justify-content-end" style={{ width: "70px" }}>
+                <i
+                  className={`fas fa-${hidden.includes("email") ? "eye-slash" : "eye"} pointer`}
+                  onClick={() => setHidden([...hidden, "email"])}
+                />
+                <i
+                  className='fas fa-edit pointer pl-4'
+                  onClick={() => changeView(checkEmail, setCheckEmail, 'email')}
+                />
+              </div>
             </li>
             <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
               {checkUsername ? (
@@ -246,12 +267,18 @@ function ProfileOverview () {
               ) : (
                 <EditField type='text' setter={setUsername} value={username} />
               )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() =>
-                  changeView(checkUsername, setCheckUsername, 'username')
-                }
-              />
+              <div className="d-flex justify-content-end" style={{ width: "70px" }}>
+                <i
+                  className={`fas fa-${hidden.includes("username") ? "eye-slash" : "eye"} pointer`}
+                  onClick={() => setHidden([...hidden, "username"])}
+                />
+                <i
+                  className='fas fa-edit pointer pl-4'
+                  onClick={() =>
+                    changeView(checkUsername, setCheckUsername, 'username')
+                  }
+                />
+              </div>
             </li>
             <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
               {checkDob ? (
@@ -262,10 +289,16 @@ function ProfileOverview () {
               ) : (
                 <EditDatePicker value={dob} setter={setDob} />
               )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkDob, setCheckDob, 'dob')}
-              />
+              <div className="d-flex justify-content-end" style={{ width: "70px" }}>
+                <i
+                  className={`fas fa-${hidden.includes("dob") ? "eye-slash" : "eye"} pointer`}
+                  onClick={() => setHidden([...hidden, "dob"])}
+                />
+                <i
+                  className='fas fa-edit pointer pl-4'
+                  onClick={() => changeView(checkDob, setCheckDob, 'dob')}
+                />
+              </div>
             </li>
             <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
               {checkCity ? (
@@ -275,19 +308,35 @@ function ProfileOverview () {
               ) : (
                 <EditField type='text' setter={setCity} value={city} />
               )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkCity, setCheckCity, 'city')}
-              />
+              <div className="d-flex justify-content-end" style={{ width: "70px" }}>
+                <i
+                  className={`fas fa-${hidden.includes("city") ? "eye-slash" : "eye"} pointer`}
+                  onClick={() => setHidden([...hidden, "city"])}
+                />
+                <i
+                  className='fas fa-edit pointer pl-4'
+                  onClick={() => changeView(checkCity, setCheckCity, 'city')}
+                />
+              </div>
             </li>
             <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
-              <span>
-                {_country[language]}: {country}
-              </span>
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkCountry, setCheckCountry)}
-              />
+              {checkCountry ? (
+                <span>
+                  {_country[language]}: {country}
+                </span>
+              ) : (
+                <EditField value={country} setter={setCountry} />
+              )}
+              <div className="d-flex justify-content-end" style={{ width: "70px" }}>
+                <i
+                  className={`fas fa-${hidden.includes("country") ? "eye-slash" : "eye"} pointer`}
+                  onClick={() => setHidden([...hidden, "country"])}
+                />
+                <i
+                  className='fas fa-edit pointer pl-4'
+                  onClick={() => changeView(checkCountry, setCheckCountry, 'country')}
+                />
+              </div>
             </li>
             <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
               {checkZip ? (
@@ -297,19 +346,22 @@ function ProfileOverview () {
               ) : (
                 <EditField type='number' setter={setZip} value={zip} />
               )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkZip, setCheckZip, 'zip')}
-              />
+              <div className="d-flex justify-content-end" style={{ width: "70px" }}>
+                <i
+                  className={`fas fa-${hidden.includes("zip") ? "eye-slash" : "eye"} pointer`}
+                  onClick={() => setHidden([...hidden, "zip"])}
+                />
+                <i
+                  className='fas fa-edit pointer pl-4'
+                  onClick={() => changeView(checkZip, setCheckZip, 'zip')}
+                />
+              </div>
             </li>
             <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
               <span>
                 {securityquestion[language]}: {question}
               </span>
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkQuestion, setCheckQuestion)}
-              />
+              <i className="fas fa-times text-danger"></i>
             </li>
             <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
               {checkPhone ? (
@@ -319,10 +371,16 @@ function ProfileOverview () {
               ) : (
                 <EditField type='text' setter={setPhone} value={phone} />
               )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkPhone, setCheckPhone, 'phone')}
-              />
+              <div className="d-flex justify-content-end" style={{ width: "70px" }}>
+                <i
+                  className={`fas fa-${hidden.includes("phone") ? "eye-slash" : "eye"} pointer`}
+                  onClick={() => setHidden([...hidden, "phone"])}
+                />
+                <i
+                  className='fas fa-edit pointer pl-4'
+                  onClick={() => changeView(checkPhone, setCheckPhone, 'phone')}
+                />
+              </div>
             </li>
             <li className='overview-items list-group-item list-group-item-action d-flex justify-content-between'>
               {checkBio ? (
@@ -330,18 +388,43 @@ function ProfileOverview () {
                   {yourbio[language]}: {bio}
                 </span>
               ) : (
-                <EditArea value={bio} setter={setBio} />
+                <EditArea type='text' value={bio} setter={setBio} />
               )}
-              <i
-                className='fas fa-edit pointer'
-                onClick={() => changeView(checkBio, setCheckBio, 'bio')}
-              />
+              <div className="d-flex justify-content-end" style={{ width: "70px" }}>
+                <i
+                  className={`fas fa-${hidden.includes("bio") ? "eye-slash" : "eye"} pointer`}
+                  onClick={() => setHidden([...hidden, "bio"])}
+                />
+                <i
+                  className='fas fa-edit pointer pl-4'
+                  onClick={() => changeView(checkBio, setCheckBio, 'bio')}
+                />
+              </div>
             </li>
           </ul>
+          {hidden.length > 0 && (
+            <div className='d-flex justify-content-end my-3'>
+              <button onClick={() => setHidden([])} className='btn btn-danger mr-2'>
+                <i className="fas fa-ban pr-2" /> Cancel
+              </button>
+              <button className='btn btn-success ml-2' onClick={hideSelectedInformation}>
+                <i className="fas fa-check pr-2" /> Save
+              </button>
+            </div>
+          )}
         </div>
       </form>
     </div>
   )
 }
 
-export default ProfileOverview
+ProfileOverview.propTypes = {
+  auth: PropTypes.object.isRequired,
+  hideSelected: PropTypes.func.isRequired,
+}
+
+const mapStateToProps = (state) => ({
+  auth: state.auth
+})
+
+export default connect(mapStateToProps, { hideSelected })(ProfileOverview)

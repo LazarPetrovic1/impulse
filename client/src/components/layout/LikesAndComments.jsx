@@ -55,8 +55,6 @@ function LikesAndComments(props) {
     const id = images[props.i]._id
     const ownedById = props && props.match && props.match.params && props.match.params.id ? props.match.params.id : images[props.i].user
     const likerId = user._id
-    console.log({ id, ownedById, likerId });
-
     if (liked === val) setLiked(null)
     else setLiked(val)
     switch (val) {

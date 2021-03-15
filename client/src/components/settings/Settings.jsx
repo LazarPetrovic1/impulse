@@ -8,6 +8,7 @@ import SettingsTheme from './SettingsTheme';
 import { settingscomponent } from '../../utils/langObject';
 import ContentPolicy from './ContentPolicy';
 import SettingsLanguages from './SettingsLanguages';
+import ProfileOverview from '../profile-rest/ProfileOverview';
 
 const settingsBarWidth = "250px"
 const {
@@ -17,7 +18,8 @@ const {
   _changetheme,
   _some,
   _contentpolicy,
-  _uselegacyfont
+  _uselegacyfont,
+  _accountinformation
 } = settingscomponent
 
 function Settings() {
@@ -40,13 +42,13 @@ function Settings() {
             className={selectedSetting === 2 ? 'selected' : ''}
             onClick={() => setSelectedSetting(2)}
           >
-            {_contentpolicy[language]}
+            {_accountinformation[language]}
           </li>
           <li
             className={selectedSetting === 3 ? 'selected' : ''}
             onClick={() => setSelectedSetting(3)}
           >
-            {_item[language]} 3
+            {_contentpolicy[language]}
           </li>
           <li
             className={selectedSetting === 4 ? 'selected' : ''}
@@ -99,9 +101,8 @@ function Settings() {
           </div>
         )
       }
-      {
-        selectedSetting === 2 && <ContentPolicy settingsBarWidth={settingsBarWidth} />
-      }
+      {selectedSetting === 2 && <ProfileOverview />}
+      {selectedSetting === 3 && <ContentPolicy settingsBarWidth={settingsBarWidth} />}
     </div>
   )
 }

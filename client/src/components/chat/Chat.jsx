@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import Friend from './Friend';
 import Moment from 'react-moment';
 import ReactEmoji from 'react-emoji';
+import ChatInput from './ChatInput';
 
 function Chat(props) {
   const { auth: { user } } = props
@@ -17,9 +18,7 @@ function Chat(props) {
   const [hasMore, setHasMore] = useState(true)
   const [msg, setMsg] = useState("")
   const [chat, setChat] = useState({})
-  const [selected, setSelected] = useState(
-    user.friends.length > 0 ? user.friends[0] : null
-  )
+  const [selected, setSelected] = useState(user.friends.length > 0 ? user.friends[0] : null)
   const selectFriend = async (i) => {
     await setPage(1)
     await setChat({})
@@ -80,16 +79,6 @@ function Chat(props) {
     // eslint-disable-next-line
   }, [])
 
-  const onMessageSubmit = (e) => {
-    e.preventDefault()
-    if (chat && chat._id) {
-      socket.emit('message', { _id: chat._id, body: msg, userId: user._id })
-    } else if (selected && selected.user && (!chat || !chat._id)) {
-      socket.emit('spawnChat', { people: [user._id, selected.user], message: msg, userId: user._id })
-    }
-    setMsg("")
-  }
-
   useEffect(() => {
     scroller.current.scrollIntoView({ behavior: 'smooth' })
   }, [chat, selected, hasMore, page])
@@ -115,6 +104,18 @@ function Chat(props) {
           {chat && chat.messages && chat.messages.map((message, i) => i === 0 ? (
             <div key={message._id}>
               <div className={`d-flex my-3 ${message.user === user._id && "justify-content-end"}`}>
+                {message &&
+                  message.isMedia &&
+                  message.media &&
+                  message.media.length > 0 &&
+                  message.media.map(med => med.type === 'video' ? (
+                    <video className="mx-2" src={med.src} style={{ maxHeight: "100px", width: "auto" }} />
+                  ) : med.type === 'image' ? (
+                    <img className="mx-2" src={med.src} style={{ maxHeight: "100px", width: "auto" }} alt="" />
+                  ) : null
+                )}
+              </div>
+              <div className={`d-flex my-3 ${message.user === user._id && "justify-content-end"}`}>
                 <span style={{ borderRadius: '10px' }} className={`px-3 py-2 ${message.user === user._id ? "bg-primary" : "bg-secondary"}`}>{ReactEmoji.emojify(message.body)}</span>
                 <sup className="text-muted d-inline-block px-2">
                   <Moment format="DD.MM.YYYY">{message.date}</Moment>
@@ -123,6 +124,18 @@ function Chat(props) {
             </div>
           ) : (
             <div key={message._id}>
+              <div className={`d-flex my-3 ${message.user === user._id && "justify-content-end"}`}>
+                {message &&
+                  message.isMedia &&
+                  message.media &&
+                  message.media.length > 0 &&
+                  message.media.map(med => med.type === 'video' ? (
+                    <video className="mx-2" src={med.src} style={{ maxHeight: "100px", width: "auto" }} />
+                  ) : med.type === 'image' ? (
+                    <img className="mx-2" src={med.src} style={{ maxHeight: "100px", width: "auto" }} alt="" />
+                  ) : null
+                )}
+              </div>
               <div className={`d-flex my-3 ${message.user === user._id && "justify-content-end"}`}>
                 <span style={{ borderRadius: '10px' }} className={`px-3 py-2 ${message.user === user._id ? "bg-primary" : "bg-secondary"}`}>{ReactEmoji.emojify(message.body)}</span>
                 <sup className="text-muted d-inline-block px-2">
@@ -133,19 +146,12 @@ function Chat(props) {
           ))}
           <div ref={scroller} />
         </div>
-        {/* IT'S OWN COMPONENT */}
-        <form onSubmit={e => onMessageSubmit(e)}>
-          <input
-            type="text"
-            value={msg}
-            onChange={e => setMsg(e.target.value)}
-            className="form-control"
-            placeholder="Type a message"
-          />
-          <button className="btn btn-secondary" type="submit">
-            <i className="fas fa-paper-plane" />
-          </button>
-        </form>
+        <ChatInput
+          chat={chat}
+          selected={selected}
+          msg={msg}
+          setMsg={setMsg}
+        />
       </div>
     </ChatContainer>
   )

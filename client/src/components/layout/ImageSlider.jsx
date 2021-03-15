@@ -59,13 +59,13 @@ function ImageSlider({ images, i, setIsSlider, auth }) {
           <i className="fas fa-chevron-left"></i>
         </button>
         <article className="d-flex flex-column" style={{ flex: 4 }}>
-          <div className="d-flex justify-content-center">
+          <div className="d-flex">
             <img
-              style={{ maxHeight: `calc(${window.innerHeight}px - 10rem)` }}
+              style={{ maxHeight: `calc(${window.innerHeight}px - 10rem)`, flex: 1 }}
               src={images[index].url}
               alt={index}
             />
-            <div className="p-2">
+            <div className="p-2" style={{ flex: 1 }}>
               <h3>{postedByName && postedByName}</h3>
               <p>{images[index].content}</p>
               <Moment format="DD.MM.YYYY">{images[index].date}</Moment>
