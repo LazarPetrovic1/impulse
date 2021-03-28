@@ -46,8 +46,12 @@ const socketHolder = (io) =>
         let urls = []
         if (isMedia) {
           for await (const item of media) {
-            const uploadResponse = await cloudinary.uploader.upload(item.res, { resource_type: item.type })
-            await urls.push({ name: item.name, type: item.type, src: uploadResponse.url})
+            if (item.type === 'gif') {
+              await urls.push({ name: item.name, type: item.type, src: item.src})
+            } else {
+              const uploadResponse = await cloudinary.uploader.upload(item.res, { resource_type: item.type })
+              await urls.push({ name: item.name, type: item.type, src: uploadResponse.url})
+            }
           }
           await chat.messages.push({ user: userId, body, date: Date.now(), isMedia, media: urls })
         }

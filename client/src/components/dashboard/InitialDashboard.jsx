@@ -1,36 +1,51 @@
-import React, { useState, useEffect, useContext, useRef, useCallback } from 'react'
-import { Link } from 'react-router-dom';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback
+} from 'react'
 import Spinner from '../layout/Spinner'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import SideMenu from './SideMenu'
 import DashCenter from '../../styled/DashCenter';
-import ImageSlider from '../layout/ImageSlider'
-import { LanguageContext } from '../../contexts/LanguageContext'
-import { getImages, createImage, wipeImages } from '../../actions/image';
-import { uploadProfileImage } from '../../actions/auth';
+import ImageSlider from '../media/ImageSlider'
+import GenericSlider from '../media/GenericSlider'
+import {
+  getImages,
+  createImage,
+  wipeImages
+} from '../../actions/image';
+import {
+  uploadProfileImage
+} from '../../actions/auth';
 import AddMediaButton from '../../styled/AddMediaButton';
 import AddMediaModal from '../layout/AddMediaModal';
-import Post from '../layout/Post';
-import { dashboardcomponent } from '../../utils/langObject';
-import { POST_DELIMITER } from '../../utils/nonReduxConstants';
+import Post from '../media/Post';
+import GenericPost from '../media/GenericPost';
+import {
+  POST_DELIMITER
+} from '../../utils/nonReduxConstants';
 import ProfileImage from './utilcomps/ProfileImage';
 import Selection from './utilcomps/Selection';
-import { getUsersVideo } from '../../actions/video.js';
+import {
+  getUsersVideo
+} from '../../actions/video.js';
 import VideoList from '../VideoRoutes/VideoMisc/VideoList';
 import VideoGrid from '../VideoRoutes/VideoMisc/VideoGrid';
+import {
+  getAllUsersMedia,
+  wipeAllMedia
+} from '../../actions/allmedia.js';
 
-const {
-  // _welcome,
-  _yourinformation,
-  _yourmedia,
-} = dashboardcomponent
-
-function InitialDashboard (props) {
+function InitialDashboard(props) {
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
   const {
-    auth: { user, loading },
+    auth: {
+      user,
+      loading
+    },
     history,
     getImages,
     // eslint-disable-next-line
@@ -38,15 +53,24 @@ function InitialDashboard (props) {
     // eslint-disable-next-line
     uploadProfileImage,
     wipeImages,
-    image: { images },
+    image: {
+      images
+    },
     getUsersVideo,
-    video: { videos }
+    video: {
+      videos
+    },
+    getAllUsersMedia,
+    wipeAllMedia,
+    allmedia
   } = props
-  const { language } = useContext(LanguageContext)
+  const { media } = allmedia
 
   useEffect(() => {
     wipeImages()
+    wipeAllMedia()
     getUsersVideo("mine")
+    // getAllUsersMedia("mine")
     // eslint-disable-next-line
   }, [])
 
@@ -56,29 +80,44 @@ function InitialDashboard (props) {
         const hasMoreValue = await getImages("mine", page, POST_DELIMITER)
         await setHasMore(hasMoreValue);
       }
-    } catch(e) {
+    } catch (e) {
+      console.warn(e.message);
+    }
+  }
+
+  const gettingAllUserMedia = async () => {
+    try {
+      if (hasMore) {
+        const hasMoreValue = await getAllUsersMedia("mine", page, POST_DELIMITER)
+        await setHasMore(hasMoreValue);
+      }
+    } catch (e) {
       console.warn(e.message);
     }
   }
 
   useEffect(() => {
-    gettingImages()
+    if (selectedToShow === "images") {
+      gettingImages()
+    } else if (selectedToShow === "all") {
+      gettingAllUserMedia()
+    }
     // eslint-disable-next-line
   }, [page])
 
   const [isGrid, setIsGrid] = useState(true)
   const [selectedFile, setSelectedFile] = useState()
-  const [selectedToShow, setSelectedToShow] = useState("images")
+  const [selectedToShow, setSelectedToShow] = useState("all")
   // eslint-disable-next-line
   const [isSelected, setIsSelected] = useState(false)
   const [previewSource, setPreviewSource] = useState('')
   const [isSlider, setIsSlider] = useState([false, 0])
+  const [isGenericSlider, setIsGenericSlider] = useState([false, 0])
   const [addFilesModal, setAddFilesModal] = useState(false)
   const [content, setContent] = useState("")
   const [fn, setFn] = useState("")
   const [profileUploadButton, setProfileUploadButton] = useState(false)
   const [profileSlider, setProfileSlider] = useState([false, 0])
-  const [status, setStatus] = useState("")
   const observer = useRef()
 
   const infiniteScrollPost = useCallback((node) => {
@@ -94,9 +133,9 @@ function InitialDashboard (props) {
   }, [hasMore])
 
   const onImageUpload = (e) => {
-		setSelectedFile(e.target.files[0])
-		setIsSelected(true)
-	}
+    setSelectedFile(e.target.files[0])
+    setIsSelected(true)
+  }
 
   const onSubmit = (e, fn) => {
     e.preventDefault()
@@ -125,15 +164,7 @@ function InitialDashboard (props) {
     reader.onloadend = () => setPreviewSource(reader.result)
   }
 
-  const submitStatus = (e) => {
-    e.preventDefault()
-    // Handle status here
-    setStatus("")
-  }
-
-  return loading ? (
-    <Spinner />
-  ) : user ? (
+  return !loading && user ? (
     <div>
       <ProfileImage
         setProfileUploadButton={setProfileUploadButton}
@@ -143,31 +174,51 @@ function InitialDashboard (props) {
         setAddFilesModal={setAddFilesModal}
       />
       <div className='row'>
-        <div className='col-md-3 col-sm-5 col-xs-7'><SideMenu /></div>
+        <div className='col-md-3 col-sm-5 col-xs-7'>
+          <SideMenu />
+        </div>
       </div>
-      <DashCenter justification="flex-end" maxw="1300px" style={{ pointerEvents: "all" }}>
-        <Link className="btn btn-secondary pt-2 mr-2" to="/profile-overview">
-          <i className="fas fa-id-card pr-2"></i> {_yourinformation[language]}
-        </Link>
+      <DashCenter
+        justification="flex-end"
+        maxw="1300px"
+        style={{pointerEvents: "all"}}
+      >
         <AddMediaButton
           className="btn btn-secondary ml-2"
           title="Add Files"
-          onClick={() => { setFn("post"); setAddFilesModal(true) }}
+          onClick={() => {
+            setFn("post");
+            setAddFilesModal(true)
+          }}
         >
-          <i className="fas fa-plus"></i>
+          <i className="fas fa-plus" />
         </AddMediaButton>
       </DashCenter>
-      <DashCenter justification="flex-start" maxw="1300px" style={{ pointerEvents: "all" }}>
-        <Selection selectedToShow={selectedToShow} setSelectedToShow={setSelectedToShow} />
+      <DashCenter
+        justification="flex-start"
+        maxw="1300px"
+        style={{ pointerEvents: "all"}}
+      >
+      <Selection
+        selectedToShow={selectedToShow}
+        setSelectedToShow={setSelectedToShow}
+        setPage={setPage}
+        setHasMore={setHasMore}
+      />
       </DashCenter>
-      {selectedToShow === "videos" && (
-        <DashCenter justification="flex-end" maxw="1300px" style={{ pointerEvents: "all" }}>
+      {
+        selectedToShow === "videos" && (
+          <DashCenter
+            justification="flex-end"
+            maxw="1300px"
+            style={{ pointerEvents: "all" }}
+          >
           <button
             title="Grid view"
             className={`mr-2 btn btn-${isGrid ? "primary" : "secondary"} btn-lg`}
             onClick={() => setIsGrid(true)}
           >
-            <i className="fas fa-th" />
+          <i className="fas fa-th" />
           </button>
           <button
             title="List view"
@@ -176,102 +227,166 @@ function InitialDashboard (props) {
           >
             <i className="fas fa-list" />
           </button>
-        </DashCenter>
-      )}
-      <DashCenter justification="center" maxw="1300px" className="mt-5" style={{ pointerEvents: "all" }}>
-        <form onSubmit={submitStatus} style={{ width: "80%" }}>
-          <input
-            type="text"
-            className="form-control form-control-lg"
-            placeholder="What's on your mind?"
-            value={status}
-            onChange={e => setStatus(e.target.value)}
-          />
-        </form>
-      </DashCenter>
-      <h1 className="text-center">{_yourmedia[language]}</h1>
-        {
-          selectedToShow === "images" &&
-          images &&
-          images.length > 0 && (
-            <DashCenter justification="flex-start" maxw="1300px" style={{ pointerEvents: "all" }}>
-              {images.map((image, i) => (
+          </DashCenter>
+        )
+      }
+      {
+        selectedToShow === "all" &&
+        media &&
+        media.length > 0 && (
+          <DashCenter
+            display="block"
+            maxw="1300px"
+            style={{ pointerEvents: "all" }}
+          >
+            {
+              allmedia && media && media.map((post, i) => (
+                <GenericPost
+                  post={post}
+                  i={i}
+                  setIsGenericSlider={setIsGenericSlider}
+                  key={post._id}
+                />
+              ))
+            }
+            <div ref={infiniteScrollPost} />
+          </DashCenter>
+        )
+      }
+      {
+        selectedToShow === "images" &&
+        images &&
+        images.length > 0 && (
+          <DashCenter
+            justification="flex-start"
+            maxw="1300px"
+            style={{ pointerEvents: "all" }}
+          >
+            {
+              images.map((image, i) => (
                 <Post
                   image={image}
                   setIsSlider={setIsSlider}
                   key={image._id}
-                  i={i}
+                  i = {i}
                 />
-              ))}
-              <div ref={infiniteScrollPost} />
-            </DashCenter>
-          )
-        }
-        {
-          selectedToShow === "videos" &&
-          videos &&
-          videos.length > 0 && (
-            <section className={isGrid ? "d-flex flex-wrap" : ""} style={{ pointerEvents: "all", maxWidth: "1300px", margin: "auto" }}>
-              {videos.map(video => isGrid ? (
-                <VideoGrid key={video._id} video={{ ...video }} />
-              ) : (
-                <VideoList key={video._id} video={{ ...video }} />
-              ))}
-            </section>
-          )
-        }
-        {
-          images &&
-          images.length > 0 &&
-          isSlider[0] && (
-            <ImageSlider images={images} i={isSlider[1]} setIsSlider={setIsSlider} />
-          )
-        }
-        {
-          user.profileImages &&
-          user.profileImages.length > 0 &&
-          profileSlider[0] && (
-            <ImageSlider images={user.profileImages} i={profileSlider[1]} setIsSlider={setProfileSlider} />
-          )
-        }
-        {
-          addFilesModal && (
-            <div style={{ pointerEvents: "all" }}>
-              <AddMediaModal
-                content={content}
-                setContent={setContent}
-                setAddFilesModal={setAddFilesModal}
-                previewSource={previewSource}
-                onImageUpload={onImageUpload}
-                onSubmit={onSubmit}
-                previewFile={previewFile}
-                selectedFile={selectedFile}
-                fn={fn}
+              ))
+            }
+            <div ref={infiniteScrollPost} />
+          </DashCenter>
+        )
+      }
+    {
+      selectedToShow === "videos" &&
+      videos &&
+      videos.length > 0 && (
+        <section
+          className={isGrid ? "d-flex flex-wrap" : ""}
+          style={{
+            pointerEvents: "all",
+            maxWidth: "1300px",
+            margin: "auto"
+          }}
+        >
+          {
+            videos.map(video => isGrid ? (
+              <VideoGrid
+                key={video._id}
+                video={{ ...video }}
               />
-            </div>
-          )
-        }
+            ) : (
+              <VideoList
+                key={video._id}
+                video={{ ...video }}
+              />
+            ))
+          }
+        </section>
+      )
+    }
+    {
+      images &&
+      images.length > 0 &&
+      isSlider[0] && (
+        <ImageSlider
+          images={images}
+          i={isSlider[1]}
+          setIsSlider={setIsSlider}
+        />
+      )
+    }
+    {
+      media &&
+      media.length > 0 &&
+      isGenericSlider[0] && (
+        <GenericSlider
+          media={media}
+          i={isGenericSlider[1]}
+          setIsGenericSlider={setIsGenericSlider}
+        />
+      )
+    }
+    {
+      user.profileImages &&
+      user.profileImages.length > 0 &&
+      profileSlider[0] && (
+        <ImageSlider
+          images={user.profileImages}
+          i={profileSlider[1]}
+          setIsSlider={setProfileSlider}
+        />
+      )
+    }
+    {
+      addFilesModal && (
+        <div style={{ pointerEvents: "all" }}>
+          <AddMediaModal
+            content={content}
+            setContent={setContent}
+            previewSource={previewSource}
+            onImageUpload={onImageUpload}
+            onSubmit={onSubmit}
+            previewFile={previewFile}
+            selectedFile={selectedFile}
+            fn={fn}
+            show={addFilesModal}
+            onClose={() => setAddFilesModal(false)}
+          />
+        </div>
+      )
+    }
     </div>
   ) : <Spinner />
 }
 
 InitialDashboard.propTypes = {
   auth: PropTypes.object.isRequired,
-  getImages: PropTypes.func.isRequired,
-  createImage: PropTypes.func.isRequired,
   image: PropTypes.object.isRequired,
   video: PropTypes.object.isRequired,
+  allmedia: PropTypes.object.isRequired,
+  getImages: PropTypes.func.isRequired,
+  createImage: PropTypes.func.isRequired,
   wipeImages: PropTypes.func.isRequired,
   getUsersVideo: PropTypes.func.isRequired,
+  getAllUsersMedia: PropTypes.func.isRequired,
+  wipeAllMedia: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
   auth: state.auth,
   image: state.image,
-  video: state.video
+  video: state.video,
+  allmedia: state.allmedia
 })
 
 export default connect(
-  mapStateToProps,
-  { getImages, createImage, uploadProfileImage, wipeImages, getUsersVideo }
+  mapStateToProps, {
+    getImages,
+    createImage,
+    uploadProfileImage,
+    wipeImages,
+    getUsersVideo,
+    getAllUsersMedia,
+    wipeAllMedia
+  }
 )(InitialDashboard)

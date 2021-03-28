@@ -1,7 +1,11 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
 import styled from 'styled-components'
 import SocialSearchResultsContainer from '../../../styled/SocialSearchResultsContainer';
 import SocialResultItem from './SocialResultItem';
+import { LanguageContext } from '../../../contexts/LanguageContext';
+import { socialsearchcomponent } from '../../../utils/langObject';
+
+const { _searchforpeople } = socialsearchcomponent
 
 const SearchButton = styled.i.attrs(() => ({
   className: "fas fa-search"
@@ -14,6 +18,7 @@ const SearchButton = styled.i.attrs(() => ({
 `
 
 function SocialSearch({ search, onInputChange, searchResults }) {
+  const { language } = useContext(LanguageContext)
   return (
     <Fragment>
       <div className={`form-group position-relative ${search.length > 2 && "mb-0"}`} style={{ pointerEvents: 'all' }}>
@@ -24,7 +29,7 @@ function SocialSearch({ search, onInputChange, searchResults }) {
             paddingLeft: "2.5rem",
             paddingRight: "2.5rem"
           }}
-          placeholder="Search for people..."
+          placeholder={_searchforpeople[language]}
           value={search}
           onChange={onInputChange}
         />

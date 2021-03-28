@@ -39,18 +39,14 @@ function Videos({ location, searchVideos, getUsersVideo, getAllVideos }) {
           value={search}
           onChange={onSearch}
           className="form-control"
-          placeholder="Type a message"
+          placeholder="Search for videos"
         />
-        {/* <button className="btn btn-secondary" type="submit">
-          <i className="fas fa-search" />
-        </button> */}
       </div>
     </div>
   )
 }
 
 Videos.propTypes = {
-  // video: PropTypes.object.isRequired,
   searchVideos: PropTypes.func.isRequired,
   getUsersVideo: PropTypes.func.isRequired,
   getAllVideos: PropTypes.func.isRequired,

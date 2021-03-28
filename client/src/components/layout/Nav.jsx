@@ -42,7 +42,7 @@ function Nav (props) {
   const authLinks = (
     <ul className='navbar-nav ml-auto'>
       <CenterListItem>
-        <Link className='nav-link' to='/'>
+        <Link className='nav-link' to='/dashboard'>
           <i className='fas fa-user pr-2' />
           <span className='hide-sm'>{auth && auth.user && auth.user.firstName}</span>
         </Link>
@@ -106,10 +106,16 @@ function Nav (props) {
         </SelectContainer>
       </CenterListItem>
       <CenterListItem>
-        <Link className={pathname === 'register' ? `nav-link active` : `nav-link`} to='/register'>{_register[language]}</Link>
+        <Link className={pathname === 'register' ? `nav-link active` : `nav-link`} to='/register'>
+          <i className="fas fa-user-plus pr-2" />
+          {_register[language]}
+        </Link>
       </CenterListItem>
       <CenterListItem>
-        <Link className={pathname === 'login' ? 'nav-link active' : 'nav-link'} to='/login'>{_login[language]}</Link>
+        <Link className={pathname === 'login' ? 'nav-link active' : 'nav-link'} to='/login'>
+          <i className="fas fa-sign-in-alt pr-2" />
+          {_login[language]}
+        </Link>
       </CenterListItem>
       <CenterListItem>
         <div className='custom-control custom-switch alignment '>

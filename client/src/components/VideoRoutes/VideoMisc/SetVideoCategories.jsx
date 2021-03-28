@@ -349,7 +349,7 @@ function SetVideoCategories({ category, setCategory }) {
             <ul className="list-group">
               {categoriesList.nonprofits.map(np => (
                 <li
-                  onClick={() => setCategory(`Music - ${np.name}`)}
+                  onClick={() => setCategory(`Non-profits - ${np.name}`)}
                   className="list-group-item pl-5 pointer"
                   style={{ color: "#111" }}
                   key={np.id}

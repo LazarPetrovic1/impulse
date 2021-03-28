@@ -2,9 +2,9 @@ import React, { useEffect, useState, useContext, useRef, useCallback } from 'rea
 import axios from 'axios'
 import Spinner from '../layout/Spinner';
 import Moment from 'react-moment';
-import ImageSlider from '../layout/ImageSlider'
+import ImageSlider from '../media/ImageSlider'
 import DashCenter from '../../styled/DashCenter';
-import Post from '../layout/Post';
+import Post from '../media/Post';
 import { connect } from 'react-redux';
 import { getImages, wipeImages } from '../../actions/image';
 import { sendNotif, sendFriendRequest } from '../../actions/notifs';
@@ -28,6 +28,8 @@ function GuestDashboard (props) {
   const [isSlider, setIsSlider] = useState([false, 0])
   const [guest, setGuest] = useState({})
   const observer = useRef()
+
+  console.log(guest);
 
   const infiniteScrollPost = useCallback((node) => {
     if (!hasMore) return
@@ -96,7 +98,7 @@ function GuestDashboard (props) {
 
   console.log("GEST", guest);
 
-  return guest && guest.hidden ? (
+  return Object.keys(guest).length > 0 ? (
     <div className="container pt-5" style={{ pointerEvents: "all" }}>
       <div className="text-center">
         <img
@@ -121,39 +123,42 @@ function GuestDashboard (props) {
         </button>
       </div>
       <div className="p-5">
-        {!guest.hidden.includes("zip") && !guest.hidden.includes("country") && !guest.hidden.includes("city") && (
+        {guest && guest.hidden &&
+          !guest.hidden.includes("zip") &&
+          !guest.hidden.includes("country") &&
+          !guest.hidden.includes("city") ? (
           <h4 className="my-3">
             <i className="fas fa-map-marker pr-3" />
             From: {guest.hidden.includes("zip") ? "" : `${guest.zip},`}
             {guest.hidden.includes("city") ? "" : `${guest.city},`}
             {guest.hidden.includes("country") ? "" : guest.country}
           </h4>
-        )}
-        {!guest.hidden.includes("email") && (
+        ) : null}
+        {guest.hidden && guest.hidden.includes("email") ? null : (
           <h4 className="my-3">
             <i className="fas fa-envelope pr-3"></i>E-mail: {guest.email}
           </h4>
         )}
-        {!guest.hidden.includes("sex") && (
+        {guest.hidden >= 0 && guest.hidden.includes("sex") ? null : (
           <h4 className="my-3">
             <i className={`pr-3 fas fa-${guest.sex === 'm' ? "mars" : guest.sex === 'f' ? "venus" : "genderless"}`} />
             Sex: {guest.sex === 'm' ? "Male" : guest.sex === 'f' ? "Female" : '<Redacted>'}
           </h4>
         )}
-        {!guest.hidden.includes("dob") && (
+        {guest.hidden >= 0 && guest.hidden.includes("dob") ? null : (
           <h4 className="my-3">
             <i className="fas fa-birthday-cake pr-3"></i>
             Date of birth: <Moment format="DD.MM.YYYY">{guest.dob}</Moment>
           </h4>
         )}
-        {!guest.hidden.includes("bio") && (
+        {guest.hidden >= 0 && guest.hidden.includes("bio") ? null : (
           <h4 className="my-3">
             <i className="fas fa-info-circle pr-3"></i>
             Bio: {guest.bio}
           </h4>
         )}
       </div>
-      <DashCenter justification="flex-start" maxw="1300px" style={{ pointerEvents: "all" }}>
+      <DashCenter display="block" maxw="1300px" style={{ pointerEvents: "all" }}>
         {
           images && images.length > 0 && images.map((image, i) => (
             <Post

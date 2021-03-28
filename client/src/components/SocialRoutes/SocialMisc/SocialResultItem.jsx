@@ -1,5 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { LanguageContext } from '../../../contexts/LanguageContext';
+import { socialsearchitemcomponent } from '../../../utils/langObject';
+
+const {
+  _male,
+  _female,
+  _hidden
+} = socialsearchitemcomponent
 
 function SocialResultItem({ sr }) {
   const {
@@ -13,6 +21,7 @@ function SocialResultItem({ sr }) {
     country,
     sex
   } = sr
+  const { language } = useContext(LanguageContext)
 
   return (
     <div className="d-flex">
@@ -30,7 +39,7 @@ function SocialResultItem({ sr }) {
           className="mb-1"
           style={{ color: sex === 'm' ? "navy" : sex === 'f' ? "pink" : "darkgray" }}
         >
-          {sex === 'm' ? "Male" : sex === 'f' ? "Female" : "<Redacted>"}
+          {sex === 'm' ? `${_male[language]}` : sex === 'f' ? `${_female[language]}` : `${_hidden[language]}`}
         </p>
       </div>
     </div>

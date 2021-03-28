@@ -40,6 +40,7 @@ async function getMyImages(req, res) {
   try {
     const page = req.query.page || 1
     const limit = req.query.limit || 5
+    const allMyPosts = await ImagePost.find({ user: req.user.id })
     const posts = await paginate(ImagePost, { user: req.user.id }, page, limit)
     res.json(posts)
   } catch (e) {

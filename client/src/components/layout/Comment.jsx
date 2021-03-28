@@ -3,6 +3,7 @@ import Moment from 'react-moment';
 import CommentContainer from '../../styled/Comment/CommentContainer';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
+import Spinner from './Spinner';
 
 function Comment({ comm }) {
   const [user, setUser] = useState({})
@@ -17,14 +18,14 @@ function Comment({ comm }) {
     }());
     // eslint-disable-next-line
   }, [])
-  return (
+  return user ? (
     <CommentContainer className="border">
       <div name="information">
         <img
           src={
             user && user.profileImages && user.profileImages.length > 0 ?
-            user.profileImages[0].url :
-            `https://robohash.org/${comm.user}?set=set4&size=22x22`
+            user.profileImages[user.profileImages.length - 1].url :
+            `https://robohash.org/${user._id}?set=set4&size=22x22`
           }
           style={{ width: 22, height: 22, borderRadius: "50%" }}
           alt={`${comm.name}'s avatar`}
@@ -40,7 +41,7 @@ function Comment({ comm }) {
         </p>
       </div>
     </CommentContainer>
-  )
+  ) : <Spinner />
 }
 
 export default Comment;

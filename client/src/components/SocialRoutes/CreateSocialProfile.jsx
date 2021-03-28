@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment, useEffect } from 'react'
 import { createProfile } from '../../actions/profile'
 import { setAlert } from '../../actions/alert'
 import PropTypes from 'prop-types'
@@ -30,6 +30,30 @@ function CreateSocialProfile ({
   })
 
   const onChange = (e) => setSocial({ ...social, [e.target.name]: e.target.value })
+
+  useEffect(() => {
+    (async function() {
+      try {
+        if (profile) {
+          await setEmployment(profile.employment ? profile.employment : "")
+          await setWebsite(profile.website ? profile.website : "")
+          await setStatus(profile.status ? profile.status : "")
+          if (profile.social) {
+            await setSocial({
+              youtube: profile.social.youtube ? profile.social.youtube : '',
+              twitter: profile.social.twitter ? profile.social.twitter : '',
+              facebook: profile.social.facebook ? profile.social.facebook : '',
+              linkedin: profile.social.linkedin ? profile.social.linkedin : '',
+              instagram: profile.social.instagram ? profile.social.instagram : ''
+            })
+          }
+        }
+      } catch(e) {
+        console.warn("Error, dude");
+      }
+    }());
+    // eslint-disable-next-line
+  }, [])
 
   const employmentCheckbox = () => {
     if (isEmployed) {
@@ -96,10 +120,10 @@ function CreateSocialProfile ({
     <form onSubmit={onSubmit} style={{ pointerEvents: "all" }}>
       <div className='container mb-4'>
         <div className='d-flex justify-content-between my-3'>
-          <h1 className='text-primary d-inline-block m-0'>
-            Create your profile
-          </h1>
-          <Link to='/social' className='btn btn-secondary ' title='Go back'>
+          <h2 className='text-primary d-inline-block m-0'>
+            Add more information to your profile
+          </h2>
+          <Link to='/settings' className='btn btn-secondary ' title='Go back'>
             Go back
           </Link>
         </div>
@@ -206,7 +230,7 @@ function CreateSocialProfile ({
                   }
                   onChange={(e) => setStatus(e.target.value)}
                 >
-                  <option disabled value='' selected>-- Choose one --</option>
+                  <option disabled value=''>-- Choose one --</option>
                   <option value='Single'>Single</option>
                   <option value='In a Relationship'>In a Relationship</option>
                   <option value='Engaged'>Engaged</option>

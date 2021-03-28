@@ -180,7 +180,7 @@ async function likeVideo(req, res) {
 
 async function dislikeVideo(req, res) {
   try {
-    const post = await ImagePost.findById(req.params.id);
+    const post = await VideoPost.findById(req.params.id);
     if (
       post.judgements.filter(jud => jud.user.toString() === req.body.likerId)
         .length > 0

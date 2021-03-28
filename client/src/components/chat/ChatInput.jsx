@@ -3,6 +3,7 @@ import ChatFileUpload from '../../styled/Chat/ChatFileUpload';
 import { SocketContext } from '../../contexts/SocketContext'
 import { connect } from 'react-redux';
 import EmojiPicker from './EmojiPicker';
+import GifPicker from './GifPicker';
 
 function ChatInput({
   msg,
@@ -13,6 +14,7 @@ function ChatInput({
 }) {
   // eslint-disable-next-line
   const [isEmoji, setIsEmoji] = useState(false)
+  const [isGif, setIsGif] = useState(false)
   // eslint-disable-next-line
   const [selectedFile, setSelectedFile] = useState([])
   const [isSelectedFile, setIsSelectedFile] = useState(false)
@@ -27,6 +29,9 @@ function ChatInput({
 
   const onMessageSubmit = (e) => {
     e.preventDefault()
+    if (msg.length < 1 && !isSelectedFile) {
+      return
+    }
     if (chat && chat._id) {
       socket.emit('message', {
         _id: chat._id,
@@ -61,6 +66,7 @@ function ChatInput({
   return (
     <div>
       {isEmoji && <EmojiPicker setMsg={setMsg} msg={msg} setIsEmoji={setIsEmoji} />}
+      {isGif && <GifPicker chat={chat} onMessageSubmit={onMessageSubmit} />}
       {isSelectedFile && (
         <article
           className="d-flex bg-secondary w-100"
@@ -102,6 +108,11 @@ function ChatInput({
         <ChatFileUpload>
           <span title="Insert Emoji" onClick={() => setIsEmoji(!isEmoji)}>
             <i className="fas fa-smile-wink" />
+          </span>
+        </ChatFileUpload>
+        <ChatFileUpload>
+          <span title="Insert Emoji" onClick={() => setIsGif(!isGif)}>
+            <i className="fas fa-photo-video" />
           </span>
         </ChatFileUpload>
         <input

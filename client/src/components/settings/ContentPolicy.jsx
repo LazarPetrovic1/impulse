@@ -27,10 +27,10 @@ const {
   _ninetwo
 } = policycomponent
 
-function ContentPolicy({ settingsBarWidth }) {
+function ContentPolicy() {
   const { language } = useContext(LanguageContext)
   return (
-    <div style={{ marginLeft: settingsBarWidth, overflow: "auto", height: "calc(100vh - 86px)" }}>
+    <div style={{ overflow: "auto", height: "calc(100vh - 86px)" }}>
       <h1 className="text-primary text-center display-4">{_contentpolicy[language]}</h1>
       <div className="my-4 px-3">
         <ol>

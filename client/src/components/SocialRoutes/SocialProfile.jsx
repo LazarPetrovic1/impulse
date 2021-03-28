@@ -1,22 +1,17 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { setAlert } from '../../actions/alert'
 import { getCurrentProfile } from '../../actions/profile'
 import Spinner from '../layout/Spinner'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-
-/*
-*
-*  NAPRAVI GA KAO PROFILE-OVERVIEW
-*
-*/
+import ShortLogo from '../../styled/Logo/ShortLogo';
 
 function SocialProfile ({
   setAlert,
   getCurrentProfile,
   profile: { profile, loading },
-  auth
+  auth,
 }) {
   useEffect(() => {
     getCurrentProfile()
@@ -24,12 +19,16 @@ function SocialProfile ({
   }, [getCurrentProfile])
 
   return profile && !loading ? (
-    <div className='container' style={{ pointerEvents: "all" }}>
+    <article className='container' style={{ pointerEvents: "all" }}>
       <h1>Welcome, {auth.user.firstName}</h1>
       <ul className='list-group'>
+        <li className='list-group-item' style={{ color: "#111" }}>
+          <ShortLogo liked='impulse' height="20px" width="20px" />&nbsp;&nbsp;
+          <Link style={{ color: "#111" }} to="/">https://impul.se/social/profile/{auth.user._id}</Link>
+        </li>
         {
           profile.employment === 'None' ? null : (
-            <li className='list-group-item'>
+            <li className='list-group-item' style={{ color: "#111" }}>
               <i className='fas fa-briefcase' />&nbsp;&nbsp;
               Works at {profile.employment}
             </li>
@@ -37,15 +36,15 @@ function SocialProfile ({
         }
         {
           profile.website === 'None' ? null : (
-            <li className='list-group-item'>
+            <li className='list-group-item' style={{ color: "#111" }}>
               <i className='fas fa-globe' />&nbsp;&nbsp;
-              <a href={profile.website} target='_blank' rel="noopener noreferrer">Website</a>
+              <a style={{ color: "#111" }} href={profile.website} target='_blank' rel="noopener noreferrer">Website</a>
             </li>
           )
         }
         {
           profile.status === 'Hide' ? null : (
-            <li className='list-group-item'>
+            <li className='list-group-item' style={{ color: "#111" }}>
               <i className='fas fa-heart' />&nbsp;&nbsp;
               {profile.status}
             </li>
@@ -53,53 +52,58 @@ function SocialProfile ({
         }
         {
           profile.social.youtube && (
-            <li className='list-group-item'>
+            <li className='list-group-item' style={{ color: "#111" }}>
               <i className='fab fa-youtube' />&nbsp;&nbsp;
-              <a href={profile.social.youtube} target='_blank' rel="noopener noreferrer">YouTube</a>
+              <a style={{ color: "#111" }} href={profile.social.youtube} target='_blank' rel="noopener noreferrer">YouTube</a>
             </li>
           )
         }
         {
           profile.social.twitter && (
-            <li className='list-group-item'>
+            <li className='list-group-item' style={{ color: "#111" }}>
               <i className='fab fa-twitter' />&nbsp;&nbsp;
-              <a href={profile.social.twitter} target='_blank' rel="noopener noreferrer">Twitter</a>
+              <a style={{ color: "#111" }} href={profile.social.twitter} target='_blank' rel="noopener noreferrer">Twitter</a>
             </li>
           )
         }
         {
           profile.social.facebook && (
-            <li className='list-group-item'>
+            <li className='list-group-item' style={{ color: "#111" }}>
               <i className='fab fa-facebook' />&nbsp;&nbsp;
-              <a href={profile.social.facebook} target='_blank' rel="noopener noreferrer">Facebook</a>
+              <a style={{ color: "#111" }} href={profile.social.facebook} target='_blank' rel="noopener noreferrer">Facebook</a>
             </li>
           )
         }
         {
           profile.social.instagram && (
-            <li className='list-group-item'>
+            <li className='list-group-item' style={{ color: "#111" }}>
               <i className='fab fa-instagram' />&nbsp;&nbsp;
-              <a href={profile.social.instagram} target='_blank' rel="noopener noreferrer">Instagram</a>
+              <a style={{ color: "#111" }} href={profile.social.instagram} target='_blank' rel="noopener noreferrer">Instagram</a>
             </li>
           )
         }
         {
           profile.social.linkedin && (
-            <li className='list-group-item'>
+            <li className='list-group-item' style={{ color: "#111" }}>
               <i className='fab fa-linkedin' />&nbsp;&nbsp;
-              <a href={profile.social.linkedin} target='_blank' rel="noopener noreferrer">LinkedIn</a>
+              <a style={{ color: "#111" }} href={profile.social.linkedin} target='_blank' rel="noopener noreferrer">LinkedIn</a>
             </li>
           )
         }
       </ul>
-    </div>
+      <div className="d-flex justify-content-end mt-3">
+        <Link className="btn btn-secondary" to="/social/create-social-profile">
+          <i className="fas fa-edit" /> Edit information
+        </Link>
+      </div>
+    </article>
   ) : !profile ? (
-    <Fragment>
-      <h1 className='text-primary'>You don't seem to have a profile</h1>
+    <div className="m-auto" style={{ width: "80%" }}>
+      <h1 className='text-primary'>You don't seem to have customized your profile</h1>
       <Link to='/social/create-social-profile' className='btn btn-primary btn-lg'>
-        Make one!
+        Add more!
       </Link>
-    </Fragment>
+    </div>
   ) : (
     <Spinner />
   )

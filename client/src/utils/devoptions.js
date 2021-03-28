@@ -1,0 +1,42 @@
+export default {
+  lslanguage: {
+    storage: `localStorage.setItem("language", value);`,
+    reload: "window.location.reload();",
+    values: ["en", "sr", "de", "fr"],
+  },
+  lstheme: {
+    storage: `localStorage.setItem("isDarkTheme", JSON.stringify(value));`,
+    reload: "window.location.reload();",
+    values: [
+      "impulse",
+      "impulseplus",
+      "impulseplusplus",
+      "neuralcore",
+      "fireworks",
+      "interstellar",
+      "painter",
+      "photons",
+      "rainbow",
+      "space",
+      "light",
+      "rain",
+      "inferno",
+      "snakes",
+      "matrix",
+      "fountain",
+      "snow",
+      "network",
+      "wave",
+    ],
+  },
+  lsfont: {
+    storage: `localStorage.setItem("isLegacyFont", value);`,
+    reload: "window.location.reload();",
+    values: ["true", "false"],
+  },
+  lsdevmode: {
+    storage: `localStorage.setItem("isDevExp", value);`,
+    reload: "window.location.reload();",
+    values: ["true", "false"],
+  },
+};

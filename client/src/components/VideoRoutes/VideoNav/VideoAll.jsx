@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { getAllVideos } from '../../../actions/video.js';
 import PropTypes from 'prop-types';
@@ -20,6 +20,29 @@ function VideoAll({ getAllVideos, video, auth, location }) {
     }());
     // eslint-disable-next-line
   }, [])
+
+  const videosByCategory = (cat) =>
+    video.videos.filter(v => v.category.includes(cat)).length > 0 && (
+      <Fragment>
+        <article>
+          <h2 className="text-primary">Category - {cat}</h2>
+          <div className={isGrid ? "d-flex flex-wrap" : ""}>
+            {gotVids && isGrid &&
+              video.videos.filter(v => v.category.includes(cat)).length > 0 &&
+              video.videos.filter(v => v.category.includes(cat)).map(vid => (
+                <VideoGrid key={vid._id} video={{ ...vid }} />
+            ))}
+            {gotVids && !isGrid &&
+              video.videos.filter(v => v.category.includes(cat)).length > 0 &&
+              video.videos.filter(v => v.category.includes(cat)).map(vid => (
+                <VideoList key={vid._id} video={{ ...vid }} />
+            ))}
+          </div>
+        </article>
+        <hr/>
+      </Fragment>
+    )
+
   return (
     <div className="container" style={{ pointerEvents: "all" }}>
       <Videos location={location} />
@@ -39,10 +62,23 @@ function VideoAll({ getAllVideos, video, auth, location }) {
           <i className="fas fa-list" />
         </button>
       </div>
-      <div className={isGrid ? "d-flex flex-wrap" : ""}>
-        {gotVids && isGrid && video.videos.map(vid => <VideoGrid key={vid._id} video={{ ...vid }} />)}
-        {gotVids && !isGrid && video.videos.map(vid => <VideoList key={vid._id} video={{ ...vid }} />)}
-      </div>
+      {videosByCategory("Film")}
+      {videosByCategory("Animation")}
+      {videosByCategory("Vehicles")}
+      {videosByCategory("Music")}
+      {videosByCategory("Sports")}
+      {videosByCategory("E-Sports")}
+      {videosByCategory("Vlog")}
+      {videosByCategory("Comedy")}
+      {videosByCategory("News")}
+      {videosByCategory("Politics")}
+      {videosByCategory("Education")}
+      {videosByCategory("Science")}
+      {videosByCategory("Technology")}
+      {videosByCategory("DIY")}
+      {videosByCategory("Activism")}
+      {videosByCategory("Non-profits")}
+      {videosByCategory("Other")}
     </div>
   )
 }

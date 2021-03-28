@@ -109,14 +109,24 @@ function Chat(props) {
                   message.media &&
                   message.media.length > 0 &&
                   message.media.map(med => med.type === 'video' ? (
-                    <video className="mx-2" src={med.src} style={{ maxHeight: "100px", width: "auto" }} />
+                    <video key={med.src} className="mx-2" src={med.src} style={{ maxHeight: "100px", width: "auto" }} />
                   ) : med.type === 'image' ? (
-                    <img className="mx-2" src={med.src} style={{ maxHeight: "100px", width: "auto" }} alt="" />
+                    <img key={med.src} className="mx-2" src={med.src} style={{ maxHeight: "100px", width: "auto" }} alt="" />
+                  ) : med.type === 'gif' ? (
+                    <iframe
+                      title={med.name}
+                      key={med.src}
+                      src={med.src}
+                      width="480"
+                      height="284"
+                      frameBorder="0"
+                      className="giphy-embed"
+                    />
                   ) : null
                 )}
               </div>
               <div className={`d-flex my-3 ${message.user === user._id && "justify-content-end"}`}>
-                <span style={{ borderRadius: '10px' }} className={`px-3 py-2 ${message.user === user._id ? "bg-primary" : "bg-secondary"}`}>{ReactEmoji.emojify(message.body)}</span>
+                {message.body && <span style={{ borderRadius: '10px' }} className={`px-3 py-2 ${message.user === user._id ? "bg-primary" : "bg-secondary"}`}>{ReactEmoji.emojify(message.body)}</span>}
                 <sup className="text-muted d-inline-block px-2">
                   <Moment format="DD.MM.YYYY">{message.date}</Moment>
                 </sup>
@@ -133,11 +143,21 @@ function Chat(props) {
                     <video className="mx-2" src={med.src} style={{ maxHeight: "100px", width: "auto" }} />
                   ) : med.type === 'image' ? (
                     <img className="mx-2" src={med.src} style={{ maxHeight: "100px", width: "auto" }} alt="" />
+                  ) : med.type === 'gif' ? (
+                    <iframe
+                      title={med.name}
+                      key={med.src}
+                      src={med.src}
+                      width="480"
+                      height="284"
+                      frameBorder="0"
+                      className="giphy-embed"
+                    />
                   ) : null
                 )}
               </div>
               <div className={`d-flex my-3 ${message.user === user._id && "justify-content-end"}`}>
-                <span style={{ borderRadius: '10px' }} className={`px-3 py-2 ${message.user === user._id ? "bg-primary" : "bg-secondary"}`}>{ReactEmoji.emojify(message.body)}</span>
+                {message.body && <span style={{ borderRadius: '10px' }} className={`px-3 py-2 ${message.user === user._id ? "bg-primary" : "bg-secondary"}`}>{ReactEmoji.emojify(message.body)}</span>}
                 <sup className="text-muted d-inline-block px-2">
                   <Moment format="DD.MM.YYYY">{message.date}</Moment>
                 </sup>

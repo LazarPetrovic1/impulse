@@ -16,7 +16,6 @@ export const wipeImages = () => async dispatch => dispatch({ type: WIPE_IMAGES }
 export const getImages = (id, page, limit) => async dispatch => {
   try {
     const res = await axios.get(`/api/imageposts/${id}?page=${page}&limit=${limit}`)
-    await console.log(res.data);
     dispatch({
       type: GET_IMAGES,
       payload: res.data.results
