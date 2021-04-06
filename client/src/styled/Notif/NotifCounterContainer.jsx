@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const NotifCounterContainer = styled.span`
   position: absolute;
@@ -14,6 +14,6 @@ const NotifCounterContainer = styled.span`
   align-items: center;
   background-color: red;
   color: white;
-`
+`;
 
 export default NotifCounterContainer;

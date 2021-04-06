@@ -8,6 +8,7 @@ import image from "./image";
 import notifs from "./notifs";
 import group from "./group";
 import allmedia from "./allmedia";
+import status from "./status";
 
 export default combineReducers({
   alert,
@@ -18,5 +19,6 @@ export default combineReducers({
   notifs,
   video,
   allmedia,
+  status,
   group,
 });

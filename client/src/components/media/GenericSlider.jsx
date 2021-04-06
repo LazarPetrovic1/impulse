@@ -38,6 +38,7 @@ function GenericSlider({ media, i, setIsGenericSlider, auth }) {
         console.warn("Error, man", e.message);
       }
     })();
+    // eslint-disable-next-line
   }, [index]);
 
   const slideLeft = () => {

@@ -9,7 +9,10 @@
       name="description"
       content="Web site created using create-react-app"
     />
-    <link rel="apple-touch-icon" href="apple-icon-180x180-dunplab-manifest-34821.png" />
+    <link
+      rel="apple-touch-icon"
+      href="apple-icon-180x180-dunplab-manifest-34821.png"
+    />
     <link
       href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
       rel="stylesheet"
@@ -30,20 +33,20 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Impulse</title>
     <style media="screen">
-    #canvas {
-      min-height: 100vh;
-      width: 100vw;
-      pointer-events: all;
-    }
+      #canvas {
+        min-height: 100vh;
+        width: 100vw;
+        pointer-events: all;
+      }
 
-    .canvas-wrapper {
-      position: fixed;
-      z-index: 0;
-      top: 0;
-      left: 0;
-      min-height: calc(100vh - 56px);
-      width: 100vw;
-    }
+      .canvas-wrapper {
+        position: fixed;
+        z-index: 0;
+        top: 0;
+        left: 0;
+        min-height: calc(100vh - 56px);
+        width: 100vw;
+      }
     </style>
   </head>
   <body>
@@ -80,18 +83,20 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      console.log(
-        "%cPlease use the developer tools with caution.",
-        "font-size: 2rem; color: orangered; font-weight: bold; font-family: Roboto, sans-serif;"
-      )
-      console.log(
-        "%cThis is a public application, after all and you might encounter all sorts of nefarious actors.",
-        "font-size: 1.3rem; color: yellow; font-family: Roboto, sans-serif;"
-      );
-      console.log(
-        "%cIf you have developer experience enabled, feel free to execute the given code here.",
-        "font-size: 1.2rem; color: green; font-family: Roboto, sans-serif;"
-      );
+      (function () {
+        console.log(
+          "%cPlease use the developer tools with caution.",
+          "font-size: 2rem; color: orangered; font-weight: bold; font-family: Roboto, sans-serif;"
+        );
+        console.log(
+          "%cThis is a public application, after all and you might encounter all sorts of nefarious actors.",
+          "font-size: 1.3rem; color: yellow; font-family: Roboto, sans-serif;"
+        );
+        console.log(
+          "%cIf you have developer experience enabled, feel free to execute the given code here.",
+          "font-size: 1.2rem; color: green; font-family: Roboto, sans-serif;"
+        );
+      })();
     </script>
   </body>
 </html>

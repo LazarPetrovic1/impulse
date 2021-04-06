@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useState, useContext, useRef } from "react";
 import SettingsSideNav from "../../styled/Settings/SettingsSideNav";
 import SettingsListItem from "../../styled/Settings/SettingsListItem";
 import { LanguageContext } from "../../contexts/LanguageContext";
@@ -36,10 +36,6 @@ function Settings() {
   const { isLegacyFont, toggleLegacyFont } = useContext(FontContext);
   const { isDevExp, toggleDevExp } = useContext(DevContext);
   const devCopy = useRef();
-
-  useEffect(() => {
-    console.log(devCopy);
-  }, [devCopy]);
 
   const copyText = () => {
     let textField = document.createElement("textarea");

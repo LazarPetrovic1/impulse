@@ -11,6 +11,7 @@ export default {
       "impulse",
       "impulseplus",
       "impulseplusplus",
+      "dark",
       "neuralcore",
       "fireworks",
       "interstellar",

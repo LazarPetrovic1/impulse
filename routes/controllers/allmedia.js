@@ -10,6 +10,52 @@ async function getUsersMedia(req, res) {
   const results = {};
   try {
     const imageposts = await ImagePost.find({
+      user: req.params.id,
+    }).sort({
+      date: -1,
+    });
+    const videoposts = await VideoPost.find({
+      user: req.params.id,
+    }).sort({
+      date: -1,
+    });
+    const statusposts = await Status.find({
+      user: req.params.id,
+    }).sort({
+      date: -1,
+    });
+    const posts = [...statusposts, ...imageposts, ...videoposts].sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+    const hasMoreValue = endIndex < posts.length;
+    if (endIndex < posts.length)
+      results.next = {
+        page: page + 1,
+        limit,
+        hasMore: true,
+      };
+    if (!hasMoreValue)
+      results.next = {
+        hasMore: false,
+      };
+    results.results = await posts.slice(startIndex, endIndex);
+    res.json(results);
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({
+      msg: "Internal server error.",
+    });
+  }
+}
+
+async function getMyMedia(req, res) {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const results = {};
+  try {
+    const imageposts = await ImagePost.find({
       user: req.user.id,
     }).sort({
       date: -1,
@@ -24,7 +70,7 @@ async function getUsersMedia(req, res) {
     }).sort({
       date: -1,
     });
-    const posts = [...imageposts, ...videoposts, ...statusposts];
+    const posts = [...statusposts, ...imageposts, ...videoposts];
     const hasMoreValue = endIndex < posts.length;
     if (endIndex < posts.length)
       results.next = {
@@ -53,12 +99,6 @@ async function getMediaInBulk(req, res) {
   const endIndex = page * limit;
   const results = {};
   let posts = [];
-  console.log({
-    page,
-    limit,
-    startIndex,
-    endIndex,
-  });
   try {
     const friends = req.body.friends;
     for (const friend of friends) {
@@ -109,6 +149,7 @@ async function getMediaInBulk(req, res) {
 const allmedia = {
   getUsersMedia,
   getMediaInBulk,
+  getMyMedia,
 };
 
 module.exports = allmedia;

@@ -70,6 +70,6 @@ export default (state = initialState, action) => {
         error: payload,
       };
     default:
-      return initialState;
+      return state;
   }
 };

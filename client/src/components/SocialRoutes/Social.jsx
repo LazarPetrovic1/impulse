@@ -7,16 +7,18 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import sad from "../../assets/sad.svg";
-// import { socialcomponent } from '../../utils/langObject';
-// import Carousel from "../carousels/CarouselSocial";
+import { socialcomponent } from "../../utils/langObject";
+import AliceCarousel from "react-alice-carousel";
+import "react-alice-carousel/lib/alice-carousel.css";
+import { responsive } from "../../utils/nonReduxConstants";
 
-// const {
-//   _lookforpeoplenear,
-//   _fromyourcity,
-//   _fromyourcountry,
-//   _noonecity,
-//   _noonecountry
-// } = socialcomponent
+const {
+  _lookforpeoplenear,
+  _fromyourcity,
+  _fromyourcountry,
+  _noonecity,
+  _noonecountry,
+} = socialcomponent;
 
 function Social({ auth }) {
   const { user } = auth;
@@ -66,19 +68,23 @@ function Social({ auth }) {
 
   return (
     <div className="container">
-      {/*{_lookforpeoplenear[language]}*/}
-      {city && <h2>Look for people near {city}</h2>}
+      {city && (
+        <h2>
+          {_lookforpeoplenear[language]} {city}
+        </h2>
+      )}
       <SocialSearch
         search={search}
         onInputChange={onInputChange}
         searchResults={searchResults}
       />
-      {/*{_fromyourcity[language]}*/}
-      <h2>From your city</h2>
+
+      <h2>{_fromyourcity[language]}</h2>
       {fromCountry && (
-        <section>
-          {fromCountry.length > 0 &&
-            fromCountry
+        <section style={{ pointerEvents: "all" }}>
+          <AliceCarousel
+            mouseTracking
+            items={fromCountry
               .filter((fs) => fs.city === city && fs._id !== user._id)
               .map((fs) => (
                 <SocialSearchItem
@@ -87,39 +93,42 @@ function Social({ auth }) {
                   src={`https://robohash.org/${fs._id}?set=set4&size=150x150`}
                 />
               ))}
+            responsive={responsive}
+          />
         </section>
       )}
       {fromCountry &&
         fromCountry.filter((fs) => fs.city === city && fs._id !== user._id)
           .length <= 0 && (
           <h5>
-            {/*{_noonecity[language]}*/}
-            No one from your city seems to be on Impulse.{" "}
+            {_noonecity[language]}.{" "}
             <img src={sad} height={18} width={18} alt="Sad boi" />
             ...
           </h5>
         )}
       <hr />
-      {/*{_fromyourcountry[language]}*/}
-      <h2>From your country</h2>
+      <h2>{_fromyourcountry[language]}</h2>
       {fromCountry && (
-        <section>
-          {fromCountry
-            .filter((fs) => fs._id !== user._id)
-            .map((fs) => (
-              <SocialSearchItem
-                fs={fs}
-                key={fs._id}
-                src={`https://robohash.org/${fs._id}?set=set4&size=150x150`}
-              />
-            ))}
+        <section style={{ pointerEvents: "all" }}>
+          <AliceCarousel
+            mouseTracking
+            items={fromCountry
+              .filter((fs) => fs._id !== user._id)
+              .map((fs) => (
+                <SocialSearchItem
+                  fs={fs}
+                  key={fs._id}
+                  src={`https://robohash.org/${fs._id}?set=set4&size=150x150`}
+                />
+              ))}
+            responsive={responsive}
+          />
         </section>
       )}
       {fromCountry &&
         fromCountry.filter((fs) => fs._id !== user._id).length <= 0 && (
           <h5>
-            {/*{_noonecountry[language]}*/}
-            No one from your countries seems to be on Impulse{" "}
+            {_noonecountry[language]}{" "}
             <img src={sad} height={18} width={18} alt="Sad boi" />
             ...
           </h5>

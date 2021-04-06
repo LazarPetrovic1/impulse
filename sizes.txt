@@ -1,0 +1,5 @@
+width x height
+bell: 22 x 16
+settings: 24 x 16
+logout: 16 x 16
+user: 22 x 16

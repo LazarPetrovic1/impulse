@@ -8,7 +8,6 @@ import GenericSlider from "../media/GenericSlider";
 import GenericPost from "../media/GenericPost";
 import DashCenter from "../../styled/DashCenter";
 import { setBulkMedia, wipeAllMedia } from "../../actions/allmedia.js";
-import { meInGroups } from "../../actions/group.js";
 import { Link } from "react-router-dom";
 import SideMenu from "./SideMenu";
 import HomePageAdditionalControls from "./utilcomps/HomePageAdditionalControls";
@@ -19,7 +18,6 @@ function HomePage({
   setBulkMedia,
   allmedia,
   wipeAllMedia,
-  meInGroups,
 }) {
   const [friends, setFriends] = useState(null);
   useEffect(() => () => setFriends(user.friends), /*eslint-disable-line*/ []);
@@ -48,7 +46,6 @@ function HomePage({
     (async function () {
       try {
         await gettingAllUserMedia();
-        await meInGroups();
       } catch (e) {
         console.warn("Error, dude!");
       }
@@ -70,7 +67,7 @@ function HomePage({
   // ADD TO LikesAndComments
   const gettingAllUserMedia = async () => {
     try {
-      if (friends.length > 0 && hasMore) {
+      if (Array.isArray(friends) && friends.length > 0 && hasMore) {
         const res = await getFriendsMediaInBulk(friends, page, POST_DELIMITER);
         await setHasMore(res.next.hasMore);
         await setFriendsMedia([...friendsMedia, ...res.results]);
@@ -161,7 +158,6 @@ HomePage.propTypes = {
   auth: PropTypes.object.isRequired,
   setBulkMedia: PropTypes.func.isRequired,
   wipeAllMedia: PropTypes.func.isRequired,
-  meInGroups: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -172,5 +168,4 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   setBulkMedia,
   wipeAllMedia,
-  meInGroups,
 })(HomePage);

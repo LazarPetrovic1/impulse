@@ -14,12 +14,72 @@ const StatusPostSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  isMedia: { type: Boolean, default: false },
-  media: [
+  isVideo: {
+    type: Boolean,
+    default: false,
+  },
+  type: {
+    type: String,
+    default: "textual",
+  },
+  comments: [
     {
-      name: { type: String },
-      type: { type: String },
-      src: { type: String },
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
+      content: {
+        type: String,
+        required: true,
+      },
+      by: {
+        // username
+        type: String,
+      },
+      date: {
+        type: Date,
+        default: Date.now,
+      },
+      replies: [
+        {
+          user: {
+            type: Schema.Types.ObjectId,
+            ref: "user",
+          },
+          content: {
+            type: String,
+            required: true,
+          },
+          by: {
+            // username
+            type: String,
+          },
+        },
+      ],
+    },
+  ],
+  endorsements: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
+    },
+  ],
+  judgements: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
+    },
+  ],
+  impulsions: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
     },
   ],
 });

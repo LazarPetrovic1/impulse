@@ -4,7 +4,8 @@
 }
 
 /* * { font-family: "Impulse", sans-serif; } */
-html, body { height: 100%; }
+html,
+body { height: 100%; }
 body { overflow-x: hidden; }
 .bg-overlay { background-color: rgba(0, 0, 0, 0.45); }
 .darkbackground { background-color: rgba(17, 17, 17, 0.75); }
@@ -20,5 +21,6 @@ body { overflow-x: hidden; }
 .bg { cursor: pointer; transition: 200ms all linear; }
 ::selection { background-color: yellow; color: black; }
 ::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: #4287f5; }
-::-webkit-scrollbar-thumb { background: #68b06f; }
+::-webkit-scrollbar-track { background: #eee; }
+::-webkit-scrollbar-thumb { background: #737373; }
+input[type="search"]::-webkit-search-cancel-button{ cursor: pointer; }

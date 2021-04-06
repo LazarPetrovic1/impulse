@@ -511,6 +511,11 @@ export const settingsthemecomponent = {
     sr: "Talas",
     de: "Welle",
   },
+  _dark: {
+    en: "Dark",
+    sr: "Tamna",
+    de: "Dunkel",
+  },
 };
 
 export const policycomponent = {
@@ -778,5 +783,66 @@ export const homepageadditionalcontrolscomponent = {
     en: "create your own",
     sr: "napravite svoju",
     de: "create your own",
+  },
+};
+
+export const socialcomponent = {
+  _lookforpeoplenear: {
+    en: "Look for people near",
+    sr: "Trazite ljude u blizini",
+    de: "Suchen Sie nach Menschen in der Nähe",
+  },
+  _fromyourcity: {
+    en: "From your city",
+    sr: "Iz Vaseg grada",
+    de: "Aus deiner Stadt",
+  },
+  _fromyourcountry: {
+    en: "From your country",
+    sr: "Iz Vase drzave",
+    de: "Aus Ihrem Land",
+  },
+  _noonecity: {
+    en: "No one from your city seems to be using Impulse",
+    sr: "Izgleda da niko iz Vaseg grada ne koristi Impuls",
+    de: "Niemand aus Ihrer Stadt scheint Impulse zu verwenden",
+  },
+  _noonecountry: {
+    en: "No one from your country seems to be using Impulse",
+    sr: "Izgleda da niko iz Vase drzave ne koristi Impuls",
+    de: "Niemand aus Ihrem Land scheint Impulse zu verwenden",
+  },
+};
+
+export const generic = {
+  _delete: {
+    en: "Delete",
+    sr: "Obrisite",
+    de: "Lösche",
+  },
+  _edit: {
+    en: "Edit",
+    sr: "Uredite",
+    de: "Bearbeite",
+  },
+  _discussion: {
+    en: "Discussion",
+    sr: "Diskusija",
+    de: "Diskussion",
+  },
+  _chat: {
+    en: "Chat",
+    sr: "Ćaskanje",
+    de: "Chatten",
+  },
+  _cancel: {
+    en: "Cancel",
+    sr: "Otkazite",
+    de: "Hebe auf",
+  },
+  _back: {
+    en: "Back",
+    sr: "Natrag",
+    de: "Zurück",
   },
 };

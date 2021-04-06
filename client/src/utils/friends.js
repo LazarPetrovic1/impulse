@@ -1,16 +1,19 @@
-import axios from 'axios'
+import axios from "axios";
 
 export const getFriendsMediaInBulk = async (friends, page, limit) => {
-  const body = JSON.stringify({ friends })
+  const body = JSON.stringify({ friends });
   const config = {
     headers: {
-      "Content-Type": "application/json"
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
   try {
-    const res = await axios.post(`/api/allmedia/bulk?page=${page}&limit=${limit}`, body, config)
-    await console.log(res.data);
-    return res.data
+    const res = await axios.post(
+      `/api/allmedia/bulk?page=${page}&limit=${limit}`,
+      body,
+      config
+    );
+    return res.data;
   } catch (e) {
     console.warn(e.message);
   }

@@ -1,10 +1,20 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { LanguageContext } from "../../../contexts/LanguageContext";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import GroupItem from "./GroupItem";
-// import CarouselGroups from "../../carousels/CarouselGroups";
 import { homepageadditionalcontrolscomponent } from "../../../utils/langObject";
+import AliceCarousel from "react-alice-carousel";
+import "react-alice-carousel/lib/alice-carousel.css";
+import { responsive } from "../../../utils/nonReduxConstants";
+import { createStatus } from "../../../actions/status";
+// import Lottie from "react-lottie-player";
+// import creategroup from "../../../animations/homepage/creategroup.json";
+import livestream from "../../../animations/homepage/livestream.json";
+import creategroup from "../../../animations/social-backup.json";
+import EllipsisIcon from "../../utils/icons/EllipsisIcon";
+import GenericIcon from "../../utils/icons/GenericIcon";
+import { meInGroups } from "../../../actions/group.js";
 
 const {
   _saysthhere,
@@ -17,25 +27,43 @@ const {
   _createyourown,
 } = homepageadditionalcontrolscomponent;
 
-function HomePageAdditionalControls({ group, setShow }) {
+function HomePageAdditionalControls({
+  group,
+  setShow,
+  createStatus,
+  meInGroups,
+}) {
   const [status, setStatus] = useState("");
   const { language } = useContext(LanguageContext);
-  const submitStatus = (e) => {
+  const submitStatus = async (e) => {
     e.preventDefault();
-    // Handle status here
-    setStatus("");
+    await createStatus(status);
+    await setStatus("");
   };
+
+  useEffect(() => {
+    (async function () {
+      try {
+        await meInGroups();
+      } catch (e) {
+        console.warn(e.message);
+      }
+    })();
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <div className="w-100">
-      <form onSubmit={submitStatus}>
+      <form onSubmit={submitStatus} className="position-relative">
         <input
           type="text"
           className="form-control form-control-lg"
           placeholder={_saysthhere[language]}
+          style={{ paddingLeft: "50px" }}
           value={status}
           onChange={(e) => setStatus(e.target.value)}
         />
+        <EllipsisIcon width={50} height={30} />
       </form>
       <div className="d-flex mt-3">
         <button
@@ -43,15 +71,32 @@ function HomePageAdditionalControls({ group, setShow }) {
           style={{ flex: 1 }}
           onClick={() => setShow(true)}
         >
-          <i className="fas fa-users pr-2" /> {_creategroup[language]}
+          <GenericIcon
+            text={_creategroup[language]}
+            width={50}
+            height={30}
+            data={creategroup}
+          />
         </button>
         <button className="btn btn-primary btn-lg" style={{ flex: 1 }}>
-          <i className="fas fa-video pr-2" /> {_livestream[language]}
+          <GenericIcon
+            text={_livestream[language]}
+            width={50}
+            height={30}
+            data={livestream}
+          />
         </button>
       </div>
-      {group && group.groups && group.groups.length > 0 ? (
-        group.groups.map((gr) => <GroupItem group={gr} key={gr._id} />)
-      ) : (
+      {group && Array.isArray(group.groups) && group.groups.length > 0 && (
+        <AliceCarousel
+          mouseTracking
+          items={group.groups.map((gr) => (
+            <GroupItem group={gr} key={gr._id} />
+          ))}
+          responsive={responsive}
+        />
+      )}
+      {group && Array.isArray(group.groups) && group.groups.length < 0 && (
         <div
           style={{ height: "250px" }}
           className="d-flex align-items-center justify-content-center flex-column"
@@ -72,10 +117,14 @@ function HomePageAdditionalControls({ group, setShow }) {
 
 HomePageAdditionalControls.propTypes = {
   group: PropTypes.object.isRequired,
+  createStatus: PropTypes.func.isRequired,
+  meInGroups: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   group: state.group,
 });
 
-export default connect(mapStateToProps, null)(HomePageAdditionalControls);
+export default connect(mapStateToProps, { createStatus, meInGroups })(
+  HomePageAdditionalControls
+);
