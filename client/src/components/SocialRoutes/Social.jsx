@@ -24,8 +24,6 @@ function Social({ auth }) {
   const { user } = auth;
   const { language } = useContext(LanguageContext);
   const [city, setCity] = useState("");
-  const [search, setSearch] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
   const [fromCountry, setFromCountry] = useState([]);
   useEffect(() => {
     (async function () {
@@ -58,14 +56,6 @@ function Social({ auth }) {
     })();
   }, []);
 
-  const onInputChange = async (e) => {
-    setSearch(e.target.value);
-    if (search.length >= 2) {
-      const res = await axios.post("/api/users/search", { search });
-      await setSearchResults(res.data);
-    }
-  };
-
   return (
     <div className="container">
       {city && (
@@ -73,11 +63,7 @@ function Social({ auth }) {
           {_lookforpeoplenear[language]} {city}
         </h2>
       )}
-      <SocialSearch
-        search={search}
-        onInputChange={onInputChange}
-        searchResults={searchResults}
-      />
+      <SocialSearch />
 
       <h2>{_fromyourcity[language]}</h2>
       {fromCountry && (

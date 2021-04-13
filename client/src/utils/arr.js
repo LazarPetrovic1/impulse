@@ -9,3 +9,14 @@ export const handleProfileOverview = (arr, value) => {
   if (index > -1) return arr.filter((val) => val !== value);
   return [...arr, value];
 };
+
+export const uniqueArray = (arr) =>
+  arr.filter((thing, index) => {
+    const _thing = JSON.stringify(thing);
+    return (
+      index ===
+      arr.findIndex((obj) => {
+        return JSON.stringify(obj) === _thing;
+      })
+    );
+  });

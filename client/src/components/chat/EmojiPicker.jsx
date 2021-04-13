@@ -1,6 +1,6 @@
-import React from 'react';
-import ReactEmoji from 'react-emoji';
-import emojis from '../../utils/emojis';
+import React from "react";
+import ReactEmoji from "react-emoji";
+import emojis from "../../utils/emojis";
 
 function EmojiPicker({ setMsg, msg }) {
   return (
@@ -10,19 +10,20 @@ function EmojiPicker({ setMsg, msg }) {
         maxHeight: "300px",
         overflowY: "auto",
         position: "absolute",
-        bottom: "45px"
+        bottom: "45px",
       }}
     >
-      {emojis.map(e => (
+      {emojis.map((e) => (
         <button
           className="btn"
+          key={e}
           onClick={() => setMsg(() => msg.concat(e, " "))}
         >
           {ReactEmoji.emojify(e)}
         </button>
       ))}
     </div>
-  )
+  );
 }
 
 export default EmojiPicker;

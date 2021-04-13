@@ -1,15 +1,15 @@
 import React, { Fragment, useContext, useState, useEffect } from "react";
-import SocialSearchResultsContainer from "../../../styled/SocialSearchResultsContainer";
-import SocialResultItem from "./SocialResultItem";
-import { LanguageContext } from "../../../contexts/LanguageContext";
-import { socialsearchcomponent } from "../../../utils/langObject";
+import ChatSearchResultsContainer from "../../styled/Chat/ChatSearchResultsContainer";
+import ChatResultItem from "./ChatResultItem";
+import { LanguageContext } from "../../contexts/LanguageContext";
+import { socialsearchcomponent } from "../../utils/langObject";
 import axios from "axios";
-import { uniqueArray } from "../../../utils/arr";
-import SearchButton from "../../../styled/SearchButton";
+import { uniqueArray } from "../../utils/arr";
+import SearchButton from "../../styled/SearchButton";
 
 const { _searchforpeople } = socialsearchcomponent;
 
-function SocialSearch() {
+function ChatSearch({ selectPerson, people }) {
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
@@ -20,12 +20,7 @@ function SocialSearch() {
     );
   };
 
-  const onInputChange = (e) => {
-    setSearch(e.target.value);
-    // if (search.length >= 2) {
-    //   searchPeople(search);
-    // }
-  };
+  const onInputChange = (e) => setSearch(e.target.value);
   const { language } = useContext(LanguageContext);
 
   useEffect(() => {
@@ -62,16 +57,22 @@ function SocialSearch() {
       </div>
       <div className="position-relative" style={{ height: 0 }}>
         {searchResults.length > 0 && (
-          <SocialSearchResultsContainer className="mb-2">
+          <ChatSearchResultsContainer className="mb-2">
             {searchResults.length > 0 &&
               searchResults.map((sr) => (
-                <SocialResultItem key={sr._id} sr={sr} />
+                <ChatResultItem
+                  selectPerson={selectPerson}
+                  setSearch={setSearch}
+                  key={sr._id}
+                  sr={sr}
+                  people={people}
+                />
               ))}
-          </SocialSearchResultsContainer>
+          </ChatSearchResultsContainer>
         )}
       </div>
     </Fragment>
   );
 }
 
-export default SocialSearch;
+export default ChatSearch;

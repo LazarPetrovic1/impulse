@@ -104,7 +104,7 @@ function AddMediaModal({
 
 AddMediaModal.propTypes = {
   createImage: PropTypes.func.isRequired,
-  uploadProfileImage: PropTypes.object.isRequired,
+  uploadProfileImage: PropTypes.func.isRequired,
 };
 
 export default connect(null, { createImage, uploadProfileImage })(

@@ -15,6 +15,7 @@ import creategroup from "../../../animations/social-backup.json";
 import EllipsisIcon from "../../utils/icons/EllipsisIcon";
 import GenericIcon from "../../utils/icons/GenericIcon";
 import { meInGroups } from "../../../actions/group.js";
+import ControlsButton from "../../../styled/HomePage/ControlsButton";
 
 const {
   _saysthhere,
@@ -66,26 +67,17 @@ function HomePageAdditionalControls({
         <EllipsisIcon width={50} height={30} />
       </form>
       <div className="d-flex mt-3">
-        <button
+        <ControlsButton
           className="btn btn-primary btn-lg"
-          style={{ flex: 1 }}
           onClick={() => setShow(true)}
         >
-          <GenericIcon
-            text={_creategroup[language]}
-            width={50}
-            height={30}
-            data={creategroup}
-          />
-        </button>
-        <button className="btn btn-primary btn-lg" style={{ flex: 1 }}>
-          <GenericIcon
-            text={_livestream[language]}
-            width={50}
-            height={30}
-            data={livestream}
-          />
-        </button>
+          <GenericIcon width={50} height={30} data={creategroup} />
+          <span name="text">{_creategroup[language]}</span>
+        </ControlsButton>
+        <ControlsButton className="btn btn-primary btn-lg">
+          <GenericIcon width={50} height={30} data={livestream} />
+          <span name="text">{_livestream[language]}</span>
+        </ControlsButton>
       </div>
       {group && Array.isArray(group.groups) && group.groups.length > 0 && (
         <AliceCarousel

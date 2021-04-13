@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import { LanguageContext } from "../../../contexts/LanguageContext";
 import AddProfileImage from "../../../styled/ImagePost/AddProfileImage";
 import { dashboardcomponent } from "../../../utils/langObject";
-import Lottie from "react-lottie-player";
 import addbutton from "../../../animations/addbutton-backup.json";
+import GenericIcon from "../../utils/icons/GenericIcon";
 
 function ProfileImage({
   auth: { user },
@@ -59,13 +59,7 @@ function ProfileImage({
                 setAddFilesModal(true);
               }}
             >
-              <Lottie
-                loop
-                animationData={addbutton}
-                play
-                style={{ width: 32, height: 32, display: "inline-block" }}
-              />
-              {/*<i className="fas fa-plus fa-2x" />*/}
+              <GenericIcon width={32} height={32} data={addbutton} />
             </AddProfileImage>
           )}
         </div>

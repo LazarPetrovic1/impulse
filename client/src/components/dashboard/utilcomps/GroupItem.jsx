@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import GenericIcon from "../../utils/icons/GenericIcon";
 import arrowData from "../../../animations/generic/right_arrow.json";
+import GroupItemContainer from "../../../styled/Group/GroupItemContainer";
 
 function GroupItem({ group, auth: { user } }) {
   const [isHover, setIsHover] = useState(false);
@@ -24,9 +25,8 @@ function GroupItem({ group, auth: { user } }) {
     _id,
   } = group;
   return (
-    <Fragment>
+    <GroupItemContainer>
       <article
-        style={{ maxWidth: "200px" }}
         className="border mt-4 position-relative"
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
@@ -59,21 +59,24 @@ function GroupItem({ group, auth: { user } }) {
             )*/}
           </Fragment>
         )}
-        <img
-          src={groupImage}
-          alt={`${name} profile`}
-          width="200px"
-          height="160px"
-        />
+        <img src={groupImage} alt={`${name} profile`} />
         <div className="p-2">
           <h2 className="text-primary text-center">
             <Link to={`/groups/${_id}`}>{name}</Link>
           </h2>
-          <p className="m-0">{about}</p>
-          <p className="m-0">{people.length} people</p>
-          <p className="m-0">{requiresAdmin ? "Authoritarian" : "Relaxed"}</p>
-          <p className="m-0">{isSeen ? "Public" : "Private"}</p>
-          <p className="m-0">
+          <p className="m-0" name="about">
+            {about}
+          </p>
+          <p className="m-0" name="people">
+            {people.length} people
+          </p>
+          <p className="m-0" name="isauth">
+            {requiresAdmin ? "Authoritarian" : "Relaxed"}
+          </p>
+          <p className="m-0" name="isseen">
+            {isSeen ? "Public" : "Private"}
+          </p>
+          <p className="m-0" name="date">
             Created on <Moment format="DD. MM. YYYY.">{date}</Moment>
           </p>
         </div>
@@ -90,7 +93,7 @@ function GroupItem({ group, auth: { user } }) {
         groupId={group._id}
         groupname={group.name}
       />*/}
-    </Fragment>
+    </GroupItemContainer>
   );
 }
 

@@ -21,12 +21,13 @@ import VideoList from "../VideoRoutes/VideoMisc/VideoList";
 import VideoGrid from "../VideoRoutes/VideoMisc/VideoGrid";
 import { getAllUsersMedia, wipeAllMedia } from "../../actions/allmedia.js";
 import StatusPost from "../media/StatusPost";
-import Lottie from "react-lottie-player";
 import addbutton from "../../animations/addbutton.json";
+import GenericIcon from "../utils/icons/GenericIcon";
 
 function InitialDashboard(props) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [selectedToShow, setSelectedToShow] = useState("all");
   const {
     auth: { user, loading },
     history,
@@ -93,11 +94,10 @@ function InitialDashboard(props) {
     //   gettingAllUserMedia();
     // }
     // eslint-disable-next-line
-  }, [page]);
+  }, [page, selectedToShow]);
 
   const [isGrid, setIsGrid] = useState(true);
   const [selectedFile, setSelectedFile] = useState();
-  const [selectedToShow, setSelectedToShow] = useState("all");
   // eslint-disable-next-line
   const [isSelected, setIsSelected] = useState(false);
   const [previewSource, setPreviewSource] = useState("");
@@ -184,13 +184,7 @@ function InitialDashboard(props) {
             setAddFilesModal(true);
           }}
         >
-          <Lottie
-            loop
-            animationData={addbutton}
-            play
-            style={{ width: 24, height: 36, display: "inline-block" }}
-          />
-          {/*<i className="fas fa-plus" />*/}
+          <GenericIcon width={24} height={36} data={addbutton} />
         </AddMediaButton>
       </DashCenter>
       <DashCenter
@@ -248,7 +242,7 @@ function InitialDashboard(props) {
                   key={post._id}
                 />
               ) : (
-                <StatusPost status={post} />
+                <StatusPost status={post} key={post._id} />
               )
             )}
           <div ref={infiniteScrollPost} />

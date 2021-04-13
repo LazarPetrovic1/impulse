@@ -846,3 +846,19 @@ export const generic = {
     de: "Zurück",
   },
 };
+
+export const chatcomponent = {
+  _creategroup: {
+    en: "Create group",
+    sr: "Napravite grupu",
+    de: "Erstelle Gruppe",
+  },
+};
+
+export const gifpickercomponent = {
+  _search: {
+    en: "Search here",
+    sr: "Pretrazite ovde",
+    de: "Suche hier",
+  },
+};

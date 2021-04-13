@@ -1,98 +1,113 @@
-const mongoose = require('mongoose')
-const { Schema, model } = mongoose
+const mongoose = require("mongoose");
+const { Schema, model } = mongoose;
 
-const required = true
-const unique = true
+const required = true;
+const unique = true;
 
 const UserSchema = new Schema({
   firstName: {
     type: String,
-    required
+    required,
   },
   lastName: {
     type: String,
-    required
+    required,
   },
   email: {
     type: String,
     required,
-    unique
+    unique,
   },
   password: {
     type: String,
-    required
+    required,
   },
   date: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   sex: {
     type: String,
-    required
+    required,
   },
   bio: {
     type: String,
-    required
+    required,
   },
   dob: {
     type: String,
-    required
+    required,
   },
   username: {
     type: String,
     required,
-    unique
+    unique,
   },
   city: {
     type: String,
-    required
+    required,
   },
   country: {
     type: String,
-    required
+    required,
   },
   zip: {
     type: Number,
-    required
+    required,
   },
   phone: {
     type: String,
     required,
-    unique
+    unique,
   },
   question: {
     type: String,
-    required
+    required,
   },
   security: {
     type: String,
-    required
+    required,
   },
   imageTaken: {
     type: Boolean,
-    required
+    required,
   },
-  dismissedPosts: [{
-    type: Schema.Types.ObjectId,
-    ref: 'forumpost'
-  }],
-  friends: [{
-    user: {
+  dismissedPosts: [
+    {
       type: Schema.Types.ObjectId,
-      ref: 'user'
-    }
-  }],
-  friendRequestsSent: [{
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: 'user'
-    }
-  }],
-  profileImages: [{
-    url: String,
-    content: String
-  }],
-  hidden: { type: String }
-})
+      ref: "forumpost",
+    },
+  ],
+  friends: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
+    },
+  ],
+  friendRequestsSent: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
+    },
+  ],
+  profileImages: [
+    {
+      url: String,
+      content: String,
+    },
+  ],
+  hidden: { type: String },
+});
 
-module.exports = User = model('user', UserSchema)
+// UserSchema.index({
+//   firstName: "text",
+//   lastName: "text",
+//   email: "text",
+//   username: "text",
+// });
+
+module.exports = User = model("user", UserSchema);

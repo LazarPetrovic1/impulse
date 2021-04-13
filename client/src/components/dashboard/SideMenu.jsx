@@ -9,10 +9,13 @@ import videosData from "../../animations/videos.json";
 import upgradeData from "../../animations/upgrade.json";
 import forumData from "../../animations/forum.json";
 import SideMenuIcon from "../utils/icons/GenericIcon";
+import useWindowSize from "../../hooks/useWindowSize";
 
 const { _forum, _social, _videos, _chat, _upgrade } = sidemenucomponent;
 
 function SideMenu() {
+  // eslint-disable-next-line
+  const [width, _] = useWindowSize();
   const { language } = useContext(LanguageContext);
   return (
     <nav
@@ -20,7 +23,11 @@ function SideMenu() {
       style={{ pointerEvents: "all", bottom: "250px" }}
     >
       <DashboardSideMenuUl>
-        <li className="nav-item bg-light m-1 px-5 text-center">
+        <li
+          className={`nav-item bg-light m-1 ${
+            width > 600 ? "px-5" : "pl-5"
+          } text-center`}
+        >
           <Link className="nav-link lead text-primary" to="/forum">
             <SideMenuIcon
               text={_forum[language]}
@@ -30,7 +37,11 @@ function SideMenu() {
             />
           </Link>
         </li>
-        <li className="nav-item bg-light m-1 px-5 text-center">
+        <li
+          className={`nav-item bg-light m-1 ${
+            width > 600 ? "px-5" : "pl-5"
+          } text-center`}
+        >
           <Link className="nav-link text-primary lead" to="/social">
             <SideMenuIcon
               text={_social[language]}
@@ -40,7 +51,11 @@ function SideMenu() {
             />
           </Link>
         </li>
-        <li className="nav-item bg-light m-1 px-5 text-center">
+        <li
+          className={`nav-item bg-light m-1 ${
+            width > 600 ? "px-5" : "pl-5"
+          } text-center`}
+        >
           <Link className="nav-link text-primary lead" to="/chat">
             <SideMenuIcon
               text={_chat[language]}
@@ -50,7 +65,11 @@ function SideMenu() {
             />
           </Link>
         </li>
-        <li className="nav-item bg-light m-1 px-5 text-center">
+        <li
+          className={`nav-item bg-light m-1 ${
+            width > 600 ? "px-5" : "pl-5"
+          } text-center`}
+        >
           <Link className="nav-link text-primary lead" to="/videos-all">
             <SideMenuIcon
               text={_videos[language]}
@@ -60,7 +79,11 @@ function SideMenu() {
             />
           </Link>
         </li>
-        <li className="nav-item bg-light m-1 px-5 text-center">
+        <li
+          className={`nav-item bg-light m-1 ${
+            width > 600 ? "px-5" : "pl-5"
+          } text-center`}
+        >
           <Link className="nav-link text-primary lead" to="/upgrade">
             <SideMenuIcon
               text={_upgrade[language]}
