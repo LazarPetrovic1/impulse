@@ -26,11 +26,14 @@ router.post(
   ],
   user.register
 );
-
 router.get("/:id", user.getUserById);
 router.post("/hide/:id", user.hideUsersInfo);
 router.post("/search", user.searchUsers);
 router.get("/postedby/:id", user.getAuthor);
 router.get("/uname/:username", user.getUserByUsername);
+router.put("/trial/get", auth, user.getFreeTrial);
+router.put("/trial/end", auth, user.endFreeTrial);
+router.put("/premium/get", auth, user.getPremiumAccount);
+router.put("/premium/end", auth, user.stopPremiumAccount);
 
 module.exports = router;

@@ -6,6 +6,9 @@ import {
   GET_PERSONS_STATUSES,
   DELETE_STATUS,
   EDIT_STATUS,
+  LIKE_STATUS,
+  DISLIKE_STATUS,
+  IMPULSIFY_STATUS,
   ADD_COMMENT_TO_STATUS,
   GET_COMMENTS_OF_STATUS,
   EDIT_COMMENT_OF_STATUS,
@@ -130,7 +133,85 @@ export const editStatus = (status, id) => async (dispatch) => {
   }
 };
 
-export const addCommentToStatus = ({ content }, id) => async (dispatch) => {
+export const impulsify = (postId, likerId) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const body = JSON.stringify({ likerId });
+    const res = await axios.put(`/api/status/impulse/${postId}`, body, config);
+    dispatch({
+      type: IMPULSIFY_STATUS,
+      payload: {
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+        id: postId,
+      },
+    });
+  } catch (e) {
+    dispatch({
+      type: STATUS_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+};
+
+export const like = (postId, likerId) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const body = JSON.stringify({ likerId });
+    const res = await axios.put(`/api/status/like/${postId}`, body, config);
+    dispatch({
+      type: LIKE_STATUS,
+      payload: {
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+        id: postId,
+      },
+    });
+  } catch (e) {
+    dispatch({
+      type: STATUS_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+};
+
+export const dislike = (postId, likerId) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const body = JSON.stringify({ likerId });
+    const res = await axios.put(`/api/status/dislike/${postId}`, body, config);
+    dispatch({
+      type: DISLIKE_STATUS,
+      payload: {
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+        id: postId,
+      },
+    });
+  } catch (e) {
+    dispatch({
+      type: STATUS_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+};
+
+export const addCommentToStatus = (content, id) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -141,7 +222,10 @@ export const addCommentToStatus = ({ content }, id) => async (dispatch) => {
     const res = await axios.post(`/api/status/comment/${id}`, body, config);
     dispatch({
       type: ADD_COMMENT_TO_STATUS,
-      payload: res.data,
+      payload: {
+        id,
+        comment: res.data,
+      },
     });
   } catch (e) {
     console.warn(e.message);

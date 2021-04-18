@@ -101,13 +101,24 @@ const UserSchema = new Schema({
     },
   ],
   hidden: { type: String },
+  trial: {
+    isUsingTrial: {
+      type: Boolean,
+      default: false,
+    },
+    dateStarted: {
+      type: Date,
+      default: Date.now,
+    },
+    dateEnded: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  isPremium: {
+    type: Boolean,
+    default: false,
+  },
 });
-
-// UserSchema.index({
-//   firstName: "text",
-//   lastName: "text",
-//   email: "text",
-//   username: "text",
-// });
 
 module.exports = User = model("user", UserSchema);

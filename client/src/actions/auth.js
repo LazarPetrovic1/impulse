@@ -10,12 +10,13 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
-  CLEAR_PROFILE
+  CLEAR_PROFILE,
+  PREMIUM_USER,
 } from "./types";
 import setAuthToken from "../utils/setAuthToken";
 
 // Load a user
-export const loadUser = () => async dispatch => {
+export const loadUser = () => async (dispatch) => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
@@ -25,41 +26,41 @@ export const loadUser = () => async dispatch => {
 
     dispatch({
       type: USER_LOADED,
-      payload: res.data
+      payload: res.data,
     });
   } catch (e) {
     console.warn(e.message); // Console warning
     dispatch({
-      type: CLEAR_PROFILE
+      type: CLEAR_PROFILE,
     });
 
     dispatch({
-      type: AUTH_ERROR
+      type: AUTH_ERROR,
     });
   }
 };
 
-export const hideSelected = (hidden, id) => async dispatch => {
-  const body = JSON.stringify({ hidden })
+export const hideSelected = (hidden, id) => async (dispatch) => {
+  const body = JSON.stringify({ hidden });
   const config = {
     headers: {
-      "Content-Type": "application/json"
-    }
+      "Content-Type": "application/json",
+    },
   };
   try {
-    const res = await axios.post(`/api/users/hide/${id}`, body, config)
+    const res = await axios.post(`/api/users/hide/${id}`, body, config);
     dispatch({
       type: USER_LOADED,
-      payload: res.data
-    })
+      payload: res.data,
+    });
   } catch (e) {
     console.warn(e.message); // Console warning
     dispatch({
-      type: CLEAR_PROFILE
+      type: CLEAR_PROFILE,
     });
 
     dispatch({
-      type: AUTH_ERROR
+      type: AUTH_ERROR,
     });
   }
 };
@@ -80,12 +81,12 @@ export const register = ({
   phone,
   question,
   security,
-  imageTaken
-}) => async dispatch => {
+  imageTaken,
+}) => async (dispatch) => {
   const config = {
     headers: {
-      "Content-Type": "application/json"
-    }
+      "Content-Type": "application/json",
+    },
   };
 
   const body = JSON.stringify({
@@ -103,7 +104,7 @@ export const register = ({
     phone,
     question,
     security,
-    imageTaken
+    imageTaken,
   });
 
   try {
@@ -111,88 +112,148 @@ export const register = ({
 
     dispatch({
       type: REGISTER_SUCCESS,
-      payload: res.data
+      payload: res.data,
     });
 
     dispatch(loadUser());
   } catch (e) {
     const errors = e.response.data.errors;
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, "danger")));
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
     }
     dispatch({
-      type: REGISTER_FAIL
+      type: REGISTER_FAIL,
     });
   }
 };
 
 // Log the user in
-export const login = ({email, username, phone, password}) => async dispatch => {
+export const login = ({ email, username, phone, password }) => async (
+  dispatch
+) => {
   const config = {
     headers: {
-      'Content-Type': 'application/json'
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
 
-  let body
+  let body;
 
   if (email) {
-    body = JSON.stringify({ email, password })
+    body = JSON.stringify({ email, password });
   } else if (username) {
-    body = JSON.stringify({ username, password })
+    body = JSON.stringify({ username, password });
   } else if (phone) {
-    body = JSON.stringify({ phone, password })
+    body = JSON.stringify({ phone, password });
   }
 
   try {
-    const res = await axios.post('/api/auth', body, config)
+    const res = await axios.post("/api/auth", body, config);
     await console.log(res);
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: res.data
-    })
+      payload: res.data,
+    });
 
-    dispatch(loadUser())
+    dispatch(loadUser());
   } catch (e) {
     const errors = e.response.data.errors;
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, "danger")));
+      errors.forEach((error) => dispatch(setAlert(error.msg, "danger")));
     }
     dispatch({
-      type: LOGIN_FAIL
-    })
+      type: LOGIN_FAIL,
+    });
   }
-}
+};
 
 // Logout / clear profile
-export const logout = () => dispatch => {
+export const logout = () => (dispatch) => {
   dispatch({ type: LOGOUT });
 };
 
-export const imageUploadDispatch = (item) => dispatch => {
+export const imageUploadDispatch = (item) => (dispatch) => {
   dispatch({
     type: USER_LOADED,
-    payload: item
+    payload: item,
   });
-}
+};
 
-export const uploadProfileImage = (base64EncodedImage, content) => async dispatch => {
+export const uploadProfileImage = (base64EncodedImage, content) => async (
+  dispatch
+) => {
   try {
-    const body = JSON.stringify({ data: base64EncodedImage, content })
+    const body = JSON.stringify({ data: base64EncodedImage, content });
     const config = {
       headers: {
-        "Content-Type": "application/json"
-      }
-    }
-    const res = await axios.put('/api/auth/profileImage', body, config)
+        "Content-Type": "application/json",
+      },
+    };
+    const res = await axios.put("/api/auth/profileImage", body, config);
     dispatch({
       type: ADD_PROFILE_IMAGE,
-      payload: res.data
-    })
+      payload: res.data,
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
-      payload: { msg: e.message }
-    })
+      payload: { msg: e.message },
+    });
+  }
+};
+
+export const getFreeTrial = () => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/users/trial/get`);
+    dispatch({
+      type: PREMIUM_USER,
+      payload: res.data,
+    });
+  } catch (e) {
+    dispatch({
+      type: LOGIN_FAIL,
+    });
+  }
+};
+
+export const endFreeTrial = () => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/users/trial/end`);
+    dispatch({
+      type: PREMIUM_USER,
+      payload: res.data,
+    });
+  } catch (e) {
+    dispatch({
+      type: LOGIN_FAIL,
+    });
+  }
+};
+
+export const getPremiumAccount = () => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/users/premium/get`);
+    dispatch({
+      type: PREMIUM_USER,
+      payload: res.data,
+    });
+  } catch (e) {
+    dispatch({
+      type: LOGIN_FAIL,
+    });
+  }
+};
+
+export const stopPremiumAccount = () => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/users/premium/end`);
+    dispatch({
+      type: PREMIUM_USER,
+      payload: res.data,
+    });
+  } catch (e) {
+    dispatch({
+      type: LOGIN_FAIL,
+    });
   }
 };

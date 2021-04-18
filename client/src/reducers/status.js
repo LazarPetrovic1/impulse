@@ -5,6 +5,9 @@ import {
   GET_PERSONS_STATUSES,
   DELETE_STATUS,
   EDIT_STATUS,
+  LIKE_STATUS,
+  DISLIKE_STATUS,
+  IMPULSIFY_STATUS,
   ADD_COMMENT_TO_STATUS,
   GET_COMMENTS_OF_STATUS,
   EDIT_COMMENT_OF_STATUS,
@@ -46,7 +49,33 @@ export default (state = initialState, action) => {
         loading: false,
         statuses: state.statuses.filter((stat) => stat._id !== payload),
       };
+    case LIKE_STATUS:
+    case DISLIKE_STATUS:
+    case IMPULSIFY_STATUS:
+      return {
+        ...state,
+        loading: false,
+        statuses: state.statuses.map((stat) =>
+          stat._id === payload.id
+            ? {
+                ...stat,
+                endorsements: payload.endorsements,
+                judgements: payload.judgements,
+                impulsions: payload.impulsions,
+              }
+            : stat
+        ),
+      };
     case ADD_COMMENT_TO_STATUS:
+      return {
+        ...state,
+        loading: false,
+        statuses: state.statuses.map((stat) =>
+          stat._id === payload.id
+            ? { ...stat, comments: [payload.comment, ...stat.comments] }
+            : stat
+        ),
+      };
     case EDIT_STATUS:
       return {
         ...state,

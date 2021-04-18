@@ -516,6 +516,66 @@ export const settingsthemecomponent = {
     sr: "Tamna",
     de: "Dunkel",
   },
+  _daysnow: {
+    en: "Day snow",
+    sr: "Snezni dan",
+    de: "Schneetag",
+  },
+  _drawworm: {
+    en: "Writer",
+    sr: "Pisac",
+    de: "Schreiber",
+  },
+  _galaxy: {
+    en: "Galaxy",
+    sr: "Galaksija",
+    de: "Galaxis",
+  },
+  _imagination: {
+    en: "Slicer",
+    sr: "Sekac",
+    de: "Hobel",
+  },
+  _particlehelix: {
+    en: "Particle helix",
+    sr: "Spirala cestica",
+    de: "Teilchenhelix",
+  },
+  _particles: {
+    en: "Constellations",
+    sr: "Sazvezdja",
+    de: "Sternbilder",
+  },
+  _parts: {
+    en: "Particle wave",
+    sr: "Talas cestica",
+    de: "Teilchenwelle",
+  },
+  _smoke: {
+    en: "Smoke",
+    sr: "Dim",
+    de: "Dunst",
+  },
+  _spacespider: {
+    en: "Space spider",
+    sr: "Svemirski pauk",
+    de: "Raumspinne",
+  },
+  _spaceworm: {
+    en: "Space worm",
+    sr: "Svemirski crv",
+    de: "Weltraumwurm",
+  },
+  _stars: {
+    en: "Stars",
+    sr: "Zvezde",
+    de: "Sterne",
+  },
+  _tunnel: {
+    en: "Rainbow tunnel",
+    sr: "Tunel duge",
+    de: "Regenbogentunnel",
+  },
 };
 
 export const policycomponent = {

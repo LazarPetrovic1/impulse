@@ -3,7 +3,7 @@ import ImageSliderContainer from "../../styled/ImageSlider/ImageSliderContainer"
 import CloseImageSlider from "../../styled/ImageSlider/CloseImageSlider";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import Moment from "react-moment";
-import LikesAndComments from "../layout/LikesAndComments";
+import NewLikesAndComments from "./NewLikesAndCommentsImage";
 import Comment from "../layout/Comment";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -89,7 +89,11 @@ function ImageSlider({ images, i, setIsSlider, auth }) {
             images[index].judgements &&
             images[index].impulsions &&
             images[index].comments && (
-              <LikesAndComments i={index} margin="0" width="100%" />
+              <NewLikesAndComments
+                image={images[index]}
+                margin="0"
+                width="100%"
+              />
             )}
         </article>
         <button onClick={slideRight} name="slider">

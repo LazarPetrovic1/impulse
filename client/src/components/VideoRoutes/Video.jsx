@@ -22,11 +22,11 @@ const maxw = { maxWidth: "1280px" };
 
 function Video({
   match,
-  getVideo,
   video,
   like,
   dislike,
   impulsify,
+  getVideo,
   auth: { user },
   sendNotif,
   commentVideo,

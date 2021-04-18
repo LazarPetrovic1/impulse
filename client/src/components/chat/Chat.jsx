@@ -28,10 +28,10 @@ function Chat(props) {
   const {
     auth: { user },
   } = props;
-  const [page, setPage] = useState(1);
   const { isDarkTheme } = useContext(ThemeContext);
   const { socket } = useContext(SocketContext);
   const { language } = useContext(LanguageContext);
+  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [chat, setChat] = useState({});
   const [groups, setGroups] = useState([]);
@@ -146,6 +146,7 @@ function Chat(props) {
             />
           </button>
           <hr />
+          <h3>Group chats</h3>
           {groups && groups.length > 0 ? (
             groups.map((gr) => (
               <div key={gr._id} onClick={() => setSelected(gr)}>
@@ -155,6 +156,7 @@ function Chat(props) {
                   setChat={setChat}
                   setSelected={setSelected}
                   setHasMore={setHasMore}
+                  chat={chat}
                 />
               </div>
             ))
@@ -297,7 +299,12 @@ function Chat(props) {
             )}
           <div ref={scroller} />
         </div>
-        <ChatInput chatid={chat._id} selecteduser={selected.user} />
+        <ChatInput
+          chatid={chat._id}
+          selecteduser={
+            selected && selected.user ? selected.user : selected.people
+          }
+        />
       </div>
       <ChatGroupModal
         createGroup={createGroup}

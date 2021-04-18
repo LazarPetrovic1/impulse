@@ -7,14 +7,15 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   DELETE_ACCOUNT,
-  ADD_PROFILE_IMAGE
+  ADD_PROFILE_IMAGE,
+  PREMIUM_USER,
 } from "../actions/types";
 
 const initialState = {
   token: localStorage.getItem("token"),
   isAuthenticated: null,
   loading: null,
-  user: null
+  user: null,
 };
 
 export default (state = initialState, action) => {
@@ -22,11 +23,12 @@ export default (state = initialState, action) => {
   switch (type) {
     case USER_LOADED:
     case ADD_PROFILE_IMAGE:
+    case PREMIUM_USER:
       return {
         ...state,
         isAuthenticated: true,
         loading: false,
-        user: payload
+        user: payload,
       };
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
@@ -35,7 +37,7 @@ export default (state = initialState, action) => {
         ...state,
         ...payload,
         isAuthenticated: true,
-        loading: false
+        loading: false,
       };
     case REGISTER_FAIL:
     case AUTH_ERROR:
@@ -47,7 +49,7 @@ export default (state = initialState, action) => {
         ...state,
         token: null,
         isAuthenticated: false,
-        loading: false
+        loading: false,
       };
     default:
       return state;

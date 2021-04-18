@@ -10,10 +10,12 @@ import upgradeData from "../../animations/upgrade.json";
 import forumData from "../../animations/forum.json";
 import SideMenuIcon from "../utils/icons/GenericIcon";
 import useWindowSize from "../../hooks/useWindowSize";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 const { _forum, _social, _videos, _chat, _upgrade } = sidemenucomponent;
 
-function SideMenu() {
+function SideMenu({ auth: { user } }) {
   // eslint-disable-next-line
   const [width, _] = useWindowSize();
   const { language } = useContext(LanguageContext);
@@ -79,23 +81,33 @@ function SideMenu() {
             />
           </Link>
         </li>
-        <li
-          className={`nav-item bg-light m-1 ${
-            width > 600 ? "px-5" : "pl-5"
-          } text-center`}
-        >
-          <Link className="nav-link text-primary lead" to="/upgrade">
-            <SideMenuIcon
-              text={_upgrade[language]}
-              width={31}
-              height={30}
-              data={upgradeData}
-            />
-          </Link>
-        </li>
+        {user.trial.isUsingTrial || user.isPremium ? null : (
+          <li
+            className={`nav-item bg-light m-1 ${
+              width > 600 ? "px-5" : "pl-5"
+            } text-center`}
+          >
+            <Link className="nav-link text-primary lead" to="/upgrade">
+              <SideMenuIcon
+                text={_upgrade[language]}
+                width={31}
+                height={30}
+                data={upgradeData}
+              />
+            </Link>
+          </li>
+        )}
       </DashboardSideMenuUl>
     </nav>
   );
 }
 
-export default SideMenu;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+SideMenu.propTypes = {
+  auth: PropTypes.object.isRequired,
+};
+
+export default connect(mapStateToProps, null)(SideMenu);

@@ -8,33 +8,36 @@ import {
   VIDEO_ADD_REPLY,
   VIDEO_EDIT_REPLY,
   VIDEO_DELETE_REPLY,
+  LIKE_VIDEO,
+  DISLIKE_VIDEO,
+  IMPULSIFY_VIDEO,
   VIDEO_EDIT_COMMENT,
   VIDEO_GET_COMMENTS,
-  VIDEO_SEARCH
-} from '../actions/types';
+  VIDEO_SEARCH,
+} from "../actions/types";
 
 const initialState = {
   videos: [],
   video: null,
   error: null,
-  loading: true
-}
+  loading: true,
+};
 
 export default (state = initialState, action) => {
-  const { type, payload } = action
+  const { type, payload } = action;
   switch (type) {
     case GET_VIDEOS:
       return {
         ...state,
         loading: false,
-        videos: payload
-      }
+        videos: payload,
+      };
     case GET_VIDEO:
       return {
         ...state,
         loading: false,
-        video: payload
-      }
+        video: payload,
+      };
     case VIDEO_GET_COMMENTS:
     case VIDEO_COMMENT:
       return {
@@ -42,18 +45,31 @@ export default (state = initialState, action) => {
         loading: false,
         video: {
           ...state.video,
-          comments: payload
-        }
-      }
+          comments: payload,
+        },
+      };
+    case LIKE_VIDEO:
+    case DISLIKE_VIDEO:
+    case IMPULSIFY_VIDEO:
+      return {
+        ...state,
+        loading: false,
+        video: {
+          ...state.video,
+          impulsions: payload.impulsions,
+          endorsements: payload.endorsements,
+          judgements: payload.judgements,
+        },
+      };
     case VIDEO_DELETE_COMMENT:
       return {
         ...state,
         loading: false,
         video: {
           ...state.video,
-          comments: state.video.comments.filter(comm => comm._id !== payload)
-        }
-      }
+          comments: state.video.comments.filter((comm) => comm._id !== payload),
+        },
+      };
     case VIDEO_EDIT_COMMENT:
     case VIDEO_ADD_REPLY:
     case VIDEO_EDIT_REPLY:
@@ -62,37 +78,41 @@ export default (state = initialState, action) => {
         loading: false,
         video: {
           ...state.video,
-          comments: state.video.comments.map(comm =>
+          comments: state.video.comments.map((comm) =>
             comm._id === payload.id ? { ...payload } : comm
-          )
-        }
-      }
+          ),
+        },
+      };
     case VIDEO_DELETE_REPLY:
       return {
         ...state,
         video: {
           ...state.video,
-          comments: state.video.comments.map(
-            comm => comm._id === payload.comment_id ? {
-              ...comm,
-              replies: comm.replies.filter(rep => rep._id !== payload.reply_id)
-            } : comm
-          )
-        }
-      }
+          comments: state.video.comments.map((comm) =>
+            comm._id === payload.comment_id
+              ? {
+                  ...comm,
+                  replies: comm.replies.filter(
+                    (rep) => rep._id !== payload.reply_id
+                  ),
+                }
+              : comm
+          ),
+        },
+      };
     case VIDEO_ERROR:
       return {
         ...state,
         error: payload,
-        loading: false
-      }
+        loading: false,
+      };
     case VIDEO_SEARCH:
       return {
         ...state,
         loading: false,
-        videos: state.videos.filter(vid => vid.name.includes(payload))
-      }
+        videos: state.videos.filter((vid) => vid.name.includes(payload)),
+      };
     default:
-      return state
+      return state;
   }
 };

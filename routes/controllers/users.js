@@ -153,6 +153,57 @@ async function getUserByUsername(req, res) {
   }
 }
 
+async function getFreeTrial(req, res) {
+  try {
+    const user = await User.findById(req.user.id);
+    const x = new Date();
+    user.trial.isUsingTrial = true;
+    user.trial.dateStarted = x;
+    user.trial.dateEnded = new Date(
+      x.getFullYear(),
+      x.getMonth() + 1,
+      x.getDate()
+    );
+    await user.save();
+    res.json(user);
+  } catch (e) {
+    console.error(e.message);
+  }
+}
+
+async function endFreeTrial(req, res) {
+  try {
+    const user = await User.findById(req.user.id);
+    user.trial.isUsingTrial = false;
+    await user.save();
+    res.json(user);
+  } catch (e) {
+    console.error(e.message);
+  }
+}
+
+async function getPremiumAccount(req, res) {
+  try {
+    const user = await User.findById(req.user.id);
+    user.isPremium = true;
+    await user.save();
+    res.json(user);
+  } catch (e) {
+    console.error(e.message);
+  }
+}
+
+async function stopPremiumAccount(req, res) {
+  try {
+    const user = await User.findById(req.user.id);
+    user.isPremium = false;
+    await user.save();
+    res.json(user);
+  } catch (e) {
+    console.error(e.message);
+  }
+}
+
 const user = {
   register,
   getUserById,
@@ -160,6 +211,10 @@ const user = {
   getAuthor,
   getUserByUsername,
   hideUsersInfo,
+  getFreeTrial,
+  endFreeTrial,
+  getPremiumAccount,
+  stopPremiumAccount,
 };
 
 module.exports = user;

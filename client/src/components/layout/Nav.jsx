@@ -13,6 +13,7 @@ import { findNotifs } from "../../actions/notifs";
 import Notification from "../notifs/Notif";
 import NotifCounter from "../notifs/NotifCounter";
 import GenericIcon from "../utils/icons/GenericIcon";
+import ImpulseIcon from "../utils/icons/ImpulseIcon";
 import bell from "../../animations/bell.json";
 import settings from "../../animations/settings.json";
 import logoutData from "../../animations/logout.json";
@@ -45,6 +46,11 @@ function Nav(props) {
             height={30}
             data={user}
           />
+        </Link>
+      </CenterListItem>
+      <CenterListItem>
+        <Link className="nav-link" to="/asdasdasd">
+          404
         </Link>
       </CenterListItem>
       <CenterListItem>
@@ -168,7 +174,13 @@ function Nav(props) {
       }`}
     >
       <Link className="navbar-brand" to="/">
-        <MediumLogo />
+        {auth.user && auth.user.trial && auth.user.trial.isUsingTrial ? (
+          <ImpulseIcon height={60} width={60} />
+        ) : auth.user && auth.user.isPremium ? (
+          <ImpulseIcon height={60} width={60} />
+        ) : (
+          <MediumLogo />
+        )}
       </Link>
       <button
         className="navbar-toggler"

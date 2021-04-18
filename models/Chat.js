@@ -11,6 +11,10 @@ const ChatPostSchema = new Schema({
   isGroup: {
     type: Boolean,
   },
+  clearChat: {
+    type: Boolean,
+    default: false,
+  },
   name: {
     type: String,
     default: "",

@@ -42,6 +42,8 @@ app.use("/api/group", require("./routes/api/group"));
 app.use("/api/status", require("./routes/api/status"));
 app.use("/api/allmedia", require("./routes/api/allmedia"));
 
+require("./utils/cron")(app, io);
+
 server.listen(PORT, () => {
   console.log(`Server listening on port: ${PORT}`);
 });

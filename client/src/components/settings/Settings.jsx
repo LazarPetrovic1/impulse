@@ -12,16 +12,16 @@ import SettingsLanguages from "./SettingsLanguages";
 import ProfileOverview from "../profile-rest/ProfileOverview";
 import SocialProfile from "../SocialRoutes/SocialProfile";
 import devoptions from "../../utils/devoptions";
+// import SettingsPlayground from "./SettingsPlayground";
+import TermsAndConditions from "./TermsAndConditions";
 
 const settingsBarWidth = "250px";
 const {
   _basicsettings,
   _contentpolicy,
   _accountinformation,
-  _item,
   _selectlanguage,
   _changetheme,
-  _some,
   _uselegacyfont,
   _additionalinformation,
   _usedevexperience,
@@ -30,6 +30,7 @@ const {
 function Settings() {
   const [selectedSetting, setSelectedSetting] = useState(1);
   const [devOption, setDevOption] = useState("lslanguage");
+  // const [isPlayground, setIsPlayground] = useState(false);
   const [copied, setCopied] = useState(false);
   const { isDarkTheme } = useContext(ThemeContext);
   const { language } = useContext(LanguageContext);
@@ -78,7 +79,7 @@ function Settings() {
             className={selectedSetting === 5 ? "selected" : ""}
             onClick={() => setSelectedSetting(5)}
           >
-            {_item[language]} 5
+            Terms and Conditions
           </li>
         </ul>
       </SettingsSideNav>
@@ -151,13 +152,14 @@ function Settings() {
                 {_usedevexperience[language]}
               </span>
             </SettingsListItem>
-            <SettingsListItem
+            {/*<SettingsListItem
               isLast
               isDarkTheme={isDarkTheme}
               className="list-group-item"
+              onClick={() => setIsPlayground(true)}
             >
-              {_some[language]} {_item[language]}
-            </SettingsListItem>
+              Theme playground
+            </SettingsListItem>*/}
           </ul>
           {isDevExp && (
             <section
@@ -250,7 +252,17 @@ function Settings() {
         {selectedSetting === 2 && <ProfileOverview />}
         {selectedSetting === 3 && <ContentPolicy />}
         {selectedSetting === 4 && <SocialProfile />}
+        {selectedSetting === 5 && <TermsAndConditions />}
       </div>
+      {/*isPlayground && (
+        <SettingsPlayground
+          show={isPlayground}
+          onClose={() => setIsPlayground(false)}
+          style={{
+            height: `${window.innerHeight * 0.9}px`,
+          }}
+        />
+      )*/}
     </div>
   );
 }

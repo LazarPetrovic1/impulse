@@ -7,6 +7,15 @@ import {
   DELETE_GROUP_POST,
   GROUP_ERROR,
   CREATE_GROUP_POST,
+  IMPULSE_POST_IN_GROUP,
+  LIKE_POST_IN_GROUP,
+  DISLIKE_POST_IN_GROUP,
+  COMMENT_GROUP_POST,
+  UPDATE_GROUP_POST_COMMENT,
+  DELETE_GROUP_POST_COMMENT,
+  REPLY_TO_GROUP_POST_COMMENT,
+  UPDATE_GROUP_POST_REPLY,
+  DELETE_GROUP_POST_REPLY,
 } from "../actions/types";
 
 const initialState = {
@@ -39,6 +48,26 @@ export default (state = initialState, action) => {
         group: payload,
         loading: false,
       };
+    case IMPULSE_POST_IN_GROUP:
+    case LIKE_POST_IN_GROUP:
+    case DISLIKE_POST_IN_GROUP:
+      return {
+        ...state,
+        loading: false,
+        group: {
+          ...state.group,
+          posts: state.group.posts.map((post) =>
+            post._id === payload.postId
+              ? {
+                  ...post,
+                  impulsions: payload.impulsions,
+                  endorsements: payload.endorsements,
+                  judgements: payload.judgements,
+                }
+              : post
+          ),
+        },
+      };
     case DELETE_GROUP:
       return {
         ...state,
@@ -62,6 +91,109 @@ export default (state = initialState, action) => {
         group: {
           ...state.group,
           posts: [payload, ...state.group.posts],
+        },
+      };
+    case COMMENT_GROUP_POST:
+      return {
+        ...state,
+        loading: false,
+        group: {
+          ...state.group,
+          posts: state.group.posts.map((post) =>
+            post._id === payload.postId
+              ? {
+                  ...post,
+                  comments: payload.comments,
+                }
+              : post
+          ),
+        },
+      };
+    case REPLY_TO_GROUP_POST_COMMENT:
+    case UPDATE_GROUP_POST_COMMENT:
+      return {
+        ...state,
+        loading: false,
+        group: {
+          ...state.group,
+          posts: state.group.posts.map((post) =>
+            post._id === payload.postId
+              ? {
+                  ...post,
+                  comments: post.comments.map((comm) =>
+                    comm._id === payload.commentId ? payload.comment : comm
+                  ),
+                }
+              : post
+          ),
+        },
+      };
+    case UPDATE_GROUP_POST_REPLY:
+      return {
+        ...state,
+        loading: false,
+        group: {
+          ...state.group,
+          posts: state.group.posts.map((post) =>
+            post._id === payload.postId
+              ? {
+                  ...post,
+                  comments: post.comments.map((comm) =>
+                    comm._id === payload.commentId
+                      ? {
+                          ...comm,
+                          replies: comm.replies.map((rep) =>
+                            rep._id === payload.replyId ? payload.reply : rep
+                          ),
+                        }
+                      : comm
+                  ),
+                }
+              : post
+          ),
+        },
+      };
+    case DELETE_GROUP_POST_REPLY:
+      return {
+        ...state,
+        loading: false,
+        group: {
+          ...state.group,
+          posts: state.group.posts.map((post) =>
+            post._id === payload.postId
+              ? {
+                  ...post,
+                  comments: post.comments.map((comm) =>
+                    comm._id === payload.commentId
+                      ? {
+                          ...comm,
+                          replies: comm.replies.filter(
+                            (rep) => rep._id !== payload.replyId
+                          ),
+                        }
+                      : comm
+                  ),
+                }
+              : post
+          ),
+        },
+      };
+    case DELETE_GROUP_POST_COMMENT:
+      return {
+        ...state,
+        loading: false,
+        group: {
+          ...state.group,
+          posts: state.group.posts.map((post) =>
+            post._id === payload.postId
+              ? {
+                  ...post,
+                  comments: post.comments.filter(
+                    (comm) => comm._id !== payload.commentId
+                  ),
+                }
+              : post
+          ),
         },
       };
     case GROUP_ERROR:

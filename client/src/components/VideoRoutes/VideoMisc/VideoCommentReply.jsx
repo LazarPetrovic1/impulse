@@ -108,7 +108,7 @@ function VideoCommentReply({
         ) : (
           <button
             onClick={() => setIsEditing(true)}
-            className="btn btn-secondary btn-lg mx-2"
+            className="btn btn-secondary btn-lg mx-2 p-0"
             style={{ paddingRight: "12px" }}
           >
             <EditIcon width={49} height={46} />

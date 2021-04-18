@@ -114,6 +114,16 @@ const socketHolder = (io) =>
         console.warn(e.message);
       }
     });
+    socket.on("purgeChat", async ({ id }) => {
+      try {
+        const chat = await Chat.findById(id);
+        chat.messages = [];
+        await chat.save();
+        await io.emit("chatPurged", { chat });
+      } catch (e) {
+        console.warn(e.message);
+      }
+    });
     socket.on(
       "sendNotif",
       async ({ userId, type, language, username, name }) => {

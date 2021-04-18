@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-function Modal({ title, children, show, onClose, provideOwnClosure }) {
+function Modal({ title, children, show, onClose, provideOwnClosure, style }) {
   const closeOnEscapeDown = (e) =>
     (e.charCode || e.keyCode) === 27 && onClose();
   useEffect(() => {
@@ -27,7 +27,7 @@ function Modal({ title, children, show, onClose, provideOwnClosure }) {
         role="document"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="modal-content">
+        <div style={style} className="modal-content">
           <div className="modal-header" style={{ backgroundColor: "#111" }}>
             <h5 className="modal-title">{title}</h5>
             <button

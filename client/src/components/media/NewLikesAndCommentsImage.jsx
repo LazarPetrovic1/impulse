@@ -14,7 +14,7 @@ import axios from "axios";
 
 // const { _addcomment } = likesandcommentscomponent
 
-function LikesAndComments(props) {
+function NewLikesAndComments(props) {
   const [comment, setComment] = useState("");
   const [liked, setLiked] = useState(null);
   const [allWhoLiked, setAllWhoLiked] = useState([]);
@@ -25,7 +25,7 @@ function LikesAndComments(props) {
   const {
     auth: { user },
     addComment,
-    image: { images },
+    image,
     like,
     dislike,
     impulsify,
@@ -55,11 +55,11 @@ function LikesAndComments(props) {
   };
 
   const setLikability = (val) => {
-    const id = images[props.i]._id;
+    const id = image._id;
     const ownedById =
       props && props.match && props.match.params && props.match.params.id
         ? props.match.params.id
-        : images[props.i].user;
+        : image.user;
     const likerId = user._id;
     if (liked === val) setLiked(null);
     else setLiked(val);
@@ -68,7 +68,7 @@ function LikesAndComments(props) {
         like(id, ownedById, likerId);
         if (ownedById !== likerId) {
           sendNotif({
-            userId: images[props.i].user,
+            userId: image.user,
             type: "like",
             language,
             username: user.username,
@@ -80,7 +80,7 @@ function LikesAndComments(props) {
         dislike(id, ownedById, likerId);
         if (ownedById !== likerId) {
           sendNotif({
-            userId: images[props.i].user,
+            userId: image.user,
             type: "dislike",
             language,
             username: user.username,
@@ -92,7 +92,7 @@ function LikesAndComments(props) {
         impulsify(id, ownedById, likerId);
         if (ownedById !== likerId) {
           sendNotif({
-            userId: images[props.i].user,
+            userId: image.user,
             type: "impulse",
             language,
             username: user.username,
@@ -106,28 +106,23 @@ function LikesAndComments(props) {
   };
 
   useEffect(() => {
-    if (
-      images[props.i].judgements.filter((jud) => jud.user === user._id).length >
-      0
-    ) {
+    if (image.judgements.filter((jud) => jud.user === user._id).length > 0) {
       setLiked("dislike");
     } else if (
-      images[props.i].endorsements.filter((end) => end.user === user._id)
-        .length > 0
+      image.endorsements.filter((end) => end.user === user._id).length > 0
     ) {
       setLiked("like");
     } else if (
-      images[props.i].impulsions.filter((imp) => imp.user === user._id).length >
-      0
+      image.impulsions.filter((imp) => imp.user === user._id).length > 0
     ) {
       setLiked("impulse");
     }
     // eslint-disable-next-line
-  }, [props.i]);
+  }, [image]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const id = images[props.i]._id;
+    const id = image._id;
     const ownedById =
       props && props.match && props.match.params && props.match.params.id
         ? props.match.params.id
@@ -145,7 +140,7 @@ function LikesAndComments(props) {
         <div className="d-flex">
           <div
             className="position-relative"
-            onMouseEnter={() => getStatOnHover(images[props.i]._id, "like")}
+            onMouseEnter={() => getStatOnHover(image._id, "like")}
             onMouseLeave={() => setAllWhoLiked([])}
           >
             <i
@@ -155,8 +150,7 @@ function LikesAndComments(props) {
               }`}
             />
             <span style={{ fontSize: "2.5rem" }} className="text-success">
-              {images[props.i].endorsements &&
-                images[props.i].endorsements.length}
+              {image.endorsements && image.endorsements.length}
             </span>
             {allWhoLiked.length > 0 && (
               <StatsNames isDarkTheme={isDarkTheme}>
@@ -168,7 +162,7 @@ function LikesAndComments(props) {
           </div>
           <div
             className="position-relative"
-            onMouseEnter={() => getStatOnHover(images[props.i]._id, "dislike")}
+            onMouseEnter={() => getStatOnHover(image._id, "dislike")}
             onMouseLeave={() => setAllWhoDisliked([])}
           >
             <i
@@ -178,7 +172,7 @@ function LikesAndComments(props) {
               }`}
             />
             <span style={{ fontSize: "2.5rem" }} className="text-danger">
-              {images[props.i].judgements && images[props.i].judgements.length}
+              {image.judgements && image.judgements.length}
             </span>
             {allWhoDisliked.length > 0 && (
               <StatsNames isDarkTheme={isDarkTheme}>
@@ -191,7 +185,7 @@ function LikesAndComments(props) {
         </div>
         <div
           className="d-flex position-relative"
-          onMouseEnter={() => getStatOnHover(images[props.i]._id, "impulse")}
+          onMouseEnter={() => getStatOnHover(image._id, "impulse")}
           onMouseLeave={() => setAllWhoImpulsed([])}
         >
           <ShortLogo
@@ -200,7 +194,7 @@ function LikesAndComments(props) {
             className={`p-3 pointer`}
           />
           <span style={{ fontSize: "2.5rem" }} className="text-primary">
-            {images[props.i].impulsions && images[props.i].impulsions.length}
+            {image.impulsions && image.impulsions.length}
           </span>
           {allWhoImpulsed.length > 0 && (
             <StatsNames isDarkTheme={isDarkTheme}>
@@ -229,7 +223,7 @@ function LikesAndComments(props) {
   );
 }
 
-LikesAndComments.propTypes = {
+NewLikesAndComments.propTypes = {
   auth: PropTypes.object.isRequired,
   addComment: PropTypes.func.isRequired,
   like: PropTypes.func.isRequired,
@@ -240,7 +234,6 @@ LikesAndComments.propTypes = {
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  image: state.image,
 });
 
 export default connect(mapStateToProps, {
@@ -249,4 +242,4 @@ export default connect(mapStateToProps, {
   dislike,
   sendNotif,
   impulsify,
-})(LikesAndComments);
+})(NewLikesAndComments);

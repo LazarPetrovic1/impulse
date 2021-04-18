@@ -67,6 +67,26 @@ const GroupSchema = new Schema({
             type: Date,
             default: Date.now,
           },
+          replies: [
+            {
+              user: {
+                type: Schema.Types.ObjectId,
+                ref: "user",
+              },
+              content: {
+                type: String,
+                required: true,
+              },
+              by: {
+                // username
+                type: String,
+              },
+              date: {
+                type: Date,
+                default: Date.now,
+              },
+            },
+          ],
         },
       ],
       endorsements: [

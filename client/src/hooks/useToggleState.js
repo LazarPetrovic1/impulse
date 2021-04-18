@@ -1,17 +1,19 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-function useToggle (initialValue = "impulse") {
-  const [state, setState] = useState(JSON.parse(localStorage.getItem('isDarkTheme')) || initialValue)
+function useToggle(initialValue = "impulse") {
+  const [state, setState] = useState(
+    JSON.parse(localStorage.getItem("isDarkTheme")) || initialValue
+  );
   const toggle = (value) => {
     if (value) {
-      setState(value)
-      localStorage.setItem('isDarkTheme', value)
+      setState(value);
+      localStorage.setItem("isDarkTheme", value);
     } else {
-      setState(!state)
-      localStorage.setItem('isDarkTheme', !state)
+      setState(!state);
+      localStorage.setItem("isDarkTheme", !state);
     }
-  }
-  return [state, toggle]
+  };
+  return [state, toggle];
 }
 
-export default useToggle
+export default useToggle;

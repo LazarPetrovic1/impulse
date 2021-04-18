@@ -1,11 +1,17 @@
-import React, { useState, useEffect, Fragment } from "react";
+import axios from "axios";
+import React, { useState, useEffect, Fragment, useContext } from "react";
 import { getUserById } from "../../utils/users";
 import Modal from "../utils/Modal";
 import { Link } from "react-router-dom";
+import { SocketContext } from "../../contexts/SocketContext";
+import DeleteIcon from "../utils/icons/DeleteIcon";
 
-function ChatGroup({ gr, setPage, setChat, setSelected, setHasMore }) {
+function ChatGroup({ gr, setPage, setChat, setSelected, setHasMore, chat }) {
   const [people, setPeople] = useState([]);
+  const [clearChat, setClearChat] = useState(gr.clearChat);
+  const [num, setNum] = useState(1);
   const [info, setInfo] = useState(false);
+  const { socket } = useContext(SocketContext);
   const onClick = () => {
     setPage(1);
     setChat({});
@@ -27,6 +33,28 @@ function ChatGroup({ gr, setPage, setChat, setSelected, setHasMore }) {
     })();
     // eslint-disable-next-line
   }, []);
+  useEffect(() => {
+    socket.on("chatPurged", ({ chat }) => {
+      setChat(chat);
+    });
+    // eslint-disable-next-line
+  }, [chat]);
+
+  const purgeChat = () => socket.emit("purgeChat", { id: chat._id });
+  const setPeriodicDelete = async (num, clearChat) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const body = JSON.stringify({ num, clearChat });
+    try {
+      await axios.post(`/cron/chat/schedule/${gr._id}`, body, config);
+    } catch (e) {
+      console.warn(e.message);
+    }
+  };
+
   return (
     <Fragment key={gr._id}>
       <article
@@ -65,6 +93,56 @@ function ChatGroup({ gr, setPage, setChat, setSelected, setHasMore }) {
                 </h2>
               </div>
             ))}
+        </div>
+        <div className="form-group">
+          <button className="btn btn-danger" onClick={purgeChat}>
+            <DeleteIcon width={40} height={35} /> Clear chat
+          </button>
+          <h3 className="mt-3 mb-2">Still paranoid?</h3>
+          <div className="form-check d-flex align-items-center">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              value={clearChat}
+              id="clearChat"
+              style={{ width: "20px", height: "20px" }}
+              onChange={(e) => setClearChat(!clearChat)}
+              name="clearChat"
+              checked={clearChat}
+            />
+            <label className="form-check-label" htmlFor="clearChat">
+              <span className="lead d-inline-block mx-2 mt-2">
+                Periodically clear chat every
+              </span>
+              <input
+                type="number"
+                name="num"
+                id="num"
+                value={num}
+                max={59}
+                min={-1}
+                style={{ width: "42px" }}
+                disabled={!clearChat}
+                onChange={(e) => setNum(parseInt(e.target.value))}
+                className="d-inline-block mx-2"
+              />
+              <span className="lead ml-2">
+                {num === 1 ? "minute" : "minutes"}
+              </span>
+            </label>
+          </div>
+          <div className="form-group d-flex justify-content-end mt-4">
+            <button
+              className="btn btn-primary btn-lg"
+              onClick={
+                clearChat
+                  ? () => setPeriodicDelete(num, clearChat)
+                  : () => setPeriodicDelete(0, false)
+              }
+            >
+              <i className="fas fa-paper-plane pr-2" /> Submit
+            </button>
+          </div>
         </div>
       </Modal>
     </Fragment>

@@ -159,13 +159,10 @@ function Group({ group: { group }, getGroup, match }) {
           setShowPostItems={setShowPostItems}
         />
       </DashCenter>
-      {group.posts.length > 0 && (
-        <DashCenter flexDir="column" maxw="1300px">
-          {group.posts.map((post) => (
-            <GroupPost groupid={group._id} key={post._id} post={post} />
-          ))}
-        </DashCenter>
-      )}
+      {group.posts.length > 0 &&
+        group.posts.map((post) => (
+          <GroupPost groupid={group._id} key={post._id} post={post} />
+        ))}
     </article>
   ) : (
     <Spinner />

@@ -6,6 +6,9 @@ import LikesAndComments from "./LikesAndComments";
 import Comment from "../layout/Comment";
 import axios from "axios";
 import { Link } from "react-router-dom";
+// import StatusPost from "./StatusPost";
+// import ImagePost from "./Post";
+// import Video from "../VideoRoutes/Video";
 
 function GenericPost({ post, i, auth: { user }, match, setIsGenericSlider }) {
   const [owner, setOwner] = useState(null);
@@ -25,7 +28,8 @@ function GenericPost({ post, i, auth: { user }, match, setIsGenericSlider }) {
     // eslint-disable-next-line
   }, []);
   return (
-    owner && (
+    owner &&
+    post && (
       <article>
         <div className="my-3 d-flex">
           <div>
@@ -82,5 +86,21 @@ GenericPost.propTypes = {
 const mapStateToProps = (state) => ({
   auth: state.auth,
 });
+
+// <Fragment>
+//   {post.type && post.type === "textual" ? (
+//     <StatusPost status={post} />
+//   ) : !post.isVideo && post.url ? (
+//     <ImagePost
+//       image={post}
+//       setIsSlider={setIsGenericSlider}
+//       i={i}
+//       match={match}
+//       backupImage={post}
+//     />
+//   ) : post.isVideo && post.url ? (
+//     <Video match={match} video={post} />
+//   ) : null}
+// </Fragment>
 
 export default connect(mapStateToProps, null)(GenericPost);

@@ -57,13 +57,7 @@ async function getPersonsStatuses(req, res) {
 async function deleteStatus(req, res) {
   try {
     const status = await Status.findById(req.params.id);
-    if (status.id.toString() !== req.user.id.toString()) {
-      return res.status(403).json({
-        msg: "Forbidden: Task failed successfully",
-      });
-    } else {
-      await status.remove();
-    }
+    await status.remove();
     res.json({ msg: "Post deleted successfully" });
   } catch (e) {
     console.error(e.message);
@@ -78,14 +72,190 @@ async function editStatus(req, res) {
       {
         body: req.body.body,
         date: new Date(),
-        isMedia: req.body.isMedia,
-        media: req.body.isMedia ? req.body.media : [],
       },
       { new: true }
     );
     await res.json(post);
   } catch (e) {
     console.error(e.message);
+    res.status(500).send("Internal server error.");
+  }
+}
+
+async function impulseStatus(req, res) {
+  try {
+    const post = await Status.findById(req.params.id);
+    if (
+      post.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      post.impulsions.splice(
+        post.impulsions
+          .map((imp) => imp.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+      await post.save();
+      return res.json({
+        impulsions: post.impulsions,
+        endorsements: post.endorsements,
+        judgements: post.judgements,
+      });
+    }
+    post.impulsions.unshift({ user: req.body.likerId });
+    if (
+      post.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      post.judgements.splice(
+        post.judgements
+          .map((jud) => jud.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    if (
+      post.endorsements.filter(
+        (end) => end.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      // Get remove index
+      post.endorsements.splice(
+        post.endorsements
+          .map((end) => end.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    await post.save();
+    return res.json({
+      impulsions: post.impulsions,
+      endorsements: post.endorsements,
+      judgements: post.judgements,
+    });
+  } catch (e) {
+    console.error(e.message);
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
+  }
+}
+
+async function likeStatus(req, res) {
+  try {
+    const post = await Status.findById(req.params.id);
+    if (
+      post.endorsements.filter(
+        (end) => end.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      post.endorsements.splice(
+        post.endorsements
+          .map((end) => end.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+      await post.save();
+      return res.json({
+        impulsions: post.impulsions,
+        endorsements: post.endorsements,
+        judgements: post.judgements,
+      });
+    }
+    post.endorsements.unshift({ user: req.body.likerId });
+    if (
+      post.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      post.judgements.splice(
+        post.judgements
+          .map((jud) => jud.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    if (
+      post.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      // Get remove index
+      post.impulsions.splice(
+        post.impulsions
+          .map((imp) => imp.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    await post.save();
+    return res.json({
+      impulsions: post.impulsions,
+      endorsements: post.endorsements,
+      judgements: post.judgements,
+    });
+  } catch (e) {
+    console.error(e.message);
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
+  }
+}
+
+async function dislikeStatus(req, res) {
+  try {
+    const post = await Status.findById(req.params.id);
+    if (
+      post.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      post.judgements.splice(
+        post.judgements
+          .map((jud) => jud.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+      await post.save();
+      return res.json({
+        impulsions: post.impulsions,
+        endorsements: post.endorsements,
+        judgements: post.judgements,
+      });
+    }
+    post.judgements.unshift({ user: req.body.likerId });
+    if (
+      post.endorsements.filter(
+        (end) => end.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      // Get remove index
+      post.endorsements.splice(
+        post.endorsements
+          .map((end) => end.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    if (
+      post.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      // Get remove index
+      post.impulsions.splice(
+        post.impulsions
+          .map((imp) => imp.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    await post.save();
+    return res.json({
+      impulsions: post.impulsions,
+      endorsements: post.endorsements,
+      judgements: post.judgements,
+    });
+  } catch (e) {
+    console.error(e.message);
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
     res.status(500).send("Internal server error.");
   }
 }
@@ -102,7 +272,7 @@ async function addCommentToStatus(req, res) {
     };
     post.comments.unshift(newComment);
     await post.save();
-    res.json(post);
+    res.json(newComment);
   } catch (e) {
     console.error(e.message);
     res.status(500).send("Internal server error.");
@@ -274,6 +444,9 @@ const status = {
   getPersonsStatuses,
   deleteStatus,
   editStatus,
+  impulseStatus,
+  likeStatus,
+  dislikeStatus,
   addCommentToStatus,
   getCommentsOfStatus,
   editCommentOfStatus,
