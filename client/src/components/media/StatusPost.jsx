@@ -87,6 +87,7 @@ function StatusPost({
             language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url: `/textpost/${status._id}`,
           });
         }
         break;
@@ -99,6 +100,7 @@ function StatusPost({
             language: localStorage.language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url: `/textpost/${status._id}`,
           });
         }
         break;
@@ -111,6 +113,7 @@ function StatusPost({
             language: localStorage.language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url: `/textpost/${status._id}`,
           });
         }
         break;

@@ -1,21 +1,24 @@
-const mongoose = require('mongoose')
-const { Schema, model } = mongoose
+const mongoose = require("mongoose");
+const { Schema, model } = mongoose;
 
 const NotifSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'user'
+    ref: "user",
   },
   text: { type: String },
   date: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   read: {
     type: Boolean,
-    default: false
+    default: false,
+  },
+  url: {
+    type: String,
   },
   type: { type: String },
-})
+});
 
-module.exports = Notif = model('notif', NotifSchema)
+module.exports = Notif = model("notif", NotifSchema);

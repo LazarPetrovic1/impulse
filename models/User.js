@@ -28,15 +28,12 @@ const UserSchema = new Schema({
   },
   sex: {
     type: String,
-    required,
   },
   bio: {
     type: String,
-    required,
   },
   dob: {
     type: String,
-    required,
   },
   username: {
     type: String,
@@ -45,19 +42,15 @@ const UserSchema = new Schema({
   },
   city: {
     type: String,
-    required,
   },
   country: {
     type: String,
-    required,
   },
   zip: {
     type: Number,
-    required,
   },
   phone: {
     type: String,
-    required,
     unique,
   },
   question: {

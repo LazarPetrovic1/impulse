@@ -126,7 +126,7 @@ const socketHolder = (io) =>
     });
     socket.on(
       "sendNotif",
-      async ({ userId, type, language, username, name }) => {
+      async ({ userId, type, language, username, name, url }) => {
         try {
           const message = getText({ type, language, username, name });
           const notif = new Notif({
@@ -135,6 +135,7 @@ const socketHolder = (io) =>
             date: Date.now(),
             read: false,
             type,
+            url,
           });
           await notif.save();
           io.emit("sentNotif", notif);
@@ -143,11 +144,14 @@ const socketHolder = (io) =>
         }
       }
     );
-    socket.on("readNotifs", (notifs) => {
+    socket.on("readNotifs", async (userId) => {
       try {
+        const notifs = await Notif.find({ user: userId });
         notifs.forEach(async (notif) => {
-          notif.read = true;
-          await notif.save();
+          if (!notif.read) {
+            notif.read = true;
+            await notif.save();
+          }
         });
         io.emit("readNotifs", notifs);
       } catch (e) {

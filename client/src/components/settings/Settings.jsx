@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext, useRef, Fragment } from "react";
 import SettingsSideNav from "../../styled/Settings/SettingsSideNav";
 import SettingsListItem from "../../styled/Settings/SettingsListItem";
 import { LanguageContext } from "../../contexts/LanguageContext";
@@ -12,8 +12,8 @@ import SettingsLanguages from "./SettingsLanguages";
 import ProfileOverview from "../profile-rest/ProfileOverview";
 import SocialProfile from "../SocialRoutes/SocialProfile";
 import devoptions from "../../utils/devoptions";
-// import SettingsPlayground from "./SettingsPlayground";
 import TermsAndConditions from "./TermsAndConditions";
+import SettingsThemePlayground from "./SettingsThemePlayground";
 
 const settingsBarWidth = "250px";
 const {
@@ -29,6 +29,7 @@ const {
 
 function Settings() {
   const [selectedSetting, setSelectedSetting] = useState(1);
+  const [isHidden, setIsHidden] = useState(false);
   const [devOption, setDevOption] = useState("lslanguage");
   // const [isPlayground, setIsPlayground] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -49,39 +50,66 @@ function Settings() {
 
   return (
     <div style={{ pointerEvents: "all" }}>
-      <SettingsSideNav width={settingsBarWidth} isDarkTheme={isDarkTheme}>
-        <ul>
-          <li
-            className={selectedSetting === 1 ? "selected" : ""}
-            onClick={() => setSelectedSetting(1)}
+      <SettingsSideNav
+        width={settingsBarWidth}
+        isHidden={isHidden}
+        isDarkTheme={isDarkTheme}
+      >
+        {!isHidden && (
+          <ul>
+            <li
+              className={selectedSetting === 1 ? "selected" : ""}
+              onClick={() => setSelectedSetting(1)}
+            >
+              {_basicsettings[language]}
+            </li>
+            <li
+              className={selectedSetting === 2 ? "selected" : ""}
+              onClick={() => setSelectedSetting(2)}
+            >
+              {_accountinformation[language]}
+            </li>
+            <li
+              className={selectedSetting === 3 ? "selected" : ""}
+              onClick={() => setSelectedSetting(3)}
+            >
+              {_contentpolicy[language]}
+            </li>
+            <li
+              className={selectedSetting === 4 ? "selected" : ""}
+              onClick={() => setSelectedSetting(4)}
+            >
+              {_additionalinformation[language]}
+            </li>
+            <li
+              className={selectedSetting === 5 ? "selected" : ""}
+              onClick={() => setSelectedSetting(5)}
+            >
+              Terms and Conditions
+            </li>
+            <li
+              className={selectedSetting === 6 ? "selected" : ""}
+              onClick={() => setSelectedSetting(6)}
+            >
+              Theme Playground
+            </li>
+          </ul>
+        )}
+        {selectedSetting === 6 && (
+          <button
+            className="btn bg-dark text-light position-absolute"
+            style={{ right: 0, bottom: 0 }}
+            onClick={() => setIsHidden(!isHidden)}
           >
-            {_basicsettings[language]}
-          </li>
-          <li
-            className={selectedSetting === 2 ? "selected" : ""}
-            onClick={() => setSelectedSetting(2)}
-          >
-            {_accountinformation[language]}
-          </li>
-          <li
-            className={selectedSetting === 3 ? "selected" : ""}
-            onClick={() => setSelectedSetting(3)}
-          >
-            {_contentpolicy[language]}
-          </li>
-          <li
-            className={selectedSetting === 4 ? "selected" : ""}
-            onClick={() => setSelectedSetting(4)}
-          >
-            {_additionalinformation[language]}
-          </li>
-          <li
-            className={selectedSetting === 5 ? "selected" : ""}
-            onClick={() => setSelectedSetting(5)}
-          >
-            Terms and Conditions
-          </li>
-        </ul>
+            {isHidden ? (
+              <i className="fas fa-angle-double-right" />
+            ) : (
+              <Fragment>
+                Hide <i className="fas fa-angle-double-left pl-2" />
+              </Fragment>
+            )}
+          </button>
+        )}
       </SettingsSideNav>
       {selectedSetting === 1 && (
         <article
@@ -253,16 +281,8 @@ function Settings() {
         {selectedSetting === 3 && <ContentPolicy />}
         {selectedSetting === 4 && <SocialProfile />}
         {selectedSetting === 5 && <TermsAndConditions />}
+        {selectedSetting === 6 && <SettingsThemePlayground />}
       </div>
-      {/*isPlayground && (
-        <SettingsPlayground
-          show={isPlayground}
-          onClose={() => setIsPlayground(false)}
-          style={{
-            height: `${window.innerHeight * 0.9}px`,
-          }}
-        />
-      )*/}
     </div>
   );
 }

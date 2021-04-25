@@ -1,6 +1,9 @@
-import React, { Fragment, useContext } from 'react';
-import { registercomponent } from "../../../utils/langObject"
-import { LanguageContext } from '../../../contexts/LanguageContext'
+import React, { Fragment, useContext } from "react";
+import { registercomponent } from "../../../utils/langObject";
+import { LanguageContext } from "../../../contexts/LanguageContext";
+import { checkfirststep } from "../../../utils/register";
+import { setAlert } from "../../../actions/alert";
+import { connect } from "react-redux";
 
 const {
   yourbasic,
@@ -13,8 +16,8 @@ const {
   yoursex,
   male,
   female,
-  nospecify
-} = registercomponent
+  nospecify,
+} = registercomponent;
 
 function StepOne({
   onChange,
@@ -22,127 +25,157 @@ function StepOne({
   lastName,
   email,
   sex,
-  onProgressChange
+  onProgressChange,
+  setAlert,
 }) {
-  const { language } = useContext(LanguageContext)
+  const { language } = useContext(LanguageContext);
+  const proceedToStepTwo = async () => {
+    try {
+      const { errors, isGood } = await checkfirststep(
+        firstName,
+        lastName,
+        email
+      );
+      if (isGood) {
+        onProgressChange([firstName, lastName, email /*sex*/]);
+      } else {
+        errors.forEach((error) => setAlert(error, "warning"));
+      }
+    } catch (e) {
+      console.warn(e.message);
+    }
+  };
   return (
     <Fragment>
-      <h2 className='mb-2'>{yourbasic[language]}</h2>
-      <label htmlFor='firstName'>{_firstname[language]}</label>
+      <h2 className="mb-2">{yourbasic[language]}</h2>
+      <label htmlFor="firstName">{_firstname[language]}</label>
       <input
-        type='text'
+        type="text"
         onChange={onChange}
-        name='firstName'
+        name="firstName"
         value={firstName}
         className={
-          firstName
-          ? `form-control is-valid`
-          : 'form-control is-invalid'
+          firstName ? `form-control is-valid` : "form-control is-invalid"
         }
         placeholder={_firstname[language]}
         required
       />
       {firstName ? (
-        <div className='valid-feedback'>{looksgood[language]}</div>
+        <div className="valid-feedback">{looksgood[language]}</div>
       ) : (
-        <div className='invalid-feedback'>{pleaseenter[language]}{" "}{_name[language]}</div>
+        <div className="invalid-feedback">
+          {pleaseenter[language]} {_name[language]}
+        </div>
       )}
-      <label htmlFor='lastName'>{_lastname[language]}</label>
+      <label htmlFor="lastName">{_lastname[language]}</label>
       <input
-        type='text'
+        type="text"
         className={
-          lastName
-          ? `form-control is-valid`
-          : 'form-control is-invalid'
+          lastName ? `form-control is-valid` : "form-control is-invalid"
         }
         value={lastName}
-        name='lastName'
+        name="lastName"
         onChange={onChange}
         placeholder={_lastname[language]}
         required
       />
       {lastName ? (
-        <div className='valid-feedback'>{looksgood[language]}</div>
+        <div className="valid-feedback">{looksgood[language]}</div>
       ) : (
-        <div className='invalid-feedback'>{pleaseenter[language]}{" "}{_name[language]}</div>
+        <div className="invalid-feedback">
+          {pleaseenter[language]} {_name[language]}
+        </div>
       )}
-      <label htmlFor='email'>{_email[language]}</label>
+      <label htmlFor="email">{_email[language]}</label>
       <input
-        type='email'
-        className={
-          email
-          ? `form-control is-valid`
-          : 'form-control is-invalid'
-        }
+        type="email"
+        className={email ? `form-control is-valid` : "form-control is-invalid"}
         value={email}
-        name='email'
+        name="email"
         onChange={onChange}
         required
         placeholder={_email[language]}
       />
       {email ? (
-        <div className='valid-feedback'>{looksgood[language]}</div>
+        <div className="valid-feedback">{looksgood[language]}</div>
       ) : (
-        <div className='invalid-feedback'>{pleaseenter[language]}{" "}{_email[language]}</div>
+        <div className="invalid-feedback">
+          {pleaseenter[language]} {_email[language]}
+        </div>
       )}
-      <label htmlFor='sex' className='mt-4'>{yoursex[language]}</label>
-      <div className='custom-control custom-radio'>
+      <label htmlFor="sex" className="mt-4">
+        {yoursex[language]}
+      </label>
+      <div className="custom-control custom-radio">
         <input
-          type='radio'
-          id='male'
-          name='sex'
+          type="radio"
+          id="male"
+          name="sex"
           className={
-            sex === 'm'
-            ? 'custom-control-input is-valid'
-            : 'custom-control-input is-invalid'
+            sex === "m"
+              ? "custom-control-input is-valid"
+              : "custom-control-input is-invalid"
           }
-          value='m'
+          value="m"
           onChange={onChange}
         />
-        <label className='custom-control-label' htmlFor='male'>{male[language]}</label>
+        <label className="custom-control-label" htmlFor="male">
+          {male[language]}
+        </label>
       </div>
-      <div className='custom-control custom-radio'>
+      <div className="custom-control custom-radio">
         <input
-          type='radio'
-          id='female'
-          name='sex'
+          type="radio"
+          id="female"
+          name="sex"
           className={
-            sex === 'f'
-            ? 'custom-control-input is-valid'
-            : 'custom-control-input is-invalid'
+            sex === "f"
+              ? "custom-control-input is-valid"
+              : "custom-control-input is-invalid"
           }
-          value='f'
+          value="f"
           onChange={onChange}
         />
-        <label className='custom-control-label' htmlFor='female'>{female[language]}</label>
+        <label className="custom-control-label" htmlFor="female">
+          {female[language]}
+        </label>
       </div>
-      <div className='custom-control custom-radio'>
+      <div className="custom-control custom-radio">
         <input
-          type='radio'
-          id='unknown'
-          name='sex'
+          type="radio"
+          id="unknown"
+          name="sex"
           className={
-            sex === 'n/a'
-            ? 'custom-control-input is-valid'
-            : 'custom-control-input is-invalid'
+            sex === "n/a"
+              ? "custom-control-input is-valid"
+              : "custom-control-input is-invalid"
           }
-          value='n/a'
+          value="n/a"
           onChange={onChange}
         />
-        <label className='custom-control-label' htmlFor='unknown'>{nospecify[language]}</label>
+        <label className="custom-control-label" htmlFor="unknown">
+          {nospecify[language]}
+        </label>
       </div>
       {sex ? (
-        <div className='d-block valid-feedback'>{looksgood[language]}</div>
+        <div className="d-block valid-feedback">{looksgood[language]}</div>
       ) : (
-        <div className='d-block invalid-feedback'>{pleaseenter[language]}{" "}{yoursex[language]}</div>
+        <div className="d-block invalid-feedback">
+          {pleaseenter[language]} {yoursex[language]}
+        </div>
       )}
       <div className="d-flex justify-content-end">
-        <button className="btn btn-secondary" onClick={() => onProgressChange([firstName, lastName, email, sex])}>
-          Proceed&nbsp;&nbsp;<i className="fas fa-arrow-right"></i>
+        <button
+          className="btn btn-secondary"
+          onClick={proceedToStepTwo}
+          type="button"
+        >
+          Proceed
+          <i className="pl-2 fas fa-arrow-right" />
         </button>
       </div>
     </Fragment>
-  )
+  );
 }
 
-export default StepOne;
+export default connect(null, { setAlert })(StepOne);

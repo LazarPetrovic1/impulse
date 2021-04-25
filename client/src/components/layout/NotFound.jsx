@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import NotFoundContainer from "../../styled/NotFoundContainer";
 // import LongLogo from '../../styled/Logo/LongLogo';
-import BrokenLogo from "../../styled/Logo/BrokenLogo";
+import BrokenLogo from "../../styled/Logo/BrokenLogo2";
 // import RickRoll from "../utils/RickRoll";
 
 // function NotFound ({auth: {isAuthenticated}}) {

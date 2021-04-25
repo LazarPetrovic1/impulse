@@ -34,6 +34,10 @@ import Video from "./components/VideoRoutes/Video";
 import VideoAll from "./components/VideoRoutes/VideoNav/VideoAll";
 import VideoPerson from "./components/VideoRoutes/VideoNav/VideoPerson";
 import Group from "./components/group/Group";
+import GroupPostPage from "./components/group/GroupPostPage";
+import ImagePostPage from "./components/media/ImagePostPage";
+import TextPostPage from "./components/media/TextPostPage";
+import NotifPage from "./components/notifs/NotifPage";
 // Redux stuff
 import { Provider } from "react-redux";
 import store from "./store";
@@ -160,7 +164,34 @@ function App() {
                         path="/groups/:id"
                         component={Group}
                       />
+                      <PrivateRoute
+                        exact
+                        path="/groups/:id/:post_id"
+                        component={GroupPostPage}
+                      />
+                      <PrivateRoute
+                        exact
+                        path="/images/:id"
+                        component={ImagePostPage}
+                      />
+                      <PrivateRoute
+                        exact
+                        path="/status/:id"
+                        component={TextPostPage}
+                      />
+                      <PrivateRoute
+                        exact
+                        path="/notifs"
+                        component={NotifPage}
+                      />
                       <Route component={NotFound} />
+                      {/*
+                          <Route component={VideoNotif} path="/videos/:id" />
+                          <Route component={ImageNotif} path="/images/:id" />
+                          <Route component={ForumNotif} path="/forum/forum-post/:id" />
+                          <Route component={FriendRequestNotif} path="/social/profile/:id" />
+                          <Route component={FriendRequestNotif} path="/textpost/:id" />
+                        */}
                     </Switch>
                   </Router>
                 </PageContent>

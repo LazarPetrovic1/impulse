@@ -94,6 +94,7 @@ function GroupPost({
             language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url: `/groups/${groupid}/${post._id}`,
           });
         }
         break;
@@ -106,6 +107,7 @@ function GroupPost({
             language: localStorage.language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url: `/groups/${groupid}/${post._id}`,
           });
         }
         break;
@@ -118,6 +120,7 @@ function GroupPost({
             language: localStorage.language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url: `/groups/${groupid}/${post._id}`,
           });
         }
         break;

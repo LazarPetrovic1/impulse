@@ -20,11 +20,12 @@ import logoutData from "../../animations/logout.json";
 import loginData from "../../animations/login.json";
 import user from "../../animations/user-backup.json";
 import register from "../../animations/register.json";
+import { readNotifs } from "../../actions/notifs";
 
 const { _settings, _logout, _register, _login, _notifs } = navcomponent;
 
 function Nav(props) {
-  const { logout, auth, findNotifs, notifs: notifications } = props;
+  const { logout, auth, findNotifs, notifs: notifications, readNotifs } = props;
   const { isAuthenticated } = auth;
   const [dropdown, setDropdown] = useState(false);
   const { notifs } = notifications;
@@ -55,7 +56,12 @@ function Nav(props) {
       </CenterListItem>
       <CenterListItem>
         <div className="nav-link pointer position-relative">
-          <div onClick={() => setDropdown(!dropdown)}>
+          <div
+            onClick={() => {
+              setDropdown(!dropdown);
+              readNotifs(auth.user._id);
+            }}
+          >
             {notifs && <NotifCounter notifs={notifs} />}
             <div>
               <GenericIcon
@@ -74,6 +80,13 @@ function Nav(props) {
             >
               {notifs &&
                 notifs.map((not) => <Notification not={not} key={not._id} />)}
+              <Link
+                to="/notifs"
+                className="btn btn-secondary text-light btn-block"
+                onClick={() => setDropdown(false)}
+              >
+                See all
+              </Link>
             </div>
           )}
         </div>
@@ -206,6 +219,7 @@ Nav.propTypes = {
   auth: PropTypes.object.isRequired,
   findNotifs: PropTypes.func.isRequired,
   notifs: PropTypes.object.isRequired,
+  readNotifs: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -213,6 +227,6 @@ const mapStateToProps = (state) => ({
   notifs: state.notifs,
 });
 
-export default connect(mapStateToProps, { logout, findNotifs })(
+export default connect(mapStateToProps, { logout, findNotifs, readNotifs })(
   withRouter(Nav)
 );

@@ -5,6 +5,7 @@ const status = require("../controllers/status");
 router.post("/", auth, status.createStatus);
 router.get("/", auth, status.getAllStatuses);
 router.get("/mine", auth, status.getMyStatuses);
+router.get("/status/:id", auth, status.getStatusById);
 router.get("/:id", auth, status.getPersonsStatuses);
 router.delete("/:id", auth, status.deleteStatus);
 router.put("/:id", auth, status.editStatus);

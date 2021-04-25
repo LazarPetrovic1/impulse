@@ -9,13 +9,17 @@ const ProgressBar = styled.ul`
   counter-reset: step;
   & li {
     list-style-type: none;
-    width: 12.5%;
+    width: calc(100% / 7);
     float: left;
     font-size: 11px;
     position: relative;
     text-align: center;
     text-transform: uppercase;
     color: #7d7d7d;
+    &[name="important"] {
+      font-style: oblique;
+      font-weight: bolder;
+    }
     &:before {
       width: 30px;
       height: 30px;
@@ -57,17 +61,23 @@ const ProgressBar = styled.ul`
 function RegisterSteps({ progress }) {
   return (
     <ProgressBar>
-      <li className={progress >= 0 ? "active" : ""}>Basic Information</li>
-      <li className={progress >= 1 ? "active" : ""}>Profile Information</li>
+      <li name="important" className={progress >= 0 ? "active" : ""}>
+        Basic Information
+      </li>
+      <li name="important" className={progress >= 1 ? "active" : ""}>
+        Profile Information
+      </li>
       <li className={progress >= 2 ? "active" : ""}>Your bio</li>
       <li className={progress >= 3 ? "active" : ""}>Other information</li>
-      <li className={progress >= 4 ? "active" : ""}>
+      <li name="important" className={progress >= 4 ? "active" : ""}>
         License, terms and conditions
       </li>
-      <li className={progress >= 5 ? "active" : ""}>Security question</li>
-      <li className={progress >= 6 ? "active" : ""}>
-        Snap an image (for validation)
+      <li name="important" className={progress >= 5 ? "active" : ""}>
+        Security question
       </li>
+      {/*<li className={progress >= 6 ? "active" : ""}>
+        Snap an image (for validation)
+      </li>*/}
       <li className={progress >= 7 ? "active" : ""}>Information overview</li>
     </ProgressBar>
   );

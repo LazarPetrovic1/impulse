@@ -34,6 +34,16 @@ async function getAllStatuses(req, res) {
   }
 }
 
+async function getStatusById(req, res) {
+  try {
+    const status = await Status.findById(req.params.id);
+    res.json(status);
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).send("Internal server error.");
+  }
+}
+
 async function getMyStatuses(req, res) {
   try {
     const statuses = await Status.find({ user: req.user.id });
@@ -441,6 +451,7 @@ const status = {
   createStatus,
   getAllStatuses,
   getMyStatuses,
+  getStatusById,
   getPersonsStatuses,
   deleteStatus,
   editStatus,

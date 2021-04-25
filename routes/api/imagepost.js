@@ -7,6 +7,7 @@ router.post("/", auth, image.uploadImage);
 router.get("/", auth, image.getAllImages);
 router.get("/mine", auth, image.getMyImages);
 router.get("/:id", auth, image.getUsersImages);
+router.get("/image/:id", auth, image.getImageById);
 router.delete("/:id", auth, image.deleteImage);
 router.get("/:id/impulse", auth, image.seeAllWhoImpulsed);
 router.get("/:id/like", auth, image.seeAllWhoLiked);

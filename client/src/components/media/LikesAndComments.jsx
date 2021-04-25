@@ -72,12 +72,15 @@ function LikesAndComments(props) {
     else setLiked(val);
     switch (val) {
       case "like":
+        let url;
         if (media[props.i].isVideo) {
           likeVideo(id, likerId);
+          url = `/videos/${media[props.i]._id}`;
         } else if (!media[props.i].isVideo && media[props.i].url) {
           likeImage(id, ownedById, likerId);
+          url = `/images/${media[props.i]._id}`;
         } else {
-          console.log("Boo +");
+          url = `/textpost/${media[props.i]._id}`;
         }
         if (ownedById !== likerId) {
           sendNotif({
@@ -86,16 +89,19 @@ function LikesAndComments(props) {
             language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url,
           });
         }
         break;
       case "dislike":
         if (media[props.i].isVideo) {
+          url = `/videos/${media[props.i]._id}`;
           dislikeVideo(id, likerId);
         } else if (!media[props.i].isVideo && media[props.i].url) {
+          url = `/images/${media[props.i]._id}`;
           dislikeImage(id, ownedById, likerId);
         } else {
-          console.log("Boo -");
+          url = `/textpost/${media[props.i]._id}`;
         }
         if (ownedById !== likerId) {
           sendNotif({
@@ -104,16 +110,19 @@ function LikesAndComments(props) {
             language: localStorage.language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url,
           });
         }
         break;
       case "impulse":
         if (media[props.i].isVideo) {
+          url = `/videos/${media[props.i]._id}`;
           impulsifyVideo(id, likerId);
         } else if (!media[props.i].isVideo && media[props.i].url) {
+          url = `/images/${media[props.i]._id}`;
           impulsifyImage(id, ownedById, likerId);
         } else {
-          console.log("Boo Impulse");
+          url = `/textpost/${media[props.i]._id}`;
         }
         if (ownedById !== likerId) {
           sendNotif({
@@ -122,6 +131,7 @@ function LikesAndComments(props) {
             language: localStorage.language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url,
           });
         }
         break;

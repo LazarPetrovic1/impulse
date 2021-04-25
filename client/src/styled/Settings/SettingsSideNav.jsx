@@ -1,15 +1,17 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const SettingsSideNav = styled.nav`
   height: calc(100vh - 86px); /* navbar height */
-  width: ${props => props.width};
+  width: ${(props) => props.width};
   position: fixed;
   z-index: 3;
   top: 86px; /* navbar height */
   left: 0;
-  border-top: 1px solid ${props => props.isDarkTheme ? "#ddd" : "#111"};
-  border-right: 1px solid ${props => props.isDarkTheme ? "#ddd" : "#111"};
-  background-color: ${props => props.isDarkTheme ? "#111" : "#ccc"};
+  border-top: 1px solid ${(props) => (props.isDarkTheme ? "#ddd" : "#111")};
+  border-right: 1px solid ${(props) => (props.isDarkTheme ? "#ddd" : "#111")};
+  background-color: ${(props) => (props.isDarkTheme ? "#111" : "#ccc")};
+  transition: 100ms all linear;
+  transform: translateX(${(props) => (props.isHidden ? "-210px" : "0")});
   overflow-x: hidden;
   padding-top: 60px;
   & ul {
@@ -23,8 +25,9 @@ const SettingsSideNav = styled.nav`
     display: block;
     padding: 1rem 0 1rem 2rem;
     &.selected {
-      background-color: ${props => props.isDarkTheme ? "#222" : "#bbb"};
-      border-bottom: 1px solid ${props => props.isDarkTheme ? "#ddd" : "#111"};
+      background-color: ${(props) => (props.isDarkTheme ? "#222" : "#bbb")};
+      border-bottom: 1px solid
+        ${(props) => (props.isDarkTheme ? "#ddd" : "#111")};
     }
   }
   & a {
@@ -38,6 +41,6 @@ const SettingsSideNav = styled.nav`
       color: #f1f1f1;
     }
   }
-`
+`;
 
 export default SettingsSideNav;

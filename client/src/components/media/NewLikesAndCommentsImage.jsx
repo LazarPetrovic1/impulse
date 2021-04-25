@@ -73,6 +73,7 @@ function NewLikesAndComments(props) {
             language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url: `/images/${image._id}`,
           });
         }
         break;
@@ -85,6 +86,7 @@ function NewLikesAndComments(props) {
             language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url: `/images/${image._id}`,
           });
         }
         break;
@@ -97,6 +99,7 @@ function NewLikesAndComments(props) {
             language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url: `/images/${image._id}`,
           });
         }
         break;

@@ -10,7 +10,7 @@ import StepThree from "./registersteps/StepThree";
 import StepFour from "./registersteps/StepFour";
 import StepFive from "./registersteps/StepFive";
 import StepSix from "./registersteps/StepSix";
-import StepSeven from "./registersteps/StepSeven";
+// import StepSeven from "./registersteps/StepSeven";
 import StepEight from "./registersteps/StepEight";
 import PropTypes from "prop-types";
 
@@ -46,6 +46,7 @@ function NewRegister(props) {
   const [viewPass2, setViewPass2] = useState(false);
   const [check, setcheck] = useState(false);
   const [progress, setProgress] = useState(0);
+  // eslint-disable-next-line
   const [image, setImage] = useState(null);
   const { isDarkTheme } = useContext(ThemeContext);
 
@@ -195,12 +196,6 @@ function NewRegister(props) {
               />
             )}
             {progress === 6 && (
-              <StepSeven
-                setImage={setImage}
-                onProgressChange={onProgressChange}
-              />
-            )}
-            {progress === 7 && (
               <StepEight
                 firstName={firstName}
                 lastName={lastName}
@@ -220,6 +215,32 @@ function NewRegister(props) {
                 callcode={callcode}
               />
             )}
+            {/*progress === 6 && (
+              <StepSeven
+                setImage={setImage}
+                onProgressChange={onProgressChange}
+              />
+            )*/}
+            {/*progress === 7 && (
+              <StepEight
+                firstName={firstName}
+                lastName={lastName}
+                username={username}
+                bio={bio}
+                sex={sex}
+                city={city}
+                country={country}
+                zip={zip}
+                email={email}
+                security={security}
+                password={password}
+                password2={password2}
+                phone={phone}
+                dob={dob}
+                image={image}
+                callcode={callcode}
+              />
+            )*/}
           </div>
         </form>
       </div>

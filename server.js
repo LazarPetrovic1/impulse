@@ -40,6 +40,7 @@ app.use("/api/forumposts", require("./routes/api/forumpost"));
 app.use("/api/videoposts", require("./routes/api/videopost"));
 app.use("/api/group", require("./routes/api/group"));
 app.use("/api/status", require("./routes/api/status"));
+app.use("/api/checkregister", require("./routes/api/register"));
 app.use("/api/allmedia", require("./routes/api/allmedia"));
 
 require("./utils/cron")(app, io);

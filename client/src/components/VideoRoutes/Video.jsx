@@ -101,6 +101,7 @@ function Video({
             language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url: `/videos/${video.video._id}`,
           });
         }
         break;
@@ -113,6 +114,7 @@ function Video({
             language: localStorage.language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url: `/videos/${video.video._id}`,
           });
         }
         break;
@@ -125,6 +127,7 @@ function Video({
             language: localStorage.language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
+            url: `/videos/${video.video._id}`,
           });
         }
         break;

@@ -120,6 +120,10 @@ function Chat(props) {
     scroller.current.scrollIntoView({ behavior: "smooth" });
   }, [chat, selected, hasMore, page]);
 
+  useEffect(() => {
+    scroller.current.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
   return (
     <ChatContainer isDarkTheme={isDarkTheme}>
       <div name="chatsidebar">

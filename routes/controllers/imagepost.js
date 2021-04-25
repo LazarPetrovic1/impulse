@@ -36,6 +36,16 @@ async function getAllImages(req, res) {
   }
 }
 
+async function getImageById(req, res) {
+  try {
+    const post = await ImagePost.findById(req.params.id);
+    res.json(post);
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).json({ msg: "Internal server error." });
+  }
+}
+
 async function getMyImages(req, res) {
   try {
     const page = req.query.page || 1;
@@ -386,6 +396,7 @@ const image = {
   dislikeImage,
   commentOnImage,
   deleteComment,
+  getImageById,
 };
 
 module.exports = image;
