@@ -17,7 +17,143 @@ import {
   REPLY_TO_GROUP_POST_COMMENT,
   UPDATE_GROUP_POST_REPLY,
   DELETE_GROUP_POST_REPLY,
+  IMPULSIFY_GROUP_POST_COMMENT,
+  DISLIKE_GROUP_POST_COMMENT,
+  LIKE_GROUP_POST_COMMENT,
+  IMPULSIFY_GROUP_POST_REPLY,
+  LIKE_GROUP_POST_REPLY,
+  DISLIKE_GROUP_POST_REPLY
 } from "./types";
+
+export const impulsifyComment = (id, postId, commentId) => async dispatch => {
+  try {
+    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/impulse`)
+    dispatch({
+      type: IMPULSIFY_GROUP_POST_COMMENT,
+      payload: {
+        id,
+        postId,
+        commentId,
+        impulsions: res.impulsions,
+        endorsements: res.endorsements,
+        judgements: res.judgements,
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: GROUP_ERROR,
+      payload: e.message,
+    });
+  }
+}
+export const likeComment = (id, postId, commentId) => async dispatch => {
+  try {
+    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/like`)
+    dispatch({
+      type: LIKE_GROUP_POST_COMMENT,
+      payload: {
+        id,
+        postId,
+        commentId,
+        impulsions: res.impulsions,
+        endorsements: res.endorsements,
+        judgements: res.judgements,
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: GROUP_ERROR,
+      payload: e.message,
+    });
+  }
+}
+export const dislikeComment = (id, postId, commentId) => async dispatch => {
+  try {
+    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/dislike`)
+    dispatch({
+      type: DISLIKE_GROUP_POST_COMMENT,
+      payload: {
+        id,
+        postId,
+        commentId,
+        impulsions: res.impulsions,
+        endorsements: res.endorsements,
+        judgements: res.judgements,
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: GROUP_ERROR,
+      payload: e.message,
+    });
+  }
+}
+export const impulsifyReplyToImageComment = (id, postId, commentId, replyId) => async dispatch => {
+  try {
+    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/${replyId}/impulse`)
+    dispatch({
+      type: IMPULSIFY_GROUP_POST_REPLY,
+      payload: {
+        id,
+        postId,
+        commentId,
+        replyId,
+        impulsions: res.impulsions,
+        endorsements: res.endorsements,
+        judgements: res.judgements,
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: GROUP_ERROR,
+      payload: e.message,
+    });
+  }
+}
+export const likeReplyToImageComment = (id, postId, commentId, replyId) => async dispatch => {
+  try {
+    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/${replyId}/like`)
+    dispatch({
+      type: LIKE_GROUP_POST_REPLY,
+      payload: {
+        id,
+        postId,
+        commentId,
+        replyId,
+        impulsions: res.impulsions,
+        endorsements: res.endorsements,
+        judgements: res.judgements,
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: GROUP_ERROR,
+      payload: e.message,
+    });
+  }
+}
+export const dislikeReplyToImageComment = (id, postId, commentId, replyId) => async dispatch => {
+  try {
+    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/${replyId}/dislike`)
+    dispatch({
+      type: DISLIKE_GROUP_POST_REPLY,
+      payload: {
+        id,
+        postId,
+        commentId,
+        replyId,
+        impulsions: res.impulsions,
+        endorsements: res.endorsements,
+        judgements: res.judgements,
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: GROUP_ERROR,
+      payload: e.message,
+    });
+  }
+}
 
 export const getGroups = () => async (dispatch) => {
   try {
@@ -34,7 +170,6 @@ export const getGroups = () => async (dispatch) => {
     });
   }
 };
-
 export const meInGroups = () => async (dispatch) => {
   try {
     const res = await axios.get("/api/group/mine");
@@ -50,7 +185,6 @@ export const meInGroups = () => async (dispatch) => {
     });
   }
 };
-
 export const getGroup = (id) => async (dispatch) => {
   try {
     const res = await axios.get(`/api/group/${id}`);
@@ -66,7 +200,6 @@ export const getGroup = (id) => async (dispatch) => {
     });
   }
 };
-
 export const createGroup = ({
   people,
   admin,
@@ -104,7 +237,6 @@ export const createGroup = ({
     });
   }
 };
-
 export const deleteGroup = (id) => async (dispatch) => {
   try {
     await axios.delete(`/api/group/${id}`);
@@ -120,7 +252,6 @@ export const deleteGroup = (id) => async (dispatch) => {
     });
   }
 };
-
 export const deletePostInGroup = (id, postid) => async (dispatch) => {
   try {
     await axios.delete(`/api/group/${id}/${postid}`);
@@ -136,7 +267,6 @@ export const deletePostInGroup = (id, postid) => async (dispatch) => {
     });
   }
 };
-
 export const postInGroup = (id, post) => async (dispatch) => {
   const config = {
     headers: {
@@ -158,7 +288,6 @@ export const postInGroup = (id, post) => async (dispatch) => {
     });
   }
 };
-
 export const impulsePostInGroup = (id, postId, likerId) => async (dispatch) => {
   try {
     const config = {
@@ -188,7 +317,6 @@ export const impulsePostInGroup = (id, postId, likerId) => async (dispatch) => {
     });
   }
 };
-
 export const likePostInGroup = (id, postId, likerId) => async (dispatch) => {
   const config = {
     headers: {
@@ -219,7 +347,6 @@ export const likePostInGroup = (id, postId, likerId) => async (dispatch) => {
     });
   }
 };
-
 export const dislikePostInGroup = (id, postId, likerId) => async (dispatch) => {
   const config = {
     headers: {
@@ -250,7 +377,6 @@ export const dislikePostInGroup = (id, postId, likerId) => async (dispatch) => {
     });
   }
 };
-
 export const commentGroupPost = (id, postId, text) => async (dispatch) => {
   // :id/:post_id
   const config = {
@@ -277,7 +403,6 @@ export const commentGroupPost = (id, postId, text) => async (dispatch) => {
     });
   }
 };
-
 export const updateComment = (id, postId, commentId, content) => async (
   dispatch
 ) => {
@@ -310,7 +435,6 @@ export const updateComment = (id, postId, commentId, content) => async (
     });
   }
 };
-
 export const deleteComment = (id, postId, commentId) => async (dispatch) => {
   try {
     await axios.delete(`/api/group/${id}/${postId}/${commentId}`);
@@ -330,7 +454,6 @@ export const deleteComment = (id, postId, commentId) => async (dispatch) => {
     });
   }
 };
-
 export const replyToComment = (id, postId, commentId, content) => async (
   dispatch
 ) => {
@@ -363,7 +486,6 @@ export const replyToComment = (id, postId, commentId, content) => async (
     });
   }
 };
-
 export const updateReply = (id, postId, commentId, replyId, content) => async (
   dispatch
 ) => {
@@ -397,7 +519,6 @@ export const updateReply = (id, postId, commentId, replyId, content) => async (
     });
   }
 };
-
 export const deleteReply = (id, postId, commentId, replyId, content) => async (
   dispatch
 ) => {

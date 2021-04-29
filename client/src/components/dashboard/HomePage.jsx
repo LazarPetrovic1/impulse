@@ -20,7 +20,7 @@ function HomePage({
   wipeAllMedia,
 }) {
   const [friends, setFriends] = useState(null);
-  useEffect(() => () => setFriends(user.friends), /*eslint-disable-line*/ []);
+  useEffect(() => () => setFriends(user && user.friends ? user.friends : []), /*eslint-disable-line*/ []);
   const [friendsMedia, setFriendsMedia] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);

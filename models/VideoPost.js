@@ -14,6 +14,12 @@ const VideoPostSchema = new Schema({
     type: String,
     required: true
   },
+  savedBy: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'user'
+    }
+  }],
   category: { type: String },
   views: { type: Number },
   description: {
@@ -52,6 +58,24 @@ const VideoPostSchema = new Schema({
       type: Date,
       default: Date.now
     },
+    endorsements: [{
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user"
+      }
+    }],
+    judgements: [{
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user"
+      }
+    }],
+    impulsions: [{
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user"
+      }
+    }],
     replies: [{
       user: {
         type: Schema.Types.ObjectId,
@@ -68,7 +92,25 @@ const VideoPostSchema = new Schema({
       date: {
         type: Date,
         default: Date.now
-      }
+      },
+      endorsements: [{
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "user"
+        }
+      }],
+      judgements: [{
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "user"
+        }
+      }],
+      impulsions: [{
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "user"
+        }
+      }]
     }]
   }],
   endorsements: [{

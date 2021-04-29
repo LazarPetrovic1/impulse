@@ -18,7 +18,140 @@ import {
   GET_ALL_REPLIES_TO_COMMENT_OF_STATUS,
   DELETE_REPLY_TO_COMMENT_OF_STATUS,
   STATUS_ERROR,
+  IMPULSIFY_STATUS_COMMENT,
+  DISLIKE_STATUS_COMMENT,
+  LIKE_STATUS_COMMENT,
+  IMPULSIFY_STATUS_REPLY,
+  LIKE_STATUS_REPLY,
+  DISLIKE_STATUS_REPLY,
 } from "./types";
+
+// export const saveStatus = (status) => async (dispatch) => {}
+// export const dismissStatus = (status) => async (dispatch) => {}
+
+export const impulsifyStatusComment = (id, commentId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/status/${id}/${commentId}/impulse`)
+    dispatch({
+      type: IMPULSIFY_STATUS_COMMENT,
+      payload: {
+        id,
+        commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: STATUS_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const likeStatusComment = (id, commentId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/status/${id}/${commentId}/like`)
+    dispatch({
+      type: LIKE_STATUS_COMMENT,
+      payload: {
+        id,
+        commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: STATUS_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const dislikeStatusComment = (id, commentId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/status/${id}/${commentId}/dislike`)
+    dispatch({
+      type: DISLIKE_STATUS_COMMENT,
+      payload: {
+        id,
+        commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: STATUS_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const impulsifyReplyToStatusComment = (id, commentId, replyId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/status/${id}/${commentId}/${replyId}/impulse`)
+    dispatch({
+      type: IMPULSIFY_STATUS_REPLY,
+      payload: {
+        id,
+        commentId,
+        replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: STATUS_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const likeReplyToStatusCommentt = (id, commentId, replyId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/status/${id}/${commentId}/${replyId}/like`)
+    dispatch({
+      type: LIKE_STATUS_REPLY,
+      payload: {
+        id,
+        commentId,
+        replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: STATUS_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const dislikeReplyToStatusComment = (id, commentId, replyId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/status/${id}/${commentId}/${replyId}/dislike`)
+    dispatch({
+      type: DISLIKE_STATUS_REPLY,
+      payload: {
+        id,
+        commentId,
+        replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: STATUS_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
 
 export const createStatus = (status) => async (dispatch) => {
   const body = JSON.stringify({ body: status });

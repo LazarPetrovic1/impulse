@@ -16,6 +16,12 @@ import {
   REPLY_TO_GROUP_POST_COMMENT,
   UPDATE_GROUP_POST_REPLY,
   DELETE_GROUP_POST_REPLY,
+  IMPULSIFY_GROUP_POST_COMMENT,
+  DISLIKE_GROUP_POST_COMMENT,
+  LIKE_GROUP_POST_COMMENT,
+  IMPULSIFY_GROUP_POST_REPLY,
+  LIKE_GROUP_POST_REPLY,
+  DISLIKE_GROUP_POST_REPLY
 } from "../actions/types";
 
 const initialState = {
@@ -68,6 +74,55 @@ export default (state = initialState, action) => {
           ),
         },
       };
+    case IMPULSIFY_GROUP_POST_COMMENT:
+    case DISLIKE_GROUP_POST_COMMENT:
+    case LIKE_GROUP_POST_COMMENT:
+      return {
+        ...state,
+        loading: false,
+        group: {
+          ...state.group,
+          posts: state.group.posts.map((post) =>
+            post._id === payload.postId
+              ? {
+                  ...post,
+                  comments: post.comments.map(comm => comm._id === payload.commentId ? {
+                    ...comm,
+                    impulsions: payload.impulsions,
+                    endorsements: payload.endorsements,
+                    judgements: payload.judgements,
+                  } : comm)
+                }
+              : post
+          ),
+        },
+      };
+    case IMPULSIFY_GROUP_POST_REPLY:
+    case LIKE_GROUP_POST_REPLY:
+    case DISLIKE_GROUP_POST_REPLY:
+    return {
+      ...state,
+      loading: false,
+      group: {
+        ...state.group,
+        posts: state.group.posts.map((post) =>
+          post._id === payload.postId
+            ? {
+                ...post,
+                comments: post.comments.map(comm => comm._id === payload.commentId ? {
+                  ...comm,
+                  replies: comm.replies.map(rep => rep._id === payload.replyId ? {
+                    ...rep,
+                    impulsions: payload.impulsions,
+                    endorsements: payload.endorsements,
+                    judgements: payload.judgements,
+                  } : rep)
+                } : comm)
+              }
+            : post
+        ),
+      },
+    };
     case DELETE_GROUP:
       return {
         ...state,

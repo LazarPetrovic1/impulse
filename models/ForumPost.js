@@ -13,6 +13,31 @@ const ForumPostSchema = new Schema({
     type: String,
     required: true
   },
+  media: [
+    {
+      name: { type: String },
+      type: { type: String },
+      src: { type: String },
+    },
+  ],
+  endorsements: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user"
+    }
+  }],
+  judgements: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user"
+    }
+  }],
+  impulsions: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user"
+    }
+  }],
   date: {
     type: Date,
     default: Date.now
@@ -44,6 +69,24 @@ const ForumPostSchema = new Schema({
       type: Date,
       default: Date.now
     },
+    endorsements: [{
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user"
+      }
+    }],
+    judgements: [{
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user"
+      }
+    }],
+    impulsions: [{
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user"
+      }
+    }],
     replies: [{
       user: {
         type: Schema.Types.ObjectId,
@@ -56,7 +99,25 @@ const ForumPostSchema = new Schema({
       by: {
         // username
         type: String
-      }
+      },
+      endorsements: [{
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "user"
+        }
+      }],
+      judgements: [{
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "user"
+        }
+      }],
+      impulsions: [{
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "user"
+        }
+      }]
     }]
   }]
 })

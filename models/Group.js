@@ -67,6 +67,24 @@ const GroupSchema = new Schema({
             type: Date,
             default: Date.now,
           },
+          endorsements: [{
+            user: {
+              type: Schema.Types.ObjectId,
+              ref: "user"
+            }
+          }],
+          judgements: [{
+            user: {
+              type: Schema.Types.ObjectId,
+              ref: "user"
+            }
+          }],
+          impulsions: [{
+            user: {
+              type: Schema.Types.ObjectId,
+              ref: "user"
+            }
+          }],
           replies: [
             {
               user: {
@@ -85,6 +103,24 @@ const GroupSchema = new Schema({
                 type: Date,
                 default: Date.now,
               },
+              endorsements: [{
+                user: {
+                  type: Schema.Types.ObjectId,
+                  ref: "user"
+                }
+              }],
+              judgements: [{
+                user: {
+                  type: Schema.Types.ObjectId,
+                  ref: "user"
+                }
+              }],
+              impulsions: [{
+                user: {
+                  type: Schema.Types.ObjectId,
+                  ref: "user"
+                }
+              }],
             },
           ],
         },

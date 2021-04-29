@@ -17,6 +17,12 @@ import {
   GET_ALL_REPLIES_TO_COMMENT_OF_STATUS,
   DELETE_REPLY_TO_COMMENT_OF_STATUS,
   STATUS_ERROR,
+  IMPULSIFY_STATUS_COMMENT,
+  DISLIKE_STATUS_COMMENT,
+  LIKE_STATUS_COMMENT,
+  IMPULSIFY_STATUS_REPLY,
+  LIKE_STATUS_REPLY,
+  DISLIKE_STATUS_REPLY,
 } from "../actions/types";
 
 const initialState = {
@@ -66,6 +72,49 @@ export default (state = initialState, action) => {
             : stat
         ),
       };
+    case IMPULSIFY_STATUS_COMMENT:
+    case DISLIKE_STATUS_COMMENT:
+    case LIKE_STATUS_COMMENT:
+      return {
+        ...state,
+        loading: false,
+        statuses: state.statuses.map((stat) =>
+          stat._id === payload.id
+            ? {
+                ...stat,
+                comments: state.statuses.comments.map(comm => comm._id === payload.commentId ? {
+                  ...comm,
+                  endorsements: payload.endorsements,
+                  judgements: payload.judgements,
+                  impulsions: payload.impulsions,
+                } : comm)
+              }
+            : stat
+        ),
+      };
+    case IMPULSIFY_STATUS_REPLY:
+    case LIKE_STATUS_REPLY:
+    case DISLIKE_STATUS_REPLY:
+      return {
+        ...state,
+        loading: false,
+        statuses: state.statuses.map((stat) =>
+          stat._id === payload.id
+            ? {
+                ...stat,
+                comments: state.statuses.comments.map(comm => comm._id === payload.commentId ? {
+                  ...comm,
+                  replies: comm.replies.map(rep => rep._id === payload.replyId ? {
+                    ...rep,
+                    endorsements: payload.endorsements,
+                    judgements: payload.judgements,
+                    impulsions: payload.impulsions,
+                  } : rep)
+                } : comm)
+              }
+            : stat
+        ),
+      }
     case ADD_COMMENT_TO_STATUS:
       return {
         ...state,

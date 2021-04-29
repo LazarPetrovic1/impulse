@@ -1,36 +1,6 @@
 const Group = require("../../models/Group");
 const cloudinary = require("../../utils/cloudinary");
 
-async function getAllGroups(req, res) {
-  try {
-    const groups = await Group.find();
-    res.json(groups);
-  } catch (e) {
-    console.error(e.message);
-    res.status(500).send("Internal server error.");
-  }
-}
-
-async function getGroup(req, res) {
-  try {
-    const group = await Group.findById(req.params.id);
-    res.json(group);
-  } catch (e) {
-    console.error(e.message);
-    res.status(500).send("Internal server error.");
-  }
-}
-
-async function meInGroups(req, res) {
-  try {
-    const groups = await Group.find({ people: req.user.id });
-    res.json(groups);
-  } catch (e) {
-    console.error(e.message);
-    res.status(500).send("Internal server error.");
-  }
-}
-
 async function createGroup(req, res) {
   try {
     const fileStr = await req.body.data;
@@ -54,7 +24,37 @@ async function createGroup(req, res) {
     res.status(500).send("Internal server error.");
   }
 }
-
+async function getAllGroups(req, res) {
+  try {
+    const groups = await Group.find();
+    res.json(groups);
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).send("Internal server error.");
+  }
+}
+async function getGroup(req, res) {
+  try {
+    const group = await Group.findById(req.params.id);
+    res.json(group);
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).send("Internal server error.");
+  }
+}
+async function deleteGroup(req, res) {
+  try {
+    const group = await Group.findById(req.params.id);
+    await group.remove();
+    res.json({ msg: "Group deleted successfully" });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).send("Internal server error.");
+  }
+}
+// some group updates...
+// save group technically in redux
+// black group as well as dismiss post functionalities needed
 async function postInGroup(req, res) {
   try {
     const group = await Group.findById(req.params.id);
@@ -91,7 +91,15 @@ async function postInGroup(req, res) {
     res.status(500).send("Internal server error.");
   }
 }
-
+async function getAllPosts(req, res) {
+  try {
+    const group = await Group.findById(req.params.id)
+    return res.json(group.posts)
+  } catch (e) {
+    res.status(500).send("Internal server error.");
+  }
+}
+// async function editPost(req, res) {}
 async function deletePost(req, res) {
   try {
     const group = await Group.findById(req.params.id);
@@ -105,7 +113,73 @@ async function deletePost(req, res) {
     res.status(500).send("Internal server error.");
   }
 }
-
+// no dismiss
+async function seeAllWhoImpulsed(req, res) {
+  try {
+    let users = [];
+    const group = await Group.findById(req.params.id);
+    const post = await group.posts.find(p => p._id === req.params.postId)
+    if (post) {
+      for await (const person of post.impulsions) {
+        let user = await User.findById(person.user).select(
+          "firstName lastName username"
+        );
+        await users.push(
+          `${user.firstName} ${user.lastName} (@${user.username})`
+        );
+      }
+    } else {
+      return res.json({ msg: "Either loading or 404: Not Found." })
+    }
+    res.json(users);
+  } catch (e) {
+    res.status(500).json({ msg: "Internal server error" })
+  }
+}
+async function seeAllWhoLiked(req, res) {
+  try {
+    let users = [];
+    const group = await Group.findById(req.params.id);
+    const post = await group.posts.find(p => p._id === req.params.postId)
+    if (post) {
+      for await (const person of post.endorsements) {
+        let user = await User.findById(person.user).select(
+          "firstName lastName username"
+        );
+        await users.push(
+          `${user.firstName} ${user.lastName} (@${user.username})`
+        );
+      }
+    } else {
+      return res.json({ msg: "Either loading or 404: Not Found." })
+    }
+    res.json(users);
+  } catch (e) {
+    return res.json({ msg: "Either loading or 404: Not Found." })
+  }
+}
+async function seeAllWhoDisliked(req, res) {
+  try {
+    let users = [];
+    const group = await Group.findById(req.params.id);
+    const post = await group.posts.find(p => p._id === req.params.postId)
+    if (post) {
+      for await (const person of post.judgements) {
+        let user = await User.findById(person.user).select(
+          "firstName lastName username"
+        );
+        await users.push(
+          `${user.firstName} ${user.lastName} (@${user.username})`
+        );
+      }
+    } else {
+      return res.json({ msg: "Either loading or 404: Not Found." })
+    }
+    res.json(users);
+  } catch (e) {
+    return res.json({ msg: "Either loading or 404: Not Found." })
+  }
+}
 async function impulsePost(req, res) {
   try {
     const group = await Group.findById(req.params.id);
@@ -167,7 +241,6 @@ async function impulsePost(req, res) {
     res.status(500).send("Internal server error.");
   }
 }
-
 async function likePost(req, res) {
   try {
     const group = await Group.findById(req.params.id);
@@ -229,7 +302,6 @@ async function likePost(req, res) {
     res.status(500).send("Internal server error.");
   }
 }
-
 async function dislikePost(req, res) {
   try {
     const group = await Group.findById(req.params.id);
@@ -292,18 +364,15 @@ async function dislikePost(req, res) {
     res.status(500).send("Internal server error.");
   }
 }
-
-async function deleteGroup(req, res) {
+async function meInGroups(req, res) {
   try {
-    const group = await Group.findById(req.params.id);
-    await group.remove();
-    res.json({ msg: "Group deleted successfully" });
+    const groups = await Group.find({ people: req.user.id });
+    res.json(groups);
   } catch (e) {
     console.error(e.message);
     res.status(500).send("Internal server error.");
   }
 }
-
 async function commentGroupPost(req, res) {
   try {
     const user = await User.findById(req.user.id).select("-password");
@@ -322,7 +391,15 @@ async function commentGroupPost(req, res) {
     res.status(500).send("Internal server error.");
   }
 }
-
+async function getPostComments(req, res) {
+  try {
+    const group = await Group.findById(req.params.id);
+    const post = await group.posts.find(p => p._id === req.params.postId)
+    return res.json(post.comments)
+  } catch (e) {
+    return res.json({ msg: "Either loading or 404: Not Found." })
+  }
+}
 async function updateComment(req, res) {
   try {
     const group = await Group.findById(req.params.id);
@@ -353,7 +430,6 @@ async function updateComment(req, res) {
     res.status(500).send("Internal server error.");
   }
 }
-
 async function deleteComment(req, res) {
   try {
     const group = await Group.findById(req.params.id);
@@ -375,7 +451,6 @@ async function deleteComment(req, res) {
     res.status(500).send("Internal server error.");
   }
 }
-
 async function replyToComment(req, res) {
   try {
     const user = await User.findById(req.user.id).select("username");
@@ -407,7 +482,6 @@ async function replyToComment(req, res) {
     res.status(500).send("Internal server error.");
   }
 }
-
 async function updateReply(req, res) {
   try {
     const user = await User.findById(req.user.id).select("username");
@@ -433,7 +507,6 @@ async function updateReply(req, res) {
     res.status(500).send("Internal server error.");
   }
 }
-
 async function deleteReply(req, res) {
   try {
     const group = await Group.findById(req.params.id);
@@ -459,24 +532,400 @@ async function deleteReply(req, res) {
     res.status(500).send("Internal server error.");
   }
 }
+async function impulsifyComment(req, res) {
+  try {
+    const group = await Group.findById(req.params.id);
+    const post = await group.posts.find(p => p._id === req.params.postId)
+    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    if (
+      comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      comment.impulsions.splice(
+        comment.impulsions
+          .map((imp) => imp.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+      await group.save();
+      return res.json({
+        impulsions: comment.impulsions,
+        endorsements: comment.endorsements,
+        judgements: comment.judgements,
+      });
+    }
+    comment.impulsions.unshift({ user: req.body.likerId })
+    if (
+      comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      comment.judgements.splice(
+        comment.judgements
+          .map((jud) => jud.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    if (
+      comment.endorsements.filter(
+        (end) => end.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      // Get remove index
+      comment.endorsements.splice(
+        comment.endorsements
+          .map((end) => end.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    await group.save();
+    return res.json({
+      impulsions: comment.impulsions,
+      endorsements: comment.endorsements,
+      judgements: comment.judgements,
+    });
+  } catch (e) {
+    console.error(e.message);
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
+  }
+}
+async function likeComment(req, res) {
+try {
+  const group = await Group.findById(req.params.id);
+  const post = await group.posts.find(p => p._id === req.params.postId)
+  const comment = await post.comments.find(c => c._id === req.params.commentId)
+  if (
+    comment.endorsements.filter(
+      (end) => end.user.toString() === req.body.likerId
+    ).length > 0
+  ) {
+    comment.endorsements.splice(
+      comment.endorsements
+        .map((end) => end.user.toString())
+        .indexOf(req.body.likerId),
+      1
+    );
+    await group.save();
+    return res.json({
+      impulsions: comment.impulsions,
+      endorsements: comment.endorsements,
+      judgements: comment.judgements,
+    });
+  }
+  comment.endorsements.unshift({ user: req.body.likerId });
+  if (
+    comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
+      .length > 0
+  ) {
+    comment.judgements.splice(
+      comment.judgements
+        .map((jud) => jud.user.toString())
+        .indexOf(req.body.likerId),
+      1
+    );
+  }
+  if (
+    comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
+      .length > 0
+  ) {
+    // Get remove index
+    comment.impulsions.splice(
+      comment.impulsions
+        .map((imp) => imp.user.toString())
+        .indexOf(req.body.likerId),
+      1
+    );
+  }
+  await group.save();
+  return res.json({
+    impulsions: comment.impulsions,
+    endorsements: comment.endorsements,
+    judgements: comment.judgements,
+  });
+} catch (e) {
+  console.error(e.message);
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
+  }
+}
+async function dislikeComment(req, res) {
+  try {
+    const group = await Group.findById(req.params.id);
+    const post = await group.posts.find(p => p._id === req.params.postId)
+    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    if (
+      comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      comment.judgements.splice(
+        comment.judgements
+          .map((jud) => jud.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+      await group.save();
+      return res.json({
+        impulsions: comment.impulsions,
+        endorsements: comment.endorsements,
+        judgements: comment.judgements,
+      });
+    }
+    comment.judgements.unshift({ user: req.body.likerId });
+    if (
+      comment.endorsements.filter(
+        (end) => end.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      // Get remove index
+      comment.endorsements.splice(
+        comment.endorsements
+          .map((end) => end.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    if (
+      comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      // Get remove index
+      comment.impulsions.splice(
+        comment.impulsions
+          .map((imp) => imp.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    await group.save();
+    return res.json({
+      impulsions: comment.impulsions,
+      endorsements: comment.endorsements,
+      judgements: comment.judgements,
+    });
+  } catch (e) {
+    console.error(e.message);
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
+  }
+}
+async function impulsifyReplyToImageComment(req, res) {
+  try {
+    const group = await Group.findById(req.params.id)
+    const post = await group.find(p => p._id === req.params.postId )
+    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    if (
+      reply.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      reply.impulsions.splice(
+        reply.impulsions
+          .map((imp) => imp.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+      await group.save();
+      return res.json({
+        impulsions: reply.impulsions,
+        endorsements: reply.endorsements,
+        judgements: reply.judgements,
+      });
+    }
+    reply.impulsions.unshift({ user: req.body.likerId })
+    if (
+      reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      reply.judgements.splice(
+        reply.judgements
+          .map((jud) => jud.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    if (
+      reply.endorsements.filter(
+        (end) => end.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      // Get remove index
+      reply.endorsements.splice(
+        reply.endorsements
+          .map((end) => end.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    await group.save();
+    return res.json({
+      impulsions: reply.impulsions,
+      endorsements: reply.endorsements,
+      judgements: reply.judgements,
+    });
+  } catch (e) {
+    console.error(e.message);
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
+  }
+}
+async function likeReplyToImageComment(req, res) {
+  try {
+    const group = await Group.findById(req.params.id)
+    const post = await group.find(p => p._id === req.params.postId )
+    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    if (
+      reply.endorsements.filter(
+        (end) => end.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      reply.endorsements.splice(
+        reply.endorsements
+          .map((end) => end.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+      await group.save();
+      return res.json({
+        impulsions: reply.impulsions,
+        endorsements: reply.endorsements,
+        judgements: reply.judgements,
+      });
+    }
+    reply.endorsements.unshift({ user: req.body.likerId });
+    if (
+      reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      reply.judgements.splice(
+        reply.judgements
+          .map((jud) => jud.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    if (
+      reply.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      // Get remove index
+      reply.impulsions.splice(
+        reply.impulsions
+          .map((imp) => imp.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    await group.save();
+    return res.json({
+      impulsions: reply.impulsions,
+      endorsements: reply.endorsements,
+      judgements: reply.judgements,
+    });
+  } catch (e) {
+    console.error(e.message);
+      if (e.kind === "ObjectId")
+        return res.status(404).json({ msg: "Post not found" });
+      res.status(500).send("Internal server error.");
+    }
+}
+async function dislikeReplyToImageComment(req, res) {
+  try {
+    const group = await Group.findById(req.params.id)
+    const post = await group.find(p => p._id === req.params.postId )
+    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    if (
+      reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      reply.judgements.splice(
+        reply.judgements
+          .map((jud) => jud.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+      await group.save();
+      return res.json({
+        impulsions: reply.impulsions,
+        endorsements: reply.endorsements,
+        judgements: reply.judgements,
+      });
+    }
+    reply.judgements.unshift({ user: req.body.likerId });
+    if (
+      reply.endorsements.filter(
+        (end) => end.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      // Get remove index
+      reply.endorsements.splice(
+        reply.endorsements
+          .map((end) => end.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    if (
+      reply.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
+        .length > 0
+    ) {
+      // Get remove index
+      reply.impulsions.splice(
+        reply.impulsions
+          .map((imp) => imp.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    await group.save();
+    return res.json({
+      impulsions: reply.impulsions,
+      endorsements: reply.endorsements,
+      judgements: reply.judgements,
+    });
+  } catch (e) {
+    console.error(e.message);
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
+  }
+}
 
 const group = {
+  createGroup,
   getAllGroups,
   getGroup,
-  meInGroups,
-  createGroup,
+  deleteGroup,
   postInGroup,
+  getAllPosts,
   deletePost,
+  seeAllWhoImpulsed,
+  seeAllWhoLiked,
+  seeAllWhoDisliked,
   impulsePost,
   likePost,
   dislikePost,
-  deleteGroup,
+  meInGroups,
   commentGroupPost,
+  getPostComments,
   updateComment,
   deleteComment,
   replyToComment,
   updateReply,
   deleteReply,
+  impulsifyComment,
+  likeComment,
+  dislikeComment,
+  impulsifyReplyToImageComment,
+  likeReplyToImageComment,
+  dislikeReplyToImageComment
 };
 
 module.exports = group;

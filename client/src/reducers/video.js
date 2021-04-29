@@ -14,6 +14,14 @@ import {
   VIDEO_EDIT_COMMENT,
   VIDEO_GET_COMMENTS,
   VIDEO_SEARCH,
+  // SAVE_VIDEO,
+  // DISMISS_VIDEO,
+  IMPULSIFY_VIDEO_COMMENT,
+  DISLIKE_VIDEO_COMMENT,
+  LIKE_VIDEO_COMMENT,
+  IMPULSIFY_VIDEO_REPLY,
+  LIKE_VIDEO_REPLY,
+  DISLIKE_VIDEO_REPLY
 } from "../actions/types";
 
 const initialState = {
@@ -59,6 +67,41 @@ export default (state = initialState, action) => {
           impulsions: payload.impulsions,
           endorsements: payload.endorsements,
           judgements: payload.judgements,
+        },
+      };
+    case IMPULSIFY_VIDEO_COMMENT:
+    case DISLIKE_VIDEO_COMMENT:
+    case LIKE_VIDEO_COMMENT:
+      return {
+        ...state,
+        loading: false,
+        video: {
+          ...state.video,
+          comments: state.video.comments.map(comm => comm._id === payload.commentId ? {
+            ...comm,
+            impulsions: payload.impulsions,
+            endorsements: payload.endorsements,
+            judgements: payload.judgements,
+          } : comm)
+        },
+      };
+    case IMPULSIFY_VIDEO_REPLY:
+    case LIKE_VIDEO_REPLY:
+    case DISLIKE_VIDEO_REPLY:
+      return {
+        ...state,
+        loading: false,
+        video: {
+          ...state.video,
+          comments: state.video.comments.map(comm => comm._id === payload.commentId ? {
+            ...comm,
+            replies: comm.replies.map(rep => rep._id === payload.replyId ? {
+              ...rep,
+              impulsions: payload.impulsions,
+              endorsements: payload.endorsements,
+              judgements: payload.judgements,
+            } : rep)
+          } : comm)
         },
       };
     case VIDEO_DELETE_COMMENT:

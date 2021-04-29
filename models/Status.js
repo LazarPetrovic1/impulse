@@ -10,6 +10,12 @@ const StatusPostSchema = new Schema({
     type: String,
     required: true,
   },
+  savedBy: [{
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'user'
+    }
+  }],
   date: {
     type: Date,
     default: Date.now,
@@ -54,8 +60,44 @@ const StatusPostSchema = new Schema({
             // username
             type: String,
           },
+          endorsements: [{
+            user: {
+              type: Schema.Types.ObjectId,
+              ref: "user"
+            }
+          }],
+          judgements: [{
+            user: {
+              type: Schema.Types.ObjectId,
+              ref: "user"
+            }
+          }],
+          impulsions: [{
+            user: {
+              type: Schema.Types.ObjectId,
+              ref: "user"
+            }
+          }]
         },
       ],
+      endorsements: [{
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "user"
+        }
+      }],
+      judgements: [{
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "user"
+        }
+      }],
+      impulsions: [{
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "user"
+        }
+      }]
     },
   ],
   endorsements: [

@@ -9,7 +9,150 @@ import {
   LIKE_IMAGE,
   DISLIKE_IMAGE,
   IMPULSIFY_IMAGE,
+  // SAVE_IMAGE,
+  IMPULSIFY_IMAGE_COMMENT,
+  DISLIKE_IMAGE_COMMENT,
+  LIKE_IMAGE_COMMENT,
+  IMPULSIFY_IMAGE_REPLY,
+  LIKE_IMAGE_REPLY,
+  DISLIKE_IMAGE_REPLY
 } from "./types";
+
+// export const saveImage = (id) => async dispatch => {
+//   try {
+//     const res = await axios.put(`/api/imageposts/save/${id}`)
+//     // DISPATCH HERE
+//   } catch (e) {
+//     dispatch({
+//       type: IMAGE_ERROR,
+//       payload: { msg: e.message },
+//     });
+//   }
+// }
+// export const dismissImage = (id) => async dispatch => {}
+export const impulsifyImageComment = (id, commentId) => async dispatch => {
+  try {
+    const res = await axios.put(`/api/imageposts/${id}/${commentId}/impulse`)
+    dispatch({
+      type: IMPULSIFY_IMAGE_COMMENT,
+      payload: {
+        id,
+        commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const likeImageComment = (id, commentId) => async dispatch => {
+  try {
+    const res = await axios.put(`/api/imageposts/${id}/${commentId}/like`)
+    dispatch({
+      type: LIKE_IMAGE_COMMENT,
+      payload: {
+        id,
+        commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const dislikeImageComment = (id, commentId) => async dispatch => {
+  try {
+    const res = await axios.put(`/api/imageposts/${id}/${commentId}/dislike`)
+    dispatch({
+      type: DISLIKE_IMAGE_COMMENT,
+      payload: {
+        id,
+        commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const impulsifyReplyToImageComment = (id, commentId, replyId) => async dispatch => {
+  try {
+    const res = await axios.put(`/api/imageposts/${id}/${commentId}/${replyId}/impulse`)
+    dispatch({
+      type: IMPULSIFY_IMAGE_REPLY,
+      payload: {
+        id,
+        commentId,
+        replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const likeReplyToImageCommentt = (id, commentId, replyId) => async dispatch => {
+  try {
+    const res = await axios.put(`/api/imageposts/${id}/${commentId}/${replyId}/like`)
+    dispatch({
+      type: LIKE_IMAGE_REPLY,
+      payload: {
+        id,
+        commentId,
+        replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const dislikeReplyToImageComment = (id, commentId, replyId) => async dispatch => {
+  try {
+    const res = await axios.put(`/api/imageposts/${id}/${commentId}/${replyId}/dislike`)
+    dispatch({
+      type: DISLIKE_IMAGE_REPLY,
+      payload: {
+        id,
+        commentId,
+        replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
 
 export const wipeImages = () => async (dispatch) =>
   dispatch({ type: WIPE_IMAGES });

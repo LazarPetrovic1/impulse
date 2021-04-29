@@ -14,8 +14,142 @@ import {
   VIDEO_EDIT_COMMENT,
   VIDEO_GET_COMMENTS,
   VIDEO_SEARCH,
+  // SAVE_VIDEO,
+  // DISMISS_VIDEO,
+  IMPULSIFY_VIDEO_COMMENT,
+  DISLIKE_VIDEO_COMMENT,
+  LIKE_VIDEO_COMMENT,
+  IMPULSIFY_VIDEO_REPLY,
+  LIKE_VIDEO_REPLY,
+  DISLIKE_VIDEO_REPLY
 } from "./types";
 import axios from "axios";
+
+// export const saveVideo = (id) => async (dispatch) => {}
+// export const dismissVideo = (id) => async (dispatch) => {}
+export const impulsifyComment = (id, commentId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/videoposts/${id}/${commentId}/impulse`)
+    dispatch({
+      type: IMPULSIFY_VIDEO_COMMENT,
+      payload: {
+        id,
+        commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: VIDEO_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const likeComment = (id, commentId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/videoposts/${id}/${commentId}/like`)
+    dispatch({
+      type: LIKE_VIDEO_COMMENT,
+      payload: {
+        id,
+        commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: VIDEO_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const dislikeComment = (id, commentId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/videoposts/${id}/${commentId}/dislike`)
+    dispatch({
+      type: DISLIKE_VIDEO_COMMENT,
+      payload: {
+        id,
+        commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: VIDEO_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const impulsifyReplyToComment = (id, commentId, replyId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/videoposts/${id}/${commentId}/${replyId}/impulse`)
+    dispatch({
+      type: IMPULSIFY_VIDEO_REPLY,
+      payload: {
+        id,
+        commentId,
+        replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: VIDEO_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const likeReplyToComment = (id, commentId, replyId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/videoposts/${id}/${commentId}/${replyId}/like`)
+    dispatch({
+      type: LIKE_VIDEO_REPLY,
+      payload: {
+        id,
+        commentId,
+        replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: VIDEO_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
+export const dislikeReplyToComment = (id, commentId, replyId) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/videoposts/${id}/${commentId}/${replyId}/dislike`)
+    dispatch({
+      type: DISLIKE_VIDEO_REPLY,
+      payload: {
+        id,
+        commentId,
+        replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: VIDEO_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+}
 
 export const getVideo = (id) => async (dispatch) => {
   try {
@@ -31,7 +165,6 @@ export const getVideo = (id) => async (dispatch) => {
     });
   }
 };
-
 export const getUsersVideo = (id) => async (dispatch) => {
   try {
     const res = await axios.get(`/api/videoposts/${id}`);
@@ -46,7 +179,6 @@ export const getUsersVideo = (id) => async (dispatch) => {
     });
   }
 };
-
 export const getAllVideos = () => async (dispatch) => {
   try {
     const res = await axios.get(`/api/videoposts`);
@@ -61,7 +193,6 @@ export const getAllVideos = () => async (dispatch) => {
     });
   }
 };
-
 export const createVideo = (
   base64EncodedVideo,
   name,
@@ -95,7 +226,6 @@ export const createVideo = (
     });
   }
 };
-
 export const impulsifyVideo = (postId, likerId) => async (dispatch) => {
   try {
     const config = {
@@ -120,7 +250,6 @@ export const impulsifyVideo = (postId, likerId) => async (dispatch) => {
     });
   }
 };
-
 export const likeVideo = (postId, likerId) => async (dispatch) => {
   try {
     const config = {
@@ -141,7 +270,6 @@ export const likeVideo = (postId, likerId) => async (dispatch) => {
     });
   }
 };
-
 export const dislikeVideo = (postId, likerId) => async (dispatch) => {
   try {
     const config = {
@@ -166,7 +294,6 @@ export const dislikeVideo = (postId, likerId) => async (dispatch) => {
     });
   }
 };
-
 export const commentVideo = (id, text) => async (dispatch) => {
   try {
     const config = {
@@ -188,7 +315,6 @@ export const commentVideo = (id, text) => async (dispatch) => {
     });
   }
 };
-
 export const videoDeleteComment = (id, comment_id) => async (dispatch) => {
   try {
     await axios.delete(`/api/videoposts/comment/${id}/${comment_id}`);
@@ -204,7 +330,6 @@ export const videoDeleteComment = (id, comment_id) => async (dispatch) => {
     dispatch({ type: VIDEO_ERROR });
   }
 };
-
 export const videoGetComments = (id) => async (dispatch) => {
   try {
     const res = await axios.get(`/api/videoposts/comment/${id}`);
@@ -219,7 +344,6 @@ export const videoGetComments = (id) => async (dispatch) => {
     dispatch({ type: VIDEO_ERROR });
   }
 };
-
 export const videoEditComment = (id, comment_id, content) => async (
   dispatch
 ) => {
@@ -245,7 +369,6 @@ export const videoEditComment = (id, comment_id, content) => async (
     dispatch({ type: VIDEO_ERROR });
   }
 };
-
 export const videoReplyToComment = (id, comment_id, content) => async (
   dispatch
 ) => {
@@ -270,7 +393,6 @@ export const videoReplyToComment = (id, comment_id, content) => async (
     dispatch({ type: VIDEO_ERROR });
   }
 };
-
 export const videoDeleteReplyToComment = (id, comment_id, reply_id) => async (
   dispatch
 ) => {
@@ -292,7 +414,6 @@ export const videoDeleteReplyToComment = (id, comment_id, reply_id) => async (
     dispatch({ type: VIDEO_ERROR });
   }
 };
-
 export const videoEditReplyToComment = (
   id,
   comment_id,
@@ -320,7 +441,6 @@ export const videoEditReplyToComment = (
     dispatch({ type: VIDEO_ERROR });
   }
 };
-
 export const searchVideos = (val, pathname) => (dispatch) => {
   if (val.length < 2) {
     if (pathname === "/videos-all") {

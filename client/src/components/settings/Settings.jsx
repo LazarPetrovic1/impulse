@@ -13,7 +13,7 @@ import ProfileOverview from "../profile-rest/ProfileOverview";
 import SocialProfile from "../SocialRoutes/SocialProfile";
 import devoptions from "../../utils/devoptions";
 import TermsAndConditions from "./TermsAndConditions";
-import SettingsThemePlayground from "./SettingsThemePlayground";
+// import SettingsThemePlayground from "./SettingsThemePlayground";
 
 const settingsBarWidth = "250px";
 const {
@@ -281,7 +281,7 @@ function Settings() {
         {selectedSetting === 3 && <ContentPolicy />}
         {selectedSetting === 4 && <SocialProfile />}
         {selectedSetting === 5 && <TermsAndConditions />}
-        {selectedSetting === 6 && <SettingsThemePlayground />}
+        {/*selectedSetting === 6 && <SettingsThemePlayground />*/}
       </div>
     </div>
   );

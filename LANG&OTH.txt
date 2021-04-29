@@ -1,0 +1,37 @@
+# Grupa:
++ Relaxed/Auth
++ Public/Private
++ Created on:
+# Forum
++ Hey, Bla!
++ Here's something you might be interested in
++ Search [button: "Search"]
++ New post
+# Chat
++ Group chats
++ Members of [groupname]
++ Clear chat
++ Still paranoid?
++ Periodically clear chat every [x] minute[s]
+# Videos
++ Category - *
++ All
++ My videos
+# GuestDashboard
++ E-mail
++ Sex
++ Date of birth
++ Bio
+___
+Sredi pointer events - all
+
+React-SimpleMDE-Editor
+previewImagesInEditor: EasyMDE will show preview of images, false by default, preview for images will appear only for images on separate lines.
+insertTexts: Customize how certain buttons that insert text behave.
+Takes an array with two elements.
+The first element will be the text inserted before the cursor or highlight,
+and the second element will be inserted after.
+For example, this is the default link value: ["[", "](http://)"].
+lineNumbers: If set to true, enables line numbers in the editor.
+lineWrapping: If set to false, disable line wrapping. Defaults to true.
+spellChecker: If set to false, disable the spell checker. Defaults to true.
