@@ -25,19 +25,26 @@ import {
   DISLIKE_GROUP_POST_REPLY
 } from "./types";
 
-export const impulsifyComment = (id, postId, commentId) => async dispatch => {
+export const impulsifyComment = (id, postId, commentId, likerId) => async dispatch => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  const body = JSON.stringify({ likerId })
   try {
-    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/impulse`)
+    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/impulse`, body, config)
+    const payload = {
+      id,
+      postId,
+      commentId,
+      impulsions: res.data.impulsions,
+      endorsements: res.data.endorsements,
+      judgements: res.data.judgements,
+    }
     dispatch({
       type: IMPULSIFY_GROUP_POST_COMMENT,
-      payload: {
-        id,
-        postId,
-        commentId,
-        impulsions: res.impulsions,
-        endorsements: res.endorsements,
-        judgements: res.judgements,
-      }
+      payload
     })
   } catch (e) {
     dispatch({
@@ -46,19 +53,26 @@ export const impulsifyComment = (id, postId, commentId) => async dispatch => {
     });
   }
 }
-export const likeComment = (id, postId, commentId) => async dispatch => {
+export const likeComment = (id, postId, commentId, likerId) => async dispatch => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  const body = JSON.stringify({ likerId })
   try {
-    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/like`)
+    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/like`, body, config)
+    const payload = {
+      id,
+      postId,
+      commentId,
+      impulsions: res.data.impulsions,
+      endorsements: res.data.endorsements,
+      judgements: res.data.judgements,
+    }
     dispatch({
       type: LIKE_GROUP_POST_COMMENT,
-      payload: {
-        id,
-        postId,
-        commentId,
-        impulsions: res.impulsions,
-        endorsements: res.endorsements,
-        judgements: res.judgements,
-      }
+      payload
     })
   } catch (e) {
     dispatch({
@@ -67,19 +81,26 @@ export const likeComment = (id, postId, commentId) => async dispatch => {
     });
   }
 }
-export const dislikeComment = (id, postId, commentId) => async dispatch => {
+export const dislikeComment = (id, postId, commentId, likerId) => async dispatch => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  const body = JSON.stringify({ likerId })
   try {
-    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/dislike`)
+    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/dislike`, body, config)
+    const payload = {
+      id,
+      postId,
+      commentId,
+      impulsions: res.data.impulsions,
+      endorsements: res.data.endorsements,
+      judgements: res.data.judgements,
+    }
     dispatch({
       type: DISLIKE_GROUP_POST_COMMENT,
-      payload: {
-        id,
-        postId,
-        commentId,
-        impulsions: res.impulsions,
-        endorsements: res.endorsements,
-        judgements: res.judgements,
-      }
+      payload
     })
   } catch (e) {
     dispatch({
@@ -88,20 +109,27 @@ export const dislikeComment = (id, postId, commentId) => async dispatch => {
     });
   }
 }
-export const impulsifyReplyToImageComment = (id, postId, commentId, replyId) => async dispatch => {
+export const impulsifyReplyToImageComment = (id, postId, commentId, replyId, likerId) => async dispatch => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  const body = JSON.stringify({ likerId })
   try {
-    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/${replyId}/impulse`)
+    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/${replyId}/impulse`, body, config)
+    const payload = {
+      id,
+      postId,
+      commentId,
+      replyId,
+      impulsions: res.data.impulsions,
+      endorsements: res.data.endorsements,
+      judgements: res.data.judgements,
+    }
     dispatch({
       type: IMPULSIFY_GROUP_POST_REPLY,
-      payload: {
-        id,
-        postId,
-        commentId,
-        replyId,
-        impulsions: res.impulsions,
-        endorsements: res.endorsements,
-        judgements: res.judgements,
-      }
+      payload
     })
   } catch (e) {
     dispatch({
@@ -110,20 +138,27 @@ export const impulsifyReplyToImageComment = (id, postId, commentId, replyId) => 
     });
   }
 }
-export const likeReplyToImageComment = (id, postId, commentId, replyId) => async dispatch => {
+export const likeReplyToImageComment = (id, postId, commentId, replyId, likerId) => async dispatch => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  const body = JSON.stringify({ likerId })
   try {
-    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/${replyId}/like`)
+    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/${replyId}/like`, body, config)
+    const payload = {
+      id,
+      postId,
+      commentId,
+      replyId,
+      impulsions: res.data.impulsions,
+      endorsements: res.data.endorsements,
+      judgements: res.data.judgements,
+    }
     dispatch({
       type: LIKE_GROUP_POST_REPLY,
-      payload: {
-        id,
-        postId,
-        commentId,
-        replyId,
-        impulsions: res.impulsions,
-        endorsements: res.endorsements,
-        judgements: res.judgements,
-      }
+      payload
     })
   } catch (e) {
     dispatch({
@@ -132,20 +167,27 @@ export const likeReplyToImageComment = (id, postId, commentId, replyId) => async
     });
   }
 }
-export const dislikeReplyToImageComment = (id, postId, commentId, replyId) => async dispatch => {
+export const dislikeReplyToImageComment = (id, postId, commentId, replyId, likerId) => async dispatch => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  const body = JSON.stringify({ likerId })
   try {
-    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/${replyId}/dislike`)
+    const res = await axios.put(`/api/group/${id}/${postId}/${commentId}/${replyId}/dislike`, body, config)
+    const payload = {
+      id,
+      postId,
+      commentId,
+      replyId,
+      impulsions: res.data.impulsions,
+      endorsements: res.data.endorsements,
+      judgements: res.data.judgements,
+    }
     dispatch({
       type: DISLIKE_GROUP_POST_REPLY,
-      payload: {
-        id,
-        postId,
-        commentId,
-        replyId,
-        impulsions: res.impulsions,
-        endorsements: res.endorsements,
-        judgements: res.judgements,
-      }
+      payload
     })
   } catch (e) {
     dispatch({

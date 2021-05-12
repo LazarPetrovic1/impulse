@@ -56,7 +56,7 @@ function GroupPost({
     // eslint-disable-next-line
   }, []);
   useEffect(() => {
-    if (post) {
+    if (post && user && user._id) {
       if (post.judgements.filter((jud) => jud.user === user._id).length > 0) {
         setLiked("dislike");
       } else if (
@@ -79,7 +79,6 @@ function GroupPost({
   const setLikability = (val) => {
     const id = post._id;
     const likerId = user._id;
-    console.log({ id, likerId });
     const ownedById = post.user;
 
     if (liked === val) setLiked(null);

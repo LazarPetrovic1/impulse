@@ -184,7 +184,7 @@ async function impulsePost(req, res) {
   try {
     const group = await Group.findById(req.params.id);
     const post = await group.posts.find(
-      (post) => post.id === req.params.post_id
+      (post) => post.id === req.params.postId
     );
     if (
       post.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
@@ -245,7 +245,7 @@ async function likePost(req, res) {
   try {
     const group = await Group.findById(req.params.id);
     const post = await group.posts.find(
-      (post) => post.id === req.params.post_id
+      (post) => post.id === req.params.postId
     );
     if (
       post.endorsements.filter(
@@ -306,7 +306,7 @@ async function dislikePost(req, res) {
   try {
     const group = await Group.findById(req.params.id);
     const post = await group.posts.find(
-      (post) => post.id === req.params.post_id
+      (post) => post.id === req.params.postId
     );
     if (
       post.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
@@ -377,7 +377,7 @@ async function commentGroupPost(req, res) {
   try {
     const user = await User.findById(req.user.id).select("-password");
     const group = await Group.findById(req.params.id);
-    const post = group.posts.find((post) => post.id === req.params.post_id);
+    const post = group.posts.find((post) => post.id === req.params.postId);
     const newComment = {
       text: req.body.text,
       name: user.username,
@@ -403,7 +403,7 @@ async function getPostComments(req, res) {
 async function updateComment(req, res) {
   try {
     const group = await Group.findById(req.params.id);
-    const post = group.posts.find((post) => post.id === req.params.post_id);
+    const post = group.posts.find((post) => post.id === req.params.postId);
     const comment = post.comments.find(
       (comm) => comm.id === req.params.comment_id
     );
@@ -433,7 +433,7 @@ async function updateComment(req, res) {
 async function deleteComment(req, res) {
   try {
     const group = await Group.findById(req.params.id);
-    const post = group.posts.find((post) => post.id === req.params.post_id);
+    const post = group.posts.find((post) => post.id === req.params.postId);
     const comment = post.comments.find(
       (comment) => comment.id === req.params.comment_id
     );
@@ -455,7 +455,7 @@ async function replyToComment(req, res) {
   try {
     const user = await User.findById(req.user.id).select("username");
     const group = await Group.findById(req.params.id);
-    const post = group.posts.find((post) => post.id === req.params.post_id);
+    const post = group.posts.find((post) => post.id === req.params.postId);
     const comment = await post.comments.find(
       (comm) => comm.id === req.params.comment_id
     );
@@ -486,12 +486,12 @@ async function updateReply(req, res) {
   try {
     const user = await User.findById(req.user.id).select("username");
     const group = await Group.findById(req.params.id);
-    const post = group.posts.find((post) => post.id === req.params.post_id);
+    const post = group.posts.find((post) => post.id === req.params.postId);
     const comment = await post.comments.find(
       (comm) => comm.id === req.params.comment_id
     );
     const reply = await comment.replies.find(
-      (rep) => rep.id === req.params.reply_id
+      (rep) => rep.id === req.params.replyId
     );
     const newReply = {
       user: req.user.id,
@@ -499,7 +499,7 @@ async function updateReply(req, res) {
       by: user.username,
     };
     comment.replies = comment.replies.map((rep) =>
-      rep.id === req.params.reply_id ? newReply : rep
+      rep.id === req.params.replyId ? newReply : rep
     );
     await group.save();
     res.json(newReply);
@@ -510,12 +510,12 @@ async function updateReply(req, res) {
 async function deleteReply(req, res) {
   try {
     const group = await Group.findById(req.params.id);
-    const post = group.posts.find((post) => post.id === req.params.post_id);
+    const post = group.posts.find((post) => post.id === req.params.postId);
     const comment = post.comments.find(
       (comm) => comm.id === req.params.comment_id
     );
     if (!comment) return res.status(404).json({ msg: "Comment not found." });
-    const reply = comment.replies.find((rep) => rep.id === req.params.reply_id);
+    const reply = comment.replies.find((rep) => rep.id === req.params.replyId);
     if (!reply) return res.status(404).json({ msg: "Reply not found." });
     if (reply.user.toString() !== req.user.id)
       return res.status(401).json({ msg: "User not authorised." });
@@ -523,7 +523,7 @@ async function deleteReply(req, res) {
       .map((rep) => rep.user.toString())
       .indexOf(req.user.id);
     comment.replies = comment.replies.filter(
-      (rep) => rep.id !== req.params.reply_id
+      (rep) => rep.id !== req.params.replyId
     );
     await group.save();
     return res.json({ msg: "Reply deleted successfully" });
@@ -535,8 +535,8 @@ async function deleteReply(req, res) {
 async function impulsifyComment(req, res) {
   try {
     const group = await Group.findById(req.params.id);
-    const post = await group.posts.find(p => p._id === req.params.postId)
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const post = await group.posts.find(p => p.id === req.params.postId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
     if (
       comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -593,10 +593,10 @@ async function impulsifyComment(req, res) {
   }
 }
 async function likeComment(req, res) {
-try {
+  try {
   const group = await Group.findById(req.params.id);
-  const post = await group.posts.find(p => p._id === req.params.postId)
-  const comment = await post.comments.find(c => c._id === req.params.commentId)
+  const post = await group.posts.find(p => p.id === req.params.postId)
+  const comment = await post.comments.find(c => c.id === req.params.commentId)
   if (
     comment.endorsements.filter(
       (end) => end.user.toString() === req.body.likerId
@@ -608,6 +608,9 @@ try {
         .indexOf(req.body.likerId),
       1
     );
+    console.log("IMPALZHNS", comment.impulsions);
+    console.log("DZADZMENC", comment.judgements);
+    console.log("ENDORSMENC", comment.endorsements);
     await group.save();
     return res.json({
       impulsions: comment.impulsions,
@@ -640,23 +643,28 @@ try {
     );
   }
   await group.save();
-  return res.json({
+  await console.log("RES.JSON", {
     impulsions: comment.impulsions,
     endorsements: comment.endorsements,
     judgements: comment.judgements,
   });
-} catch (e) {
-  console.error(e.message);
-    if (e.kind === "ObjectId")
-      return res.status(404).json({ msg: "Post not found" });
-    res.status(500).send("Internal server error.");
-  }
+  return res.json({
+      impulsions: comment.impulsions,
+      endorsements: comment.endorsements,
+      judgements: comment.judgements,
+    });
+  } catch (e) {
+    console.error(e.message);
+      if (e.kind === "ObjectId")
+        return res.status(404).json({ msg: "Post not found" });
+      res.status(500).send("Internal server error.");
+    }
 }
 async function dislikeComment(req, res) {
   try {
     const group = await Group.findById(req.params.id);
-    const post = await group.posts.find(p => p._id === req.params.postId)
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const post = await group.posts.find(p => p.id === req.params.postId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
     if (
       comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0
@@ -716,9 +724,9 @@ async function dislikeComment(req, res) {
 async function impulsifyReplyToImageComment(req, res) {
   try {
     const group = await Group.findById(req.params.id)
-    const post = await group.find(p => p._id === req.params.postId )
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const post = await group.posts.find(p => p.id === req.params.postId )
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -777,9 +785,9 @@ async function impulsifyReplyToImageComment(req, res) {
 async function likeReplyToImageComment(req, res) {
   try {
     const group = await Group.findById(req.params.id)
-    const post = await group.find(p => p._id === req.params.postId )
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const post = await group.posts.find(p => p.id === req.params.postId )
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.endorsements.filter(
         (end) => end.user.toString() === req.body.likerId
@@ -838,9 +846,9 @@ async function likeReplyToImageComment(req, res) {
 async function dislikeReplyToImageComment(req, res) {
   try {
     const group = await Group.findById(req.params.id)
-    const post = await group.find(p => p._id === req.params.postId )
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const post = await group.posts.find(p => p.id === req.params.postId )
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0

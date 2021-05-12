@@ -1,17 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { getUserByUsername } from "../../../utils/users";
 import {
   updateComment,
   deleteComment,
   replyToComment,
+  impulsifyComment,
+  likeComment,
+  dislikeComment,
 } from "../../../actions/group";
+import { sendNotif } from "../../../actions/notifs";
 import Moment from "react-moment";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import GroupPostCommentReply from "./GroupPostCommentReply";
 import DeleteIcon from "../../utils/icons/DeleteIcon";
 import EditIcon from "../../utils/icons/EditIcon";
+import { LanguageContext } from "../../../contexts/LanguageContext";
+import ShortLogo from "../../../styled/Logo/ShortLogo";
 
 // _id(pin):"60785df557141923c4c5a682"
 // text(pin):"Hello"
@@ -28,15 +34,36 @@ function GroupPostComment({
   auth: { user },
   group: { group },
   updateComment,
+  sendNotif,
+  impulsifyComment,
+  likeComment,
+  dislikeComment
 }) {
+  const { language } = useContext(LanguageContext);
+  const [liked, setLiked] = useState(null);
   const [reply, setReply] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [commentBody, setCommentBody] = useState(comment.text);
   const [isReplying, setIsReplying] = useState(false);
   const [byUser, setByUser] = useState(null);
   useEffect(() => {
+    if (comment && user && user._id) {
+      if (comment.judgements.filter((jud) => jud.user === user._id).length > 0) {
+        setLiked("dislike");
+      } else if (
+        comment.endorsements.filter((end) => end.user === user._id).length > 0
+      ) {
+        setLiked("like");
+      } else if (
+        comment.impulsions.filter((imp) => imp.user === user._id).length > 0
+      ) {
+        setLiked("impulse");
+      }
+    }
+    // eslint-disable-next-line
+  }, [comment]);
+  useEffect(() => {
     (async function () {
-      await console.log("KAMENT", comment);
       try {
         const res = await getUserByUsername(comment.name);
         await setByUser(res);
@@ -46,6 +73,58 @@ function GroupPostComment({
     })();
     // eslint-disable-next-line
   }, []);
+
+  const setLikability = (val) => {
+    const id = comment._id;
+    const likerId = user._id;
+    const ownedById = comment.user;
+
+    if (liked === val) setLiked(null);
+    else setLiked(val);
+    switch (val) {
+      case "like":
+        likeComment(group._id, postId, id, likerId);
+        if (ownedById !== likerId) {
+          sendNotif({
+            userId: ownedById,
+            type: "like",
+            language,
+            username: user.username,
+            name: `${user.firstName} ${user.lastName}`,
+            url: `/groups/${group._id}/${postId}`,
+          });
+        }
+        break;
+      case "dislike":
+        dislikeComment(group._id, postId, id, likerId);
+        if (ownedById !== likerId) {
+          sendNotif({
+            userId: ownedById,
+            type: "dislike",
+            language: localStorage.language,
+            username: user.username,
+            name: `${user.firstName} ${user.lastName}`,
+            url: `/groups/${group._id}/${postId}`,
+          });
+        }
+        break;
+      case "impulse":
+        impulsifyComment(group._id, postId, id, likerId);
+        if (ownedById !== likerId) {
+          sendNotif({
+            userId: ownedById,
+            type: "impulse",
+            language: localStorage.language,
+            username: user.username,
+            name: `${user.firstName} ${user.lastName}`,
+            url: `/groups/${group._id}/${postId}`,
+          });
+        }
+        break;
+      default:
+        return;
+    }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -59,7 +138,7 @@ function GroupPostComment({
     await setIsEditing(false);
   };
 
-  return (
+  return comment && (
     <section
       className="ml-auto my-5 position-relative"
       style={{ pointerEvents: "all" }}
@@ -109,6 +188,42 @@ function GroupPostComment({
         ) : (
           <p>{comment.text}</p>
         )}
+        <div className="d-flex justify-content-between">
+          <div className="d-flex">
+            <div className="position-relative">
+              <i
+                onClick={() => setLikability("like")}
+                className={`fas fa-plus fa-2x p-3 pointer ${
+                  liked === "like" && "text-success"
+                }`}
+              />
+              <span style={{ fontSize: "2.5rem" }} className="text-success">
+                {comment.endorsements && comment.endorsements.length}
+              </span>
+            </div>
+            <div className="position-relative">
+              <i
+                onClick={() => setLikability("dislike")}
+                className={`fas fa-minus fa-2x p-3 pointer ${
+                  liked === "dislike" && "text-danger"
+                }`}
+              />
+              <span style={{ fontSize: "2.5rem" }} className="text-danger">
+                {comment.judgements && comment.judgements.length}
+              </span>
+            </div>
+          </div>
+          <div className="position-relative">
+            <ShortLogo
+              className={`px-3 pb-3 pointer`}
+              onClick={() => setLikability("impulse")}
+              liked={liked}
+            />
+            <span style={{ fontSize: "2.5rem" }} className="text-primary">
+              {comment.impulsions && comment.impulsions.length}
+            </span>
+          </div>
+        </div>
         <p className="m-0 text-right font-weight-bold">
           <span className="badge badge-secondary">
             <Moment format="DD. MMM YYYY">{comment.date}</Moment>
@@ -191,6 +306,10 @@ GroupPostComment.propTypes = {
   replyToComment: PropTypes.func.isRequired,
   updateComment: PropTypes.func.isRequired,
   group: PropTypes.object.isRequired,
+  sendNotif: PropTypes.func.isRequired,
+  impulsifyComment: PropTypes.func.isRequired,
+  likeComment: PropTypes.func.isRequired,
+  dislikeComment: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -202,4 +321,8 @@ export default connect(mapStateToProps, {
   deleteComment,
   replyToComment,
   updateComment,
+  sendNotif,
+  impulsifyComment,
+  likeComment,
+  dislikeComment
 })(GroupPostComment);
