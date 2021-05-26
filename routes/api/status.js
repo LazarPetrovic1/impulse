@@ -13,22 +13,10 @@ router.get("/comment/:id", auth, status.getCommentsOfStatus);
 router.put("/comment/:id/:comment_id", auth, status.editCommentOfStatus);
 router.delete("/comment/:id/:comment_id", auth, status.deleteCommentOfStatus);
 router.put("/:id/dismiss", auth, status.dismissStatus);
-router.post(
-  "/comment/:id/:comment_id/reply",
-  auth,
-  status.replyToCommentOfStatus
-);
-router.put(
-  "/comment/:id/:comment_id/:reply_id",
-  auth,
-  status.editReplyToCommentOfStatus
-);
+router.post("/comment/:id/:comment_id/reply", auth, status.replyToCommentOfStatus);
+router.put("/comment/:id/:comment_id/:reply_id", auth, status.editReplyToCommentOfStatus);
 router.get("/comment/:id/reply", auth, status.getAllRepliesToCommentOfStatus);
-router.delete(
-  "/comment/:id/:comment_id/:reply_id",
-  auth,
-  status.deleteReplyToCommentOfStatus
-);
+router.delete("/comment/:id/:comment_id/:reply_id", auth, status.deleteReplyToCommentOfStatus);
 router.get("/mine", auth, status.getMyStatuses);
 router.get("/:id", auth, status.getPersonsStatuses);
 router.get("/impulse/:id", auth, status.seeAllWhoImpulsed)
@@ -41,7 +29,7 @@ router.put("/:id/:commentId/impulse", auth, status.impulsifyComment)
 router.put("/:id/:commentId/like", auth, status.likeComment)
 router.put("/:id/:commentId/dislike", auth, status.dislikeComment)
 router.put("/:id/:commentId/:replyId/impulse", auth, status.impulsifyReplyToComment)
-router.put("/:id/:commentId/like", auth, status.likeReplyToComment)
+router.put("/:id/:commentId/:replyId/like", auth, status.likeReplyToComment)
 router.put("/:id/:commentId/:replyId/dislike", auth, status.dislikeReplyToComment)
 
 module.exports = router;

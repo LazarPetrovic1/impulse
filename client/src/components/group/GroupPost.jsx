@@ -20,12 +20,8 @@ import { sendNotif } from "../../actions/notifs";
 import { LanguageContext } from "../../contexts/LanguageContext";
 import ShortLogo from "../../styled/Logo/ShortLogo";
 import GroupPostComment from "./utils/GroupPostComment";
-
-// date(pin):"2021-03-22T11:50:10.649Z"
-// comments(pin):
-// endorsements(pin):
-// judgements(pin):
-// impulsions
+import GroupPostInput from './inputs/GroupPostInput';
+import { ColourContext } from "../../contexts/ColourContext";
 
 function GroupPost({
   post,
@@ -42,8 +38,8 @@ function GroupPost({
   const [showDelete, setShowDelete] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [liked, setLiked] = useState(null);
-  const [comment, setComment] = useState("");
   const { language } = useContext(LanguageContext);
+  const { background } = useContext(ColourContext)
   useEffect(() => {
     (async function () {
       try {
@@ -127,15 +123,16 @@ function GroupPost({
         return;
     }
   };
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    // await addCommentTopost(comment, post._id);
-    await commentGroupPost(group._id, post._id, comment);
-    await setComment("");
-  };
-  return user && group ? (
+  // const onSubmit = async (e) => {
+  //   e.preventDefault();
+  //   // await addCommentTopost(comment, post._id);
+  //   await commentGroupPost(group._id, post._id, comment);
+  //   await setComment("");
+  // };
+  return user && group && post ? (
     <section className="mb-5">
       <DashCenter
+        background={background}
         display="block"
         maxw="1300px"
         style={{ pointerEvents: "all" }}
@@ -179,6 +176,7 @@ function GroupPost({
         )}
       </DashCenter>
       <DashCenter
+        background={background}
         display="block"
         maxw="1300px"
         style={{ pointerEvents: "all" }}
@@ -221,12 +219,14 @@ function GroupPost({
         </div>
       </DashCenter>
       <DashCenter
+        background={background}
         display="block"
         maxw="1300px"
         className="m-auto"
         style={{ pointerEvents: "all" }}
       >
-        <form onSubmit={onSubmit} className="d-flex mt-4">
+        <GroupPostInput groupId={group._id} postId={post._id} />
+        {/* <form onSubmit={onSubmit} className="d-flex mt-4">
           <input
             type="text"
             value={comment}
@@ -237,10 +237,11 @@ function GroupPost({
           <button className="btn btn-secondary" type="submit">
             <i className="fas fa-paper-plane" />
           </button>
-        </form>
+        </form> */}
       </DashCenter>
       <DashCenter
         display="block"
+        background={background}
         maxw="1300px"
         className="m-auto"
         style={{ pointerEvents: "all" }}

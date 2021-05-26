@@ -1,7 +1,5 @@
-const auth = require("../../middleware/auth");
 const User = require("../../models/User");
 const Status = require("../../models/Status");
-const cloudinary = require("../../utils/cloudinary");
 
 async function createStatus(req, res) {
   try {
@@ -15,6 +13,7 @@ async function createStatus(req, res) {
       impulsions: [],
       isVideo: false,
       type: "textual",
+      savedBy: []
     });
     const post = await newPost.save();
     await res.json(post);
@@ -88,10 +87,13 @@ async function addCommentToStatus(req, res) {
       content: req.body.content,
       by: user.username,
       replies: [],
+      endorsements: [],
+      judgements: [],
+      impulsions: []
     };
     post.comments.unshift(newComment);
     await post.save();
-    res.json(newComment);
+    res.json(post.comments);
   } catch (e) {
     console.error(e.message);
     res.status(500).send("Internal server error.");
@@ -107,35 +109,26 @@ async function getCommentsOfStatus(req, res) {
 }
 async function editCommentOfStatus(req, res) {
   try {
+    const user = await User.findById(req.user.id).select("username");
     const post = await Status.findById(req.params.id);
     const comment = post.comments.find(
       (comm) => comm.id === req.params.comment_id
     );
-    if (!comment) {
-      return res.status(404).json({ msg: "Comment not found." });
-    }
-    const { content } = req.body;
-    if (comment.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "User not authorised." });
-    }
+    if (!comment) return res.status(404).json({ msg: "Comment not found." });
+    if (comment.user.toString() !== req.user.id.toString()) return res.status(401).json({ msg: "User not authorised." });
     const newComment = {
-      user: comment.user,
-      content,
-      by: comment.by,
-      replies: comment.replies,
+      ...comment.toObject(),
+      content: req.body.content,
     };
-    const index = post.comments
-    .map((comm) => comm.id)
-    .indexOf(req.params.comment_id);
     post.comments = post.comments.map((comm) =>
-    comm.id === req.params.comment_id ? newComment : post
+    comm.id === req.params.comment_id ? newComment : comment
   );
   await post.save();
-  return res.json(post.comments[index]);
-} catch (e) {
-  console.error(e.message);
-  res.status(500).send("Internal server error.");
-}
+  return res.json(newComment);
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).send("Internal server error.");
+  }
 }
 async function deleteCommentOfStatus(req, res) {
   try {
@@ -186,6 +179,9 @@ async function replyToCommentOfStatus(req, res) {
       user: req.user.id,
       content: req.body.content,
       by: user.username,
+      endorsements: [],
+      judgements: [],
+      impulsions: []
     };
     const newComment = {
       user: comment.user,
@@ -197,7 +193,7 @@ async function replyToCommentOfStatus(req, res) {
     .map((comm) => comm.id)
     .indexOf(req.params.comment_id);
     post.comments = post.comments.map((comm) =>
-    comm.id === req.params.comment_id ? newComment : post
+    comm.id === req.params.comment_id ? newComment : comm
   );
   await post.save();
   res.json(post.comments[index]);
@@ -216,6 +212,9 @@ async function editReplyToCommentOfStatus(req, res) {
       (rep) => rep.id === req.params.reply_id
     );
     const newReply = {
+      endorsements: reply.endorsements,
+      judgements: reply.judgements,
+      impulsions: reply.impulsions,
       user: req.user.id,
       content: req.body.content,
       by: user.username,
@@ -531,7 +530,7 @@ async function dislikeStatus(req, res) {
 async function impulsifyComment(req, res) {
   try {
     const post = await Status.findById(req.params.id)
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
     if (
       comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -590,7 +589,7 @@ async function impulsifyComment(req, res) {
 async function likeComment(req, res) {
 try {
   const post = await Status.findById(req.params.id);
-  const comment = await post.comments.find(c => c._id === req.params.commentId)
+  const comment = await post.comments.find(c => c.id === req.params.commentId)
   if (
     comment.endorsements.filter(
       (end) => end.user.toString() === req.body.likerId
@@ -649,7 +648,7 @@ try {
 async function dislikeComment(req, res) {
   try {
     const post = await Status.findById(req.params.id);
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
     if (
       comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0
@@ -709,8 +708,8 @@ async function dislikeComment(req, res) {
 async function impulsifyReplyToComment(req, res) {
   try {
     const post = await Status.findById(req.params.id)
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -769,8 +768,8 @@ async function impulsifyReplyToComment(req, res) {
 async function likeReplyToComment(req, res) {
   try {
     const post = await Status.findById(req.params.id);
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.endorsements.filter(
         (end) => end.user.toString() === req.body.likerId
@@ -829,8 +828,8 @@ async function likeReplyToComment(req, res) {
 async function dislikeReplyToComment(req, res) {
   try {
     const post = await Status.findById(req.params.id);
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0

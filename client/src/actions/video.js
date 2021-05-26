@@ -1,5 +1,6 @@
 import {
   GET_VIDEOS,
+  INCREMENT_VIEWS,
   CREATE_VIDEO,
   VIDEO_DELETE_COMMENT,
   GET_VIDEO,
@@ -25,11 +26,31 @@ import {
 } from "./types";
 import axios from "axios";
 
+export const addView = (id) => async dispatch => {
+  try {
+    const res = await axios.get(`/api/videoposts/views/${id}`)
+    dispatch({
+      type: INCREMENT_VIEWS,
+      payload: {
+        id,
+        views: res.data
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: VIDEO_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+};
+
 // export const saveVideo = (id) => async (dispatch) => {}
 // export const dismissVideo = (id) => async (dispatch) => {}
-export const impulsifyComment = (id, commentId) => async (dispatch) => {
+export const impulsifyComment = (id, commentId, likerId) => async (dispatch) => {
+  const body = JSON.stringify({ likerId })
+  const config = { headers: { "Content-Type": "application/json" } }
   try {
-    const res = await axios.put(`/api/videoposts/${id}/${commentId}/impulse`)
+    const res = await axios.put(`/api/videoposts/${id}/${commentId}/impulse`, body, config)
     dispatch({
       type: IMPULSIFY_VIDEO_COMMENT,
       payload: {
@@ -47,9 +68,12 @@ export const impulsifyComment = (id, commentId) => async (dispatch) => {
     });
   }
 }
-export const likeComment = (id, commentId) => async (dispatch) => {
+export const likeComment = (id, commentId, likerId) => async (dispatch) => {
+  const body = JSON.stringify({ likerId })
+  const config = { headers: { "Content-Type": "application/json" } }
   try {
-    const res = await axios.put(`/api/videoposts/${id}/${commentId}/like`)
+    console.log("LIKECOMMENTVIDEO", { id, commentId, likerId });
+    const res = await axios.put(`/api/videoposts/${id}/${commentId}/like`, body, config)
     dispatch({
       type: LIKE_VIDEO_COMMENT,
       payload: {
@@ -67,9 +91,11 @@ export const likeComment = (id, commentId) => async (dispatch) => {
     });
   }
 }
-export const dislikeComment = (id, commentId) => async (dispatch) => {
+export const dislikeComment = (id, commentId, likerId) => async (dispatch) => {
+  const body = JSON.stringify({ likerId })
+  const config = { headers: { "Content-Type": "application/json" } }
   try {
-    const res = await axios.put(`/api/videoposts/${id}/${commentId}/dislike`)
+    const res = await axios.put(`/api/videoposts/${id}/${commentId}/dislike`, body, config)
     dispatch({
       type: DISLIKE_VIDEO_COMMENT,
       payload: {
@@ -87,9 +113,11 @@ export const dislikeComment = (id, commentId) => async (dispatch) => {
     });
   }
 }
-export const impulsifyReplyToComment = (id, commentId, replyId) => async (dispatch) => {
+export const impulsifyReplyToComment = (id, commentId, replyId, likerId) => async (dispatch) => {
+  const body = JSON.stringify({ likerId })
+  const config = { headers: { "Content-Type": "application/json" } }
   try {
-    const res = await axios.put(`/api/videoposts/${id}/${commentId}/${replyId}/impulse`)
+    const res = await axios.put(`/api/videoposts/${id}/${commentId}/${replyId}/impulse`, body, config)
     dispatch({
       type: IMPULSIFY_VIDEO_REPLY,
       payload: {
@@ -108,9 +136,11 @@ export const impulsifyReplyToComment = (id, commentId, replyId) => async (dispat
     });
   }
 }
-export const likeReplyToComment = (id, commentId, replyId) => async (dispatch) => {
+export const likeReplyToComment = (id, commentId, replyId, likerId) => async (dispatch) => {
+  const body = JSON.stringify({ likerId })
+  const config = { headers: { "Content-Type": "application/json" } }
   try {
-    const res = await axios.put(`/api/videoposts/${id}/${commentId}/${replyId}/like`)
+    const res = await axios.put(`/api/videoposts/${id}/${commentId}/${replyId}/like`, body, config)
     dispatch({
       type: LIKE_VIDEO_REPLY,
       payload: {
@@ -129,9 +159,11 @@ export const likeReplyToComment = (id, commentId, replyId) => async (dispatch) =
     });
   }
 }
-export const dislikeReplyToComment = (id, commentId, replyId) => async (dispatch) => {
+export const dislikeReplyToComment = (id, commentId, replyId, likerId) => async (dispatch) => {
+  const body = JSON.stringify({ likerId })
+  const config = { headers: { "Content-Type": "application/json" } }
   try {
-    const res = await axios.put(`/api/videoposts/${id}/${commentId}/${replyId}/dislike`)
+    const res = await axios.put(`/api/videoposts/${id}/${commentId}/${replyId}/dislike`, body, config)
     dispatch({
       type: DISLIKE_VIDEO_REPLY,
       payload: {

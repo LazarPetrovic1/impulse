@@ -14,22 +14,22 @@ router.post(
   image.commentOnImage
 );
 router.get("/comment/:id", auth, image.getImageComments);
-router.put("/comment/:id/:comment_id", auth, image.editImageComments);
-router.delete("/comment/:id/:comment_id", auth, image.deleteComment);
+router.put("/comment/:id/:commentId", auth, image.editImageComments);
+router.delete("/comment/:id/:commentId", auth, image.deleteComment);
 router.put("/:id/dismiss", auth, image.dismissImage);
 router.post(
-  "/comment/:id/:comment_id/reply",
+  "/comment/:id/:commentId/reply",
   auth,
   image.replyToImageComment
 );
 router.put(
-  "/comment/:id/:comment_id/:reply_id",
+  "/comment/:id/:commentId/:replyId",
   auth,
   image.editReplyToImageComment
 );
 router.get("/comment/:id/reply", auth, image.getAllRepliesToComment);
 router.delete(
-  "/comment/:id/:comment_id/:reply_id",
+  "/comment/:id/:commentId/:replyId",
   auth,
   image.deleteReplyToComment
 );
@@ -48,7 +48,7 @@ router.put("/:id/:commentId/impulse", auth, image.impulsifyImageComment)
 router.put("/:id/:commentId/like", auth, image.likeImageComment)
 router.put("/:id/:commentId/dislike", auth, image.dislikeImageComment)
 router.put("/:id/:commentId/:replyId/impulse", auth, image.impulsifyReplyToImageComment)
-router.put("/:id/:commentId/like", auth, image.likeReplyToImageComment)
+router.put("/:id/:commentId/:replyId/like", auth, image.likeReplyToImageComment)
 router.put("/:id/:commentId/:replyId/dislike", auth, image.dislikeReplyToImageComment)
 
 

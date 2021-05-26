@@ -17,6 +17,7 @@ async function uploadImage(req, res) {
       endorsements: [],
       judgements: [],
       impulsions: [],
+      savedBy: []
     });
     const post = await newPost.save();
     return res.json(post);
@@ -73,6 +74,7 @@ async function saveImage(req, res) {
     res.status(500).send('Internal server error.')
   }
 }
+// COMMENT-RELATED
 async function commentOnImage(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty())
@@ -85,6 +87,10 @@ async function commentOnImage(req, res) {
       name: user.username,
       user: req.user.id,
       date: Date.now(),
+      endorsements: [],
+      judgements: [],
+      impulsions: [],
+      replies: []
     };
     post.comments.unshift(newComment);
     await post.save();
@@ -104,25 +110,18 @@ async function getImageComments(req, res) {
 }
 async function editImageComments(req, res) {
   try {
+    const user = await User.findById(req.user.id).select("username")
     const post = await ImagePost.findById(req.params.id)
-    const comment = post.comments.find(comm => comm.id === req.params.comment_id)
-    if (!comment) {
-      return res.status(404).json({ msg: 'Comment not found.' })
-    }
-    const { content } = req.body
-    if (comment.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: 'User not authorised.' })
-    }
+    const comment = post.comments.find(comm => comm.id === req.params.commentId)
+    if (!comment) return res.status(404).json({ msg: 'Comment not found.' })
+    if (comment.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorised.' })
     const newComment = {
-      user: comment.user,
-      content,
-      by: comment.by,
-      replies: comment.replies
+      ...comment.toObject(),
+      text: req.body.content,
     }
-    const index = post.comments.map(comm => comm.id).indexOf(req.params.comment_id)
-    post.comments = post.comments.map(comm => comm.id === req.params.comment_id ? newComment : post)
+    post.comments = post.comments.map(comm => comm.id === req.params.commentId ? newComment : comment)
     await post.save()
-    return res.json(post.comments[index])
+    return res.json(newComment)
   } catch (e) {
     console.error(e.message)
     res.status(500).send('Internal server error.')
@@ -132,7 +131,7 @@ async function deleteComment(req, res) {
   try {
     const post = await ImagePost.findById(req.params.id);
     const comment = post.comments.find(
-      (comment) => comment.id === req.params.comment_id
+      (comment) => comment.id === req.params.commentId
     );
     if (!comment) return res.status(404).json({ msg: "Comment not found." });
     if (comment.user.toString() !== req.user.id)
@@ -163,26 +162,30 @@ async function dismissImage(req, res) {
     res.status(500).send('Internal server error.')
   }
 }
+// REPLY-RELATED
 async function replyToImageComment(req, res) {
   try {
     const user = await User.findById(req.user.id).select("username")
+    await console.log("UNAME", user.username);
     const post = await ImagePost.findById(req.params.id)
-    const comment = await post.comments.find(comm => comm.id === req.params.comment_id)
+    const comment = await post.comments.find(comm => comm.id === req.params.commentId)
     const newReply = {
       user: req.user.id,
       content: req.body.content,
-      by: user.username
+      by: user.username,
+      endorsements: [],
+      judgements: [],
+      impulsions: []
     }
+    await console.log("NEWREP", newReply);
     const newComment = {
-      user: comment.user,
-      content: comment.content,
-      by: comment.by,
+      ...comment.toObject(),
       replies: [...comment.replies, newReply]
     }
-    const index = post.comments.map(comm => comm.id).indexOf(req.params.comment_id)
-    post.comments = post.comments.map(comm => comm.id === req.params.comment_id ? newComment : post)
+    post.comments = await post.comments.map((comm) =>comm.id === req.params.commentId ? newComment : comm);
+    const index = await post.comments.map((comm) => comm.id).indexOf(req.params.commentId);
     await post.save()
-    res.json(post.comments[index])
+    return res.json(post.comments[index].replies);
   } catch (e) {
     res.status(500).send('Internal server error.')
   }
@@ -191,16 +194,15 @@ async function editReplyToImageComment(req, res) {
   try {
     const user = await User.findById(req.user.id).select("username")
     const post = await ImagePost.findById(req.params.id)
-    const comment = await post.comments.find(comm => comm.id === req.params.comment_id)
-    const reply = await comment.replies.find(rep => rep.id === req.params.reply_id)
+    const comment = await post.comments.find(comm => comm.id === req.params.commentId)
+    const reply = await comment.replies.find(rep => rep.id === req.params.replyId)
     const newReply = {
-      user: req.user.id,
+      ...reply.toObject(),
       content: req.body.content,
-      by: user.username
     }
-    comment.replies = comment.replies.map(rep => rep.id === req.params.reply_id ? newReply : rep)
+    comment.replies = comment.replies.map(rep => rep.id === req.params.replyId ? newReply : rep)
     await post.save()
-    res.json(comment)
+    res.json(newReply)
   } catch (e) {
     res.status(500).send('Internal server error.')
   }
@@ -216,16 +218,12 @@ async function getAllRepliesToComment(req, res) {
 async function deleteReplyToComment(req, res) {
   try {
     const post = await ImagePost.findById(req.params.id)
-    const comment = post.comments.find(comm => comm.id === req.params.comment_id)
+    const comment = post.comments.find(comm => comm.id === req.params.commentId)
     if (!comment) return res.status(404).json({ msg: 'Comment not found.' })
-    if (comment.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorised.' })
-    const reply = comment.replies.find(rep => rep.id === req.params.reply_id)
+    const reply = comment.replies.find(rep => rep.id === req.params.replyId)
     if (!reply) return res.status(404).json({ msg: 'Reply not found.' })
-    if (reply.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorised.' })
-    const removeIndex = comment.replies
-      .map(rep => rep.user.toString())
-      .indexOf(req.user.id);
-    comment.replies = comment.replies.filter(rep => rep.id !== req.params.reply_id)
+    if (reply.user.toString() !== req.user.id.toString()) return res.status(401).json({ msg: 'User not authorised.' })
+    comment.replies = comment.replies.filter(rep => rep.id !== req.params.replyId)
     await post.save()
     return res.json(post.comments)
   } catch (e) {
@@ -512,7 +510,7 @@ async function getUsersImages(req, res) {
 async function impulsifyImageComment(req, res) {
   try {
     const post = await ImagePost.findById(req.params.id)
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
     if (
       comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -571,7 +569,7 @@ async function impulsifyImageComment(req, res) {
 async function likeImageComment(req, res) {
 try {
   const post = await ImagePost.findById(req.params.id);
-  const comment = await post.comments.find(c => c._id === req.params.commentId)
+  const comment = await post.comments.find(c => c.id === req.params.commentId)
   if (
     comment.endorsements.filter(
       (end) => end.user.toString() === req.body.likerId
@@ -629,8 +627,8 @@ try {
 }
 async function dislikeImageComment(req, res) {
   try {
-    const post = await Image.findById(req.params.id);
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const post = await ImagePost.findById(req.params.id);
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
     if (
       comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0
@@ -689,9 +687,9 @@ async function dislikeImageComment(req, res) {
 }
 async function impulsifyReplyToImageComment(req, res) {
   try {
-    const post = await Image.findById(req.params.id)
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const post = await ImagePost.findById(req.params.id)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -749,9 +747,9 @@ async function impulsifyReplyToImageComment(req, res) {
 }
 async function likeReplyToImageComment(req, res) {
   try {
-    const post = await Image.findById(req.params.id);
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const post = await ImagePost.findById(req.params.id);
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.endorsements.filter(
         (end) => end.user.toString() === req.body.likerId
@@ -809,9 +807,9 @@ async function likeReplyToImageComment(req, res) {
 }
 async function dislikeReplyToImageComment(req, res) {
   try {
-    const post = await Image.findById(req.params.id);
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const post = await ImagePost.findById(req.params.id);
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0

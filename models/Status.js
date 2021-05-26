@@ -30,6 +30,8 @@ const StatusPostSchema = new Schema({
   },
   comments: [
     {
+      // text
+      // name
       user: {
         type: Schema.Types.ObjectId,
         ref: "user",

@@ -382,6 +382,10 @@ async function commentGroupPost(req, res) {
       text: req.body.text,
       name: user.username,
       user: req.user.id,
+      endorsements: [],
+      judgements: [],
+      impulsions: [],
+      replies: []
     };
     post.comments.unshift(newComment);
     await group.save();
@@ -405,23 +409,21 @@ async function updateComment(req, res) {
     const group = await Group.findById(req.params.id);
     const post = group.posts.find((post) => post.id === req.params.postId);
     const comment = post.comments.find(
-      (comm) => comm.id === req.params.comment_id
+      (comm) => comm.id === req.params.commentId
     );
     if (!comment) return res.status(404).json({ msg: "Comment not found." });
     const { content } = req.body;
     if (comment.user.toString() !== req.user.id)
       return res.status(401).json({ msg: "User not authorised." });
     const newComment = {
-      user: comment.user,
+      ...comment.toObject(),
       text: content,
-      name: comment.name,
-      replies: comment.replies,
     };
     const index = post.comments
       .map((comm) => comm.id)
-      .indexOf(req.params.comment_id);
+      .indexOf(req.params.commentId);
     post.comments = post.comments.map((comm) =>
-      comm.id === req.params.comment_id ? newComment : comm
+      comm.id === req.params.commentId ? newComment : comm
     );
     await group.save();
     return res.json(post.comments[index]);
@@ -435,7 +437,7 @@ async function deleteComment(req, res) {
     const group = await Group.findById(req.params.id);
     const post = group.posts.find((post) => post.id === req.params.postId);
     const comment = post.comments.find(
-      (comment) => comment.id === req.params.comment_id
+      (comment) => comment.id === req.params.commentId
     );
     if (!comment) return res.status(404).json({ msg: "Comment not found." });
     if (comment.user.toString() !== req.user.id)
@@ -457,24 +459,25 @@ async function replyToComment(req, res) {
     const group = await Group.findById(req.params.id);
     const post = group.posts.find((post) => post.id === req.params.postId);
     const comment = await post.comments.find(
-      (comm) => comm.id === req.params.comment_id
+      (comm) => comm.id === req.params.commentId
     );
     const newReply = {
       user: req.user.id,
       content: req.body.content,
       by: user.username,
+      endorsements: [],
+      judgements: [],
+      impulsions: [],
     };
     const newComment = {
-      user: comment.user,
-      text: comment.text,
-      name: comment.name,
+      ...comment.toObject(),
       replies: [...comment.replies, newReply],
     };
     const index = post.comments
       .map((comm) => comm.id)
-      .indexOf(req.params.comment_id);
+      .indexOf(req.params.commentId);
     post.comments = post.comments.map((comm) =>
-      comm.id === req.params.comment_id ? newComment : comm
+      comm.id === req.params.commentId ? newComment : comm
     );
     await group.save();
     res.json(post.comments[index]);
@@ -488,15 +491,14 @@ async function updateReply(req, res) {
     const group = await Group.findById(req.params.id);
     const post = group.posts.find((post) => post.id === req.params.postId);
     const comment = await post.comments.find(
-      (comm) => comm.id === req.params.comment_id
+      (comm) => comm.id === req.params.commentId
     );
     const reply = await comment.replies.find(
       (rep) => rep.id === req.params.replyId
     );
     const newReply = {
-      user: req.user.id,
+      ...reply.toObject(),
       content: req.body.content,
-      by: user.username,
     };
     comment.replies = comment.replies.map((rep) =>
       rep.id === req.params.replyId ? newReply : rep
@@ -512,7 +514,7 @@ async function deleteReply(req, res) {
     const group = await Group.findById(req.params.id);
     const post = group.posts.find((post) => post.id === req.params.postId);
     const comment = post.comments.find(
-      (comm) => comm.id === req.params.comment_id
+      (comm) => comm.id === req.params.commentId
     );
     if (!comment) return res.status(404).json({ msg: "Comment not found." });
     const reply = comment.replies.find((rep) => rep.id === req.params.replyId);

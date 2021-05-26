@@ -82,7 +82,7 @@ export default (state = initialState, action) => {
           stat._id === payload.id
             ? {
                 ...stat,
-                comments: state.statuses.comments.map(comm => comm._id === payload.commentId ? {
+                comments: stat.comments.map(comm => comm._id === payload.commentId ? {
                   ...comm,
                   endorsements: payload.endorsements,
                   judgements: payload.judgements,
@@ -102,7 +102,7 @@ export default (state = initialState, action) => {
           stat._id === payload.id
             ? {
                 ...stat,
-                comments: state.statuses.comments.map(comm => comm._id === payload.commentId ? {
+                comments: stat.comments.map(comm => comm._id === payload.commentId ? {
                   ...comm,
                   replies: comm.replies.map(rep => rep._id === payload.replyId ? {
                     ...rep,
@@ -121,7 +121,7 @@ export default (state = initialState, action) => {
         loading: false,
         statuses: state.statuses.map((stat) =>
           stat._id === payload.id
-            ? { ...stat, comments: [payload.comment, ...stat.comments] }
+            ? { ...stat, comments: payload.items }
             : stat
         ),
       };
@@ -142,19 +142,27 @@ export default (state = initialState, action) => {
         ),
       };
     case EDIT_COMMENT_OF_STATUS:
+      // return {
+      //   ...state,
+      //   loading: false,
+      //   statuses: state.statuses.map((stat) =>
+      //     stat._id === payload[0]
+      //       ? {
+      //           ...stat,
+      //           comments: stat.comments.map((comm) =>
+      //             comm._id === payload[1] ? comm : payload[2]
+      //           ),
+      //         }
+      //       : stat
+      //   ),
+      // };
       return {
         ...state,
         loading: false,
-        statuses: state.statuses.map((stat) =>
-          stat._id === payload[0]
-            ? {
-                ...stat,
-                comments: stat.comments.map((comm) =>
-                  comm._id === payload[1] ? comm : payload[2]
-                ),
-              }
-            : stat
-        ),
+        statuses: state.statuses.map((stat) => stat._id === payload.id ? {
+          ...stat,
+          comments: stat.comments.map(comm => comm._id === payload.comment_id ? payload.item : comm)
+        } : stat),
       };
     case DELETE_COMMENT_OF_STATUS:
       return {
@@ -223,11 +231,14 @@ export default (state = initialState, action) => {
         ...state,
         loading: false,
         statuses: state.statuses.map((stat) =>
-          stat._id === payload[0]
+          stat._id === payload.id
             ? {
                 ...stat,
-                comments: stat.comments.filter(
-                  (comm) => comm._id !== payload[1]
+                comments: stat.comments.map(
+                  (comm) => comm._id === payload.comment_id ? {
+                    ...comm,
+                    replies: comm.replies.filter(rep => rep._id !== payload.reply_id)
+                  } : comm
                 ),
               }
             : stat

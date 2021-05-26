@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import ImagePostContainer from "../../styled/ImagePost/ImagePostContainer";
@@ -6,12 +6,14 @@ import LikesAndComments from "./LikesAndComments";
 import Comment from "../layout/Comment";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { ColourContext } from '../../contexts/ColourContext';
 // import StatusPost from "./StatusPost";
 // import ImagePost from "./Post";
 // import Video from "../VideoRoutes/Video";
 
 function GenericPost({ post, i, auth: { user }, match, setIsGenericSlider }) {
   const [owner, setOwner] = useState(null);
+  const { background } = useContext(ColourContext)
   useEffect(() => {
     let mounted = true;
     (async function () {
@@ -30,7 +32,7 @@ function GenericPost({ post, i, auth: { user }, match, setIsGenericSlider }) {
   return (
     owner &&
     post && (
-      <article>
+      <article style={{ background }}>
         <div className="my-3 d-flex">
           <div>
             <img
@@ -70,8 +72,8 @@ function GenericPost({ post, i, auth: { user }, match, setIsGenericSlider }) {
         </ImagePostContainer>
         <LikesAndComments i={i} match={match} width="100%" />
         <div className="p-2 d-flex flex-column" style={{ margin: "auto" }}>
-          {post.comments.map((comm) => (
-            <Comment comm={comm} key={comm._id} />
+          {post.comments.length > 0 && post.comments.map((comm) => (
+            <Comment comm={comm} key={comm._id} imgId={post._id} />
           ))}
         </div>
       </article>

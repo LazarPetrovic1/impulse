@@ -18,13 +18,8 @@ import DeleteIcon from "../../utils/icons/DeleteIcon";
 import EditIcon from "../../utils/icons/EditIcon";
 import { LanguageContext } from "../../../contexts/LanguageContext";
 import ShortLogo from "../../../styled/Logo/ShortLogo";
-
-// _id(pin):"60785df557141923c4c5a682"
-// text(pin):"Hello"
-// name(pin):"blabla"
-// user(pin):"60118e7bc52e5c0399baec97"
-// date(pin):"2021-04-15T15:38:29.760Z"
-// replies(pin):
+import GroupEditCommentInput from '../inputs/GroupEditCommentInput';
+import GroupPostCommentInput from '../inputs/GroupPostCommentInput';
 
 function GroupPostComment({
   comment,
@@ -41,9 +36,7 @@ function GroupPostComment({
 }) {
   const { language } = useContext(LanguageContext);
   const [liked, setLiked] = useState(null);
-  const [reply, setReply] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [commentBody, setCommentBody] = useState(comment.text);
   const [isReplying, setIsReplying] = useState(false);
   const [byUser, setByUser] = useState(null);
   useEffect(() => {
@@ -126,18 +119,6 @@ function GroupPostComment({
     }
   };
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    await replyToComment(group._id, postId, comment._id, reply);
-    await setReply("");
-  };
-
-  const update = async (e) => {
-    e.preventDefault();
-    await updateComment(group._id, postId, comment._id, commentBody);
-    await setIsEditing(false);
-  };
-
   return comment && (
     <section
       className="ml-auto my-5 position-relative"
@@ -173,18 +154,7 @@ function GroupPostComment({
       </div>
       <div className="mt-3 border-bottom">
         {isEditing ? (
-          <form onSubmit={update} className="d-flex mt-4">
-            <input
-              type="text"
-              value={commentBody}
-              onChange={(e) => setCommentBody(e.target.value)}
-              className="form-control"
-              placeholder="Type a message"
-            />
-            <button className="btn btn-secondary" type="submit">
-              <i className="fas fa-paper-plane" />
-            </button>
-          </form>
+          <GroupEditCommentInput setIsEditing={setIsEditing} combod={comment.text} groupId={group._id} postId={postId} commentId={comment._id} />
         ) : (
           <p>{comment.text}</p>
         )}
@@ -275,18 +245,7 @@ function GroupPostComment({
         </div>
       )}
       {isReplying && (
-        <form onSubmit={onSubmit} className="d-flex mt-4">
-          <input
-            type="text"
-            value={reply}
-            onChange={(e) => setReply(e.target.value)}
-            className="form-control"
-            placeholder="Type a message"
-          />
-          <button className="btn btn-secondary" type="submit">
-            <i className="fas fa-paper-plane" />
-          </button>
-        </form>
+        <GroupPostCommentInput setIsReplying={setIsReplying} groupId={group._id} postId={postId} commentId={comment._id} />
       )}
       {comment.replies.map((reply) => (
         <GroupPostCommentReply

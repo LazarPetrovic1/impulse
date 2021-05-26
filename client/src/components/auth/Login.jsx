@@ -20,7 +20,7 @@ const Login = props => {
   const [viewPass, setViewPass] = useState(false)
   const [remember, setRemember] = useState(false)
 
-  const { login, isAuthenticated } = props
+  const { login, isAuthenticated, location } = props
   const { username, phone, email, password } = data
   const { language } = useContext(LanguageContext)
 
@@ -53,7 +53,11 @@ const Login = props => {
   }
 
   if (isAuthenticated) {
-    return <Redirect to='/' />
+    if (location.pathname === "/login") {
+      return <Redirect to='/' />
+    } else {
+      return <Redirect to={location.pathname} />
+    }
   }
 
   const emailLogin = (

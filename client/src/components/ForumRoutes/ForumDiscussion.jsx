@@ -23,10 +23,12 @@ function ForumDiscussion ({
   return (
     <div className='container px-0' style={{ pointerEvents: "all" }}>
       <form onSubmit={onSubmit}>
-        <Autosaving value={commentText} onChange={value => setCommentText(value)} />
-        <button className="btn btn-primary btn-block">
-          <i className="fas fa-paper-plane pr-2" /> Submit
-        </button>
+        <div className="position-relative">
+          <Autosaving value={commentText} onChange={value => setCommentText(value)} />
+          <button style={{ top: 0, right: 0 }} className="btn btn-primary btn-lg position-absolute">
+            <i className="fas fa-save" />
+          </button>
+        </div>
       </form>
     </div>
   )

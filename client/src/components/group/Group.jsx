@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { getGroup } from "../../actions/group";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -12,6 +12,7 @@ import GroupPostModal from "./GroupPostModal";
 import GroupPost from "./GroupPost";
 import DeleteGroupCheck from "../dashboard/utilcomps/DeleteGroupCheck";
 import DeleteIcon from "../utils/icons/DeleteIcon";
+import { ColourContext } from "../../contexts/ColourContext";
 
 function Group({ group: { group }, getGroup, match }) {
   const [showAbout, setShowAbout] = useState(false);
@@ -20,6 +21,7 @@ function Group({ group: { group }, getGroup, match }) {
   const [showPostItems, setShowPostItems] = useState(false);
   const [groupPeople, setGroupPeople] = useState([]);
   const [searchMembers, setSearchMembers] = useState("");
+  const { background } = useContext(ColourContext)
   useEffect(() => {
     (async function () {
       try {
@@ -58,7 +60,7 @@ function Group({ group: { group }, getGroup, match }) {
           height="auto"
         />
       </div>
-      <DashCenter justification="space-between" maxw="1300px">
+      <DashCenter background={background} justification="space-between" maxw="1300px">
         <h1>{group.name}</h1>
         <div className="d-flex">
           <button
@@ -99,6 +101,7 @@ function Group({ group: { group }, getGroup, match }) {
         groupname={group.name}
       />
       <DashCenter
+        background={background}
         justification="space-between"
         maxw="1300px"
         style={{ pointerEvents: "all" }}

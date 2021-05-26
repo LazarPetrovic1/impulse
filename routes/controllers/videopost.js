@@ -2,7 +2,55 @@ const { validationResult } = require("express-validator");
 const User = require("../../models/User");
 const VideoPost = require("../../models/VideoPost");
 const cloudinary = require("../../utils/cloudinary");
+// const fs = require('fs');
 
+// async function getVideoBuffer(req, res) {
+//   const CHUNK_SIZE = 10 ** 6
+//   try {
+//     const range = req.headers["content-range"]
+//     await console.log("REJNDZ", range);
+//     if (!range) {
+//       res.status(400).json({ msg: "Requires range header" })
+//     }
+//     const post = await VideoPost.findById(req.params.id);
+//     if (!post) return res.status(404).json({ msg: "Post not found" });
+//     const lastPart = await post.url.split("/")[post.url.split("/").length - 1]
+//     const publicId = await lastPart.split(".")[0]
+//     const newRes = await cloudinary.api.resource(publicId, { resource_type: "video" })
+//     const videoSize = await newRes.bytes
+//     const videoPath = await newRes.url
+//     const start = Number(range.split("/")[0].replace(/\D/g, ""))
+//     await console.log("START", start);
+//     const end = Math.min(start + CHUNK_SIZE, videoSize - 1)
+//     const contentLength = end - start + 1
+//     const headers = {
+//       "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+//       "Accept-Ranges": "bytes",
+//       "Content-Length": contentLength,
+//       "Content-Type": "video/*"
+//     }
+//     await res.writeHead(206, headers)
+//     const videoStream = fs.createReadStream(newRes.url, { start, end })
+//     await videoStream.pipe(res)
+//     return res.json({ start, end, videoSize })
+//   } catch (e) {
+//     console.error(e.message);
+//     if (e.kind === "ObjectId")
+//     return res.status(404).json({ msg: "Post not found" });
+//     res.status(500).send("Internal server error.");
+//   }
+// }
+
+async function addView(req, res) {
+  try {
+    const post = await VideoPost.findById(req.params.id)
+    post.views += 1
+    await post.save()
+    res.json(post.views)
+  } catch (e) {
+    console.warn(e.message);
+  }
+}
 async function uploadVideo(req, res) {
   try {
     const fileStr = await req.body.data;
@@ -23,6 +71,8 @@ async function uploadVideo(req, res) {
       isVideo: true,
       meta: req.body.meta,
       category: req.body.category,
+      savedBy: [],
+      views: 0
     });
     const post = await newPost.save();
     res.json(post);
@@ -91,6 +141,10 @@ async function commentVideo(req, res) {
       text: req.body.text,
       name: user.username,
       user: req.user.id,
+      endorsements: [],
+      judgements: [],
+      impulsions: [],
+      replies: []
     };
     post.comments.unshift(newComment);
     await post.save();
@@ -119,6 +173,7 @@ async function updateComment(req, res) {
     if (comment.user.toString() !== req.user.id)
     return res.status(401).json({ msg: "User not authorised." });
     const newComment = {
+      ...comment.toObject(),
       user: comment.user,
       text: content,
       name: comment.name,
@@ -183,11 +238,12 @@ async function replyToComment(req, res) {
       user: req.user.id,
       content: req.body.content,
       by: user.username,
+      endorsements: [],
+      judgements: [],
+      impulsions: []
     };
     const newComment = {
-      user: comment.user,
-      text: comment.text,
-      name: comment.name,
+      ...comment.toObject(),
       replies: [...comment.replies, newReply],
     };
     const index = post.comments
@@ -198,9 +254,9 @@ async function replyToComment(req, res) {
   );
   await post.save();
   res.json(post.comments[index]);
-} catch (e) {
-  res.status(500).send("Internal server error.");
-}
+  } catch (e) {
+    res.status(500).send("Internal server error.");
+  }
 }
 async function updateReply(req, res) {
   try {
@@ -213,6 +269,7 @@ async function updateReply(req, res) {
       (rep) => rep.id === req.params.reply_id
     );
     const newReply = {
+      ...reply.toObject(),
       user: req.user.id,
       content: req.body.content,
       by: user.username,
@@ -530,7 +587,7 @@ async function dislikeVideo(req, res) {
 async function impulsifyComment(req, res) {
   try {
     const post = await VideoPost.findById(req.params.id)
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
     if (
       comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -589,7 +646,7 @@ async function impulsifyComment(req, res) {
 async function likeComment(req, res) {
 try {
   const post = await VideoPost.findById(req.params.id);
-  const comment = await post.comments.find(c => c._id === req.params.commentId)
+  const comment = await post.comments.find(c => c.id === req.params.commentId)
   if (
     comment.endorsements.filter(
       (end) => end.user.toString() === req.body.likerId
@@ -648,7 +705,7 @@ try {
 async function dislikeComment(req, res) {
   try {
     const post = await VideoPost.findById(req.params.id);
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
     if (
       comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0
@@ -708,8 +765,8 @@ async function dislikeComment(req, res) {
 async function impulsifyReplyToComment(req, res) {
   try {
     const post = await VideoPost.findById(req.params.id)
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -768,8 +825,8 @@ async function impulsifyReplyToComment(req, res) {
 async function likeReplyToComment(req, res) {
   try {
     const post = await VideoPost.findById(req.params.id);
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.endorsements.filter(
         (end) => end.user.toString() === req.body.likerId
@@ -828,8 +885,8 @@ async function likeReplyToComment(req, res) {
 async function dislikeReplyToComment(req, res) {
   try {
     const post = await VideoPost.findById(req.params.id);
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0
@@ -888,6 +945,8 @@ async function dislikeReplyToComment(req, res) {
 }
 
 const video = {
+  // getVideoBuffer,
+  addView,
   uploadVideo,
   getAllVideos,
   getVideoById,

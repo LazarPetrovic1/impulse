@@ -14,6 +14,22 @@ const io = socketio(server, {
   },
 });
 
+const corsOptions = {
+  origin: ['*'],
+  allowedHeaders: [
+    "Access-Control-Expose-Headers",
+    "Content-Range",
+    "Accept-Ranges",
+    "Content-Type",
+    "Authorization",
+    "Access-Control-Allow-Methods",
+    "Access-Control-Request-Headers",
+    "Content-Length"
+  ],
+  credentials: true,
+  enablePreflight: true
+}
+
 const connectDB = require("./config/db");
 
 socketHolder(io);
@@ -24,7 +40,7 @@ connectDB();
 // Init middleware
 app.use(express.json({ limit: "200mb", extended: true }));
 app.use(express.urlencoded({ limit: "200mb", extended: true }));
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.get("/", (req, res) => {
   res.send("Bye, man.");

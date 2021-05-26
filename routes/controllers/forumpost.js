@@ -4,6 +4,9 @@ const ForumPost = require('../../models/ForumPost')
 const Profile = require('../../models/Profile')
 const { validationResult } = require('express-validator')
 
+// editCommentOfForumPost
+// editReplyToCommentOfForumPost
+
 async function makeForumPost(req, res) {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
@@ -17,9 +20,12 @@ async function makeForumPost(req, res) {
       body: req.body.body,
       title: req.body.title,
       isDismissed: false,
-      comments: [],
       savedBy: [],
-      media: req.body.media || []
+      media: req.body.media || [],
+      endorsements: [],
+      judgements: [],
+      impulsions: [],
+      comments: []
     })
     const post = await newPost.save()
     await res.json(post)
@@ -110,7 +116,11 @@ async function addCommentToForumPost(req, res) {
     const newComment = {
       user: user.id,
       content: req.body.content,
-      by: user.username
+      by: user.username,
+      endorsements: [],
+      judgements: [],
+      impulsions: [],
+      replies: []
     }
     post.comments.unshift(newComment)
     await post.save()
@@ -132,23 +142,16 @@ async function editCommentOfForumPost(req, res) {
   try {
     const post = await ForumPost.findById(req.params.id)
     const comment = post.comments.find(comm => comm.id === req.params.comment_id)
-    if (!comment) {
-      return res.status(404).json({ msg: 'Comment not found.' })
-    }
+    if (!comment) return res.status(404).json({ msg: 'Comment not found.' })
     const { content } = req.body
-    if (comment.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: 'User not authorised.' })
-    }
+    if (comment.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorised.' })
     const newComment = {
-      user: comment.user,
+      ...comment.toObject(),
       content,
-      by: comment.by,
-      replies: comment.replies
     }
-    const index = post.comments.map(comm => comm.id).indexOf(req.params.comment_id)
-    post.comments = post.comments.map(comm => comm.id === req.params.comment_id ? newComment : post)
+    post.comments = post.comments.map(comm => comm.id === req.params.comment_id ? newComment : comm)
     await post.save()
-    return res.json(post.comments[index])
+    return res.json(newComment)
   } catch (e) {
     console.error(e.message)
     res.status(500).send('Internal server error.')
@@ -200,18 +203,18 @@ async function replyToCommentOfForumPost(req, res) {
     const newReply = {
       user: req.user.id,
       content: req.body.content,
-      by: user.username
+      by: user.username,
+      endorsements: [],
+      judgements: [],
+      impulsions: []
     }
     const newComment = {
-      user: comment.user,
-      content: comment.content,
-      by: comment.by,
+      ...comment.toObject(),
       replies: [...comment.replies, newReply]
     }
-    const index = post.comments.map(comm => comm.id).indexOf(req.params.comment_id)
-    post.comments = post.comments.map(comm => comm.id === req.params.comment_id ? newComment : post)
+    post.comments = post.comments.map(comm => comm.id === req.params.comment_id ? newComment : comm)
     await post.save()
-    res.json(post.comments[index])
+    res.json(newReply)
   } catch (e) {
     res.status(500).send('Internal server error.')
   }
@@ -223,13 +226,12 @@ async function editReplyToCommentOfForumPost(req, res) {
     const comment = await post.comments.find(comm => comm.id === req.params.comment_id)
     const reply = await comment.replies.find(rep => rep.id === req.params.reply_id)
     const newReply = {
-      user: req.user.id,
+      ...reply.toObject(),
       content: req.body.content,
-      by: user.username
     }
     comment.replies = comment.replies.map(rep => rep.id === req.params.reply_id ? newReply : rep)
     await post.save()
-    res.json(comment)
+    res.json(newReply)
   } catch (e) {
     res.status(500).send('Internal server error.')
   }
@@ -251,9 +253,6 @@ async function deleteReplyToCommentOfForumPost(req, res) {
     const reply = comment.replies.find(rep => rep.id === req.params.reply_id)
     if (!reply) return res.status(404).json({ msg: 'Reply not found.' })
     if (reply.user.toString() !== req.user.id) return res.status(401).json({ msg: 'User not authorised.' })
-    const removeIndex = comment.replies
-      .map(rep => rep.user.toString())
-      .indexOf(req.user.id);
     comment.replies = comment.replies.filter(rep => rep.id !== req.params.reply_id)
     await post.save()
     return res.json(post.comments)
@@ -536,7 +535,7 @@ async function meInForumPosts(req, res) {
 async function impulsifyCommentOfForumPost(req, res) {
   try {
     const post = await ForumPost.findById(req.params.id)
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
     if (
       comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -595,7 +594,7 @@ async function impulsifyCommentOfForumPost(req, res) {
 async function likeCommentOfForumPost(req, res) {
 try {
   const post = await ForumPost.findById(req.params.id);
-  const comment = await post.comments.find(c => c._id === req.params.commentId)
+  const comment = await post.comments.find(c => c.id === req.params.commentId)
   if (
     comment.endorsements.filter(
       (end) => end.user.toString() === req.body.likerId
@@ -654,7 +653,7 @@ try {
 async function dislikeCommentOfForumPost(req, res) {
   try {
     const post = await ForumPost.findById(req.params.id);
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
     if (
       comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0
@@ -714,8 +713,8 @@ async function dislikeCommentOfForumPost(req, res) {
 async function impulsifyReplyToCommentOfForumPost(req, res) {
   try {
     const post = await ForumPost.findById(req.params.id)
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -774,8 +773,8 @@ async function impulsifyReplyToCommentOfForumPost(req, res) {
 async function likeReplyToCommentOfForumPost(req, res) {
   try {
     const post = await ForumPost.findById(req.params.id);
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.endorsements.filter(
         (end) => end.user.toString() === req.body.likerId
@@ -834,8 +833,8 @@ async function likeReplyToCommentOfForumPost(req, res) {
 async function dislikeReplyToCommentOfForumPost(req, res) {
   try {
     const post = await ForumPost.findById(req.params.id);
-    const comment = await post.comments.find(c => c._id === req.params.commentId)
-    const reply = await comment.replies.find(r => r._id === req.params.replyId)
+    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const reply = await comment.replies.find(r => r.id === req.params.replyId)
     if (
       reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, Fragment } from "react";
 import { connect } from "react-redux";
 import {
   getVideo,
@@ -6,6 +6,7 @@ import {
   dislikeVideo as dislike,
   impulsifyVideo as impulsify,
   commentVideo,
+  addView
 } from "../../actions/video.js";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -17,6 +18,8 @@ import { LanguageContext } from "../../contexts/LanguageContext";
 import { sendNotif } from "../../actions/notifs";
 import truncate from "truncate";
 import ResponsiveVideo from "../../styled/Video/ResponsiveVideo";
+import useTimeout from '../../hooks/useTimeout';
+import ViewCounter from '../../styled/Video/ViewCounter';
 
 const maxw = { maxWidth: "1280px" };
 
@@ -31,12 +34,23 @@ function Video({
   sendNotif,
   commentVideo,
   history,
+  addView
 }) {
   const [liked, setLiked] = useState(null);
   const [byUser, setByUser] = useState(null);
   const [comment, setComment] = useState("");
   const { language } = useContext(LanguageContext);
   const [seeMore, setSeeMore] = useState(false);
+
+  useTimeout(
+    () => addView(video && video.video && video.video._id),
+    parseInt(
+      video &&
+      video.video &&
+      video.video.meta &&
+      video.video.meta.duration
+    ) / 2
+  )
 
   useEffect(() => {
     (async function () {
@@ -147,7 +161,7 @@ function Video({
       {video.video && (
         <div style={maxw} className="m-auto">
           <div className="d-flex justify-content-center">
-            <ResponsiveVideo src={video.video.url} />
+            <ResponsiveVideo src={video.video.url} type="video/*" />
           </div>
           <div className="d-flex">
             <div className="d-flex flex-column" style={{ flex: 1 }}>
@@ -159,39 +173,52 @@ function Video({
               </p>
               <hr />
             </div>
-            <div className="d-flex">
-              <div className="position-relative">
-                <i
-                  onClick={() => setLikability("like")}
-                  className={`fas fa-plus fa-2x p-3 pointer ${
-                    liked === "like" && "text-success"
-                  }`}
-                />
-                <span style={{ fontSize: "2.5rem" }} className="text-success">
-                  {video.video.endorsements && video.video.endorsements.length}
-                </span>
-              </div>
-              <div className="position-relative">
-                <i
-                  onClick={() => setLikability("dislike")}
-                  className={`fas fa-minus fa-2x p-3 pointer ${
-                    liked === "dislike" && "text-danger"
-                  }`}
-                />
-                <span style={{ fontSize: "2.5rem" }} className="text-danger">
-                  {video.video.judgements && video.video.judgements.length}
-                </span>
-              </div>
-              <div className="position-relative">
-                <ShortLogo
-                  className={`px-3 pb-3 pointer`}
-                  onClick={() => setLikability("impulse")}
-                  liked={liked}
-                />
-                <span style={{ fontSize: "2.5rem" }} className="text-primary">
-                  {video.video.impulsions && video.video.impulsions.length}
-                </span>
-              </div>
+            <div className="d-flex flex-column">
+              <section className="d-flex">
+                <div className="position-relative">
+                  <i
+                    onClick={() => setLikability("like")}
+                    className={`fas fa-plus fa-2x p-3 pointer ${
+                      liked === "like" && "text-success"
+                    }`}
+                  />
+                  <span style={{ fontSize: "2.5rem" }} className="text-success">
+                    {video.video.endorsements && video.video.endorsements.length}
+                  </span>
+                </div>
+                <div className="position-relative">
+                  <i
+                    onClick={() => setLikability("dislike")}
+                    className={`fas fa-minus fa-2x p-3 pointer ${
+                      liked === "dislike" && "text-danger"
+                    }`}
+                  />
+                  <span style={{ fontSize: "2.5rem" }} className="text-danger">
+                    {video.video.judgements && video.video.judgements.length}
+                  </span>
+                </div>
+                <div className="position-relative">
+                  <ShortLogo
+                    className={`px-3 pb-3 pointer`}
+                    onClick={() => setLikability("impulse")}
+                    liked={liked}
+                  />
+                  <span style={{ fontSize: "2.5rem" }} className="text-primary">
+                    {video.video.impulsions && video.video.impulsions.length}
+                  </span>
+                </div>
+              </section>
+              <section>
+                <ViewCounter className="text-right mb-0">
+                  <span>
+                    {
+                      parseInt(video.video.views) < 1 ? <Fragment>No views</Fragment> :
+                      parseInt(video.video.views) === 1 ? <Fragment>1 view</Fragment> :
+                      <Fragment>{parseInt(video.video.views)} views</Fragment>
+                    }
+                  </span>
+                </ViewCounter>
+              </section>
             </div>
           </div>
           <div className="d-flex flex-column">
@@ -287,6 +314,7 @@ Video.propTypes = {
   impulsify: PropTypes.func.isRequired,
   sendNotif: PropTypes.func.isRequired,
   commentVideo: PropTypes.func.isRequired,
+  addView: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -301,4 +329,5 @@ export default connect(mapStateToProps, {
   impulsify,
   sendNotif,
   commentVideo,
+  addView
 })(Video);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { getUserByUsername } from "../../../utils/users";
 import Moment from "react-moment";
 import PropTypes from "prop-types";
@@ -6,10 +6,16 @@ import { connect } from "react-redux";
 import {
   editReplyToCommentOfStatus,
   deleteReplyToCommentOfStatus,
+  impulsifyReplyToStatusComment as impulsify,
+  likeReplyToStatusComment as like,
+  dislikeReplyToStatusComment as dislike
 } from "../../../actions/status";
 import { Link } from "react-router-dom";
 import DeleteIcon from "../../utils/icons/DeleteIcon";
 import EditIcon from "../../utils/icons/EditIcon";
+import { LanguageContext } from "../../../contexts/LanguageContext";
+import ShortLogo from "../../../styled/Logo/ShortLogo";
+import { sendNotif } from "../../../actions/notifs";
 
 function StatusPostCommentReply({
   statusId,
@@ -18,27 +24,106 @@ function StatusPostCommentReply({
   auth: { user },
   deleteReplyToCommentOfStatus,
   editReplyToCommentOfStatus,
+  impulsify,
+  like,
+  dislike,
+  sendNotif
 }) {
   const [byUser, setByUser] = useState(null);
   const [replyBody, setReplyBody] = useState(reply.content);
   const [isEditing, setIsEditing] = useState(false);
+  const [liked, setLiked] = useState(null);
+  const { language } = useContext(LanguageContext);
 
   useEffect(() => {
-    (async function () {
-      try {
-        const res = await getUserByUsername(reply.by);
-        await setByUser(res);
-      } catch (e) {
-        console.warn("Error, dude");
-      }
-    })();
+    let isMounted = true
+    if (isMounted) {
+      (async function () {
+        try {
+          const res = await getUserByUsername(reply.by);
+          await setByUser(res);
+        } catch (e) {
+          console.warn("Error, dude");
+        }
+      })();
+    }
+    return () => { isMounted = false }
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (reply) {
+      if (reply.judgements.filter((jud) => jud.user === user._id).length > 0) {
+        setLiked("dislike");
+      } else if (
+        reply.endorsements.filter((end) => end.user === user._id).length > 0
+      ) {
+        setLiked("like");
+      } else if (
+        reply.impulsions.filter((imp) => imp.user === user._id).length > 0
+      ) {
+        setLiked("impulse");
+      }
+    }
+    // eslint-disable-next-line
+  }, [reply]);
 
   const updateReply = async (e) => {
     e.preventDefault();
     await editReplyToCommentOfStatus(statusId, commentId, reply._id, replyBody);
     await setIsEditing(false);
+  };
+
+  const setLikability = (val) => {
+    const id = reply._id;
+    const likerId = user._id;
+    const ownedById = reply.user;
+
+    if (liked === val) setLiked(null);
+    else setLiked(val);
+    switch (val) {
+      case "like":
+        like(statusId, commentId, id, likerId);
+        if (ownedById !== likerId) {
+          sendNotif({
+            userId: reply.user,
+            type: "like",
+            language,
+            username: user.username,
+            name: `${user.firstName} ${user.lastName}`,
+            url: `/textpost/${reply._id}`,
+          });
+        }
+        break;
+      case "dislike":
+        dislike(statusId, commentId, id, likerId);
+        if (ownedById !== likerId) {
+          sendNotif({
+            userId: reply.user,
+            type: "dislike",
+            language: localStorage.language,
+            username: user.username,
+            name: `${user.firstName} ${user.lastName}`,
+            url: `/textpost/${reply._id}`,
+          });
+        }
+        break;
+      case "impulse":
+        impulsify(statusId, commentId, id, likerId);
+        if (ownedById !== likerId) {
+          sendNotif({
+            userId: reply.user,
+            type: "impulse",
+            language: localStorage.language,
+            username: user.username,
+            name: `${user.firstName} ${user.lastName}`,
+            url: `/textpost/${reply._id}`,
+          });
+        }
+        break;
+      default:
+        return;
+    }
   };
 
   return (
@@ -91,6 +176,42 @@ function StatusPostCommentReply({
         ) : (
           <p>{reply.content}</p>
         )}
+        <div className="d-flex justify-content-between">
+          <div className="d-flex">
+            <div className="position-relative">
+              <i
+                onClick={() => setLikability("like")}
+                className={`fas fa-plus fa-2x p-3 pointer ${
+                  liked === "like" && "text-success"
+                }`}
+              />
+              <span style={{ fontSize: "2.5rem" }} className="text-success">
+                {reply.endorsements && reply.endorsements.length}
+              </span>
+            </div>
+            <div className="position-relative">
+              <i
+                onClick={() => setLikability("dislike")}
+                className={`fas fa-minus fa-2x p-3 pointer ${
+                  liked === "dislike" && "text-danger"
+                }`}
+              />
+              <span style={{ fontSize: "2.5rem" }} className="text-danger">
+                {reply.judgements && reply.judgements.length}
+              </span>
+            </div>
+          </div>
+          <div className="position-relative">
+            <ShortLogo
+              className={`px-3 pb-3 pointer`}
+              onClick={() => setLikability("impulse")}
+              liked={liked}
+            />
+            <span style={{ fontSize: "2.5rem" }} className="text-primary">
+              {reply.impulsions && reply.impulsions.length}
+            </span>
+          </div>
+        </div>
         <p className="m-0 text-right font-weight-bold">
           <span className="badge badge-secondary">
             <Moment format="DD. MMM YYYY">{reply.date}</Moment>
@@ -131,6 +252,10 @@ StatusPostCommentReply.propTypes = {
   auth: PropTypes.object.isRequired,
   deleteReplyToCommentOfStatus: PropTypes.func.isRequired,
   editReplyToCommentOfStatus: PropTypes.func.isRequired,
+  impulsify: PropTypes.func.isRequired,
+  like: PropTypes.func.isRequired,
+  dislike: PropTypes.func.isRequired,
+  sendNotif: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -140,4 +265,8 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   deleteReplyToCommentOfStatus,
   editReplyToCommentOfStatus,
+  impulsify,
+  like,
+  sendNotif,
+  dislike
 })(StatusPostCommentReply);

@@ -10,8 +10,8 @@ import { Link } from "react-router-dom";
 
 function Post({ image, setIsSlider, auth, i, match }) {
   const { user } = auth;
-  const { url, comments } = image;
   const [owner, setOwner] = useState(null);
+  const [imgState, setImgState] = useState(image)
   useEffect(() => {
     (async function () {
       try {
@@ -23,8 +23,14 @@ function Post({ image, setIsSlider, auth, i, match }) {
     })();
     // eslint-disable-next-line
   }, []);
+  useEffect(() => {
+    if (JSON.stringify(imgState) !== JSON.stringify(image)) {
+      setImgState(image)
+    }
+    // eslint-disable-next-line
+  }, [image])
   return (
-    owner && (
+    imgState && owner && (
       <article style={{ width: "100%" }}>
         <div className="my-3 d-flex">
           <div>
@@ -49,7 +55,7 @@ function Post({ image, setIsSlider, auth, i, match }) {
         <div>
           <ImagePostContainer className="p-2 my-2 d-flex flex-column">
             <img
-              src={url}
+              src={imgState.url}
               style={{ cursor: "pointer" }}
               height="auto"
               width="100%"
@@ -61,8 +67,8 @@ function Post({ image, setIsSlider, auth, i, match }) {
           {/*<LikesAndComments i={i} match={match} width="100%" />*/}
         </div>
         <div className="p-2 d-flex flex-column" style={{ margin: "auto" }}>
-          {comments.map((comm) => (
-            <Comment comm={comm} key={comm._id} />
+          {imgState.comments.map((comm) => (
+            <Comment comm={comm} key={comm._id} imgId={image._id} />
           ))}
         </div>
       </article>

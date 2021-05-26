@@ -20,8 +20,10 @@ function ForumEditComment({
       await forumPostEditComment(postid, commentid, commentBody.content);
       await setEdit(false)
     }}>
-      <Autosaving value={commentBody.content} onChange={onEdit} />
-      <button className='btn btn-secondary' type="submit">Done</button>
+      <div className="position-relative">
+        <Autosaving value={commentBody.content} onChange={onEdit} />
+        <button className="btn btn-lg btn-primary position-absolute" style={{ top: 0, right: 0 }} type="submit"><i className="fas fa-save" /></button>
+      </div>
     </form>
   ) : (
     <MarkdownRenderer className='mt-2' markdown={commentBody.content} />

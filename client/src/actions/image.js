@@ -15,7 +15,13 @@ import {
   LIKE_IMAGE_COMMENT,
   IMPULSIFY_IMAGE_REPLY,
   LIKE_IMAGE_REPLY,
-  DISLIKE_IMAGE_REPLY
+  DISLIKE_IMAGE_REPLY,
+  IMAGE_POST_ADD_REPLY,
+  EDIT_IMAGE_COMMENT,
+  EDIT_IMAGE_COMMENT_REPLY,
+  ADD_COMMENT,
+  DELETE_COMMENT,
+  DELETE_REPLY
 } from "./types";
 
 // export const saveImage = (id) => async dispatch => {
@@ -30,9 +36,65 @@ import {
 //   }
 // }
 // export const dismissImage = (id) => async dispatch => {}
-export const impulsifyImageComment = (id, commentId) => async dispatch => {
+
+export const editImageComment = (id, comment_id, content) => async dispatch => {
+  const body = JSON.stringify({ content })
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
   try {
-    const res = await axios.put(`/api/imageposts/${id}/${commentId}/impulse`)
+    const res = await axios.put(`/api/imageposts/comment/${id}/${comment_id}`, body, config)
+    dispatch({
+      type: EDIT_IMAGE_COMMENT,
+      payload: {
+        id,
+        comment_id,
+        item: res.data
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: e.message }
+    })
+  }
+};
+export const editImageCommentReply = (id, comment_id, reply_id, content) => async dispatch => {
+  const body = JSON.stringify({ content })
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+  try {
+    const res = await axios.put(`/api/imageposts/comment/${id}/${comment_id}/${reply_id}`, body, config)
+    dispatch({
+      type: EDIT_IMAGE_COMMENT_REPLY,
+      payload: {
+        id,
+        comment_id,
+        reply_id,
+        item: res.data
+      }
+    })
+  } catch (e) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: e.message }
+    })
+  }
+};
+export const impulsifyImageComment = (id, commentId, likerId) => async dispatch => {
+  const body = JSON.stringify({ likerId })
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+  try {
+    const res = await axios.put(`/api/imageposts/${id}/${commentId}/impulse`, body, config)
     dispatch({
       type: IMPULSIFY_IMAGE_COMMENT,
       payload: {
@@ -50,9 +112,15 @@ export const impulsifyImageComment = (id, commentId) => async dispatch => {
     });
   }
 }
-export const likeImageComment = (id, commentId) => async dispatch => {
+export const likeImageComment = (id, commentId, likerId) => async dispatch => {
+  const body = JSON.stringify({ likerId })
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
   try {
-    const res = await axios.put(`/api/imageposts/${id}/${commentId}/like`)
+    const res = await axios.put(`/api/imageposts/${id}/${commentId}/like`, body, config)
     dispatch({
       type: LIKE_IMAGE_COMMENT,
       payload: {
@@ -70,9 +138,15 @@ export const likeImageComment = (id, commentId) => async dispatch => {
     });
   }
 }
-export const dislikeImageComment = (id, commentId) => async dispatch => {
+export const dislikeImageComment = (id, commentId, likerId) => async dispatch => {
+  const body = JSON.stringify({ likerId })
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
   try {
-    const res = await axios.put(`/api/imageposts/${id}/${commentId}/dislike`)
+    const res = await axios.put(`/api/imageposts/${id}/${commentId}/dislike`, body, config)
     dispatch({
       type: DISLIKE_IMAGE_COMMENT,
       payload: {
@@ -90,9 +164,15 @@ export const dislikeImageComment = (id, commentId) => async dispatch => {
     });
   }
 }
-export const impulsifyReplyToImageComment = (id, commentId, replyId) => async dispatch => {
+export const impulsifyReplyToImageComment = (id, commentId, replyId, likerId) => async dispatch => {
+  const body = JSON.stringify({ likerId })
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
   try {
-    const res = await axios.put(`/api/imageposts/${id}/${commentId}/${replyId}/impulse`)
+    const res = await axios.put(`/api/imageposts/${id}/${commentId}/${replyId}/impulse`, body, config)
     dispatch({
       type: IMPULSIFY_IMAGE_REPLY,
       payload: {
@@ -111,9 +191,15 @@ export const impulsifyReplyToImageComment = (id, commentId, replyId) => async di
     });
   }
 }
-export const likeReplyToImageCommentt = (id, commentId, replyId) => async dispatch => {
+export const likeReplyToImageComment = (id, commentId, replyId, likerId) => async dispatch => {
+  const body = JSON.stringify({ likerId })
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
   try {
-    const res = await axios.put(`/api/imageposts/${id}/${commentId}/${replyId}/like`)
+    const res = await axios.put(`/api/imageposts/${id}/${commentId}/${replyId}/like`, body, config)
     dispatch({
       type: LIKE_IMAGE_REPLY,
       payload: {
@@ -132,9 +218,15 @@ export const likeReplyToImageCommentt = (id, commentId, replyId) => async dispat
     });
   }
 }
-export const dislikeReplyToImageComment = (id, commentId, replyId) => async dispatch => {
+export const dislikeReplyToImageComment = (id, commentId, replyId, likerId) => async dispatch => {
+  const body = JSON.stringify({ likerId })
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
   try {
-    const res = await axios.put(`/api/imageposts/${id}/${commentId}/${replyId}/dislike`)
+    const res = await axios.put(`/api/imageposts/${id}/${commentId}/${replyId}/dislike`, body, config)
     dispatch({
       type: DISLIKE_IMAGE_REPLY,
       payload: {
@@ -153,10 +245,7 @@ export const dislikeReplyToImageComment = (id, commentId, replyId) => async disp
     });
   }
 }
-
-export const wipeImages = () => async (dispatch) =>
-  dispatch({ type: WIPE_IMAGES });
-
+export const wipeImages = () => async (dispatch) => dispatch({ type: WIPE_IMAGES });
 export const getImages = (id, page, limit) => async (dispatch) => {
   try {
     const res = await axios.get(
@@ -174,7 +263,6 @@ export const getImages = (id, page, limit) => async (dispatch) => {
     });
   }
 };
-
 export const createImage = (base64EncodedImage, content) => async (
   dispatch
 ) => {
@@ -197,16 +285,14 @@ export const createImage = (base64EncodedImage, content) => async (
     });
   }
 };
-
 export const addComment = ({ id, text, ownedById }) => async (dispatch) => {
   try {
     const body = JSON.stringify({ text });
     const config = { headers: { "Content-Type": "application/json" } };
-    await axios.post(`/api/imageposts/comment/${id}`, body, config);
-    const res = await axios.get(`/api/imageposts/${ownedById}`);
+    const res = await axios.post(`/api/imageposts/comment/${id}`, body, config);
     dispatch({
-      type: GET_IMAGES,
-      payload: res.data,
+      type: ADD_COMMENT,
+      payload: { id, item: res.data },
     });
   } catch (e) {
     dispatch({
@@ -215,7 +301,20 @@ export const addComment = ({ id, text, ownedById }) => async (dispatch) => {
     });
   }
 };
-
+export const deleteComment = (id, commentId) => async dispatch => {
+  try {
+    const res = await axios.delete(`/api/imageposts/comment/${id}/${commentId}`)
+    dispatch({
+      type: DELETE_COMMENT,
+      payload: { id, commentId, items: res.data }
+    })
+  } catch (e) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+};
 export const impulsify = (postId, ownedById, likerId) => async (dispatch) => {
   try {
     const config = {
@@ -245,7 +344,6 @@ export const impulsify = (postId, ownedById, likerId) => async (dispatch) => {
     });
   }
 };
-
 export const like = (postId, ownedById, likerId) => async (dispatch) => {
   try {
     const config = {
@@ -271,7 +369,6 @@ export const like = (postId, ownedById, likerId) => async (dispatch) => {
     });
   }
 };
-
 export const dislike = (postId, ownedById, likerId) => async (dispatch) => {
   try {
     const config = {
@@ -299,5 +396,44 @@ export const dislike = (postId, ownedById, likerId) => async (dispatch) => {
       type: IMAGE_ERROR,
       payload: { msg: e.message },
     });
+  }
+};
+export const imagePostReplyToComment = (id, comment_id, content) => async dispatch => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+  try {
+    const res = await axios.post(`/api/imageposts/comment/${id}/${comment_id}/reply`, JSON.stringify({ content }), config)
+    await console.log("REZDEJTA", res.data);
+    dispatch({
+      type: IMAGE_POST_ADD_REPLY,
+      payload: {
+        id,
+        comment_id,
+        items: res.data
+      }
+    })
+  } catch (e) {
+    console.warn(e.message)
+    dispatch({ type: IMAGE_ERROR, payload: e.message })
+  }
+};
+export const deleteImageReply = (id, comment_id, reply_id) => async dispatch => {
+  try {
+    await axios.delete(`/api/imageposts/comment/${id}/${comment_id}/${reply_id}`)
+    const payload = {
+      id,
+      comment_id,
+      reply_id
+    }
+    dispatch({
+      type: DELETE_REPLY,
+      payload
+    })
+  } catch (e) {
+    console.warn(e.message)
+    dispatch({ type: IMAGE_ERROR, payload: e.message })
   }
 };

@@ -536,6 +536,13 @@ export const updateReply = (id, postId, commentId, replyId, content) => async (
       "Content-Type": "application/json",
     },
   };
+  console.log("ALL STUFF", {
+    id,
+    postId,
+    commentId,
+    replyId,
+    content
+  });
   const body = JSON.stringify({ content });
   try {
     const res = await axios.put(

@@ -3,6 +3,7 @@ import {
   GET_VIDEO,
   // CREATE_VIDEO,
   VIDEO_DELETE_COMMENT,
+  INCREMENT_VIEWS,
   VIDEO_ERROR,
   VIDEO_COMMENT,
   VIDEO_ADD_REPLY,
@@ -34,6 +35,19 @@ const initialState = {
 export default (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+    case INCREMENT_VIEWS:
+      return {
+        ...state,
+        loading: false,
+        videos: state.videos.map(vid => vid._id === payload.id ? {
+          ...vid,
+          views: payload.views
+        } : vid),
+        video: {
+          ...state.video,
+          views: payload.views
+        }
+      }
     case GET_VIDEOS:
       return {
         ...state,

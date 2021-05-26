@@ -77,7 +77,7 @@ function AddMediaModal({
             className="btn btn-secondary px-2"
             type="submit"
           >
-            <i className="fas fa-paper-plane pr-2" /> {_submit[language]} Submit
+            <i className="fas fa-paper-plane pr-2" /> {_submit[language]}
           </button>
         </div>
         {selectedFile && (

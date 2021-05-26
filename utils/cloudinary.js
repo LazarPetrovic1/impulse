@@ -6,3 +6,4 @@ cloudinary.config({
 });
 
 module.exports = cloudinary
+// `https://<<API KEY>>:<<API SECRET>>@api.cloudinary.com/v1_1/<<RESOURCE NAME>>/resources/image"`

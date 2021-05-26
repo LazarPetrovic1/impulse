@@ -17,6 +17,8 @@ import StatusModal from "./StatusModal";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { sendNotif } from "../../actions/notifs";
+import { ColourContext } from '../../contexts/ColourContext';
+
 import {
   like,
   dislike,
@@ -42,15 +44,20 @@ function StatusPost({
   const [comment, setComment] = useState("");
   const [more, setMore] = useState(false);
   const { language } = useContext(LanguageContext);
+  const { background } = useContext(ColourContext);
   useEffect(() => {
-    (async function () {
-      try {
-        const res = await axios.get(`/api/users/${status.user}`);
-        await setOwner(res.data);
-      } catch (e) {
-        console.warn("Error, dude");
-      }
-    })();
+    let isMounted = true
+    if (isMounted) {
+      (async function () {
+        try {
+          const res = await axios.get(`/api/users/${status.user}`);
+          await setOwner(res.data);
+        } catch (e) {
+          console.warn("Error, dude");
+        }
+      })();
+    }
+    return () => { isMounted = false }
     // eslint-disable-next-line
   }, []);
   useEffect(() => {
@@ -72,7 +79,6 @@ function StatusPost({
   const setLikability = (val) => {
     const id = status._id;
     const likerId = user._id;
-    console.log({ id, likerId });
     const ownedById = status.user;
 
     if (liked === val) setLiked(null);
@@ -127,11 +133,12 @@ function StatusPost({
     await setComment("");
   };
   return (
-    owner && (
+    owner && status && (
       <div className="pt-3 pb-5">
         <DashCenter
           display="block"
           maxw="1300px"
+          background={background}
           style={{ pointerEvents: "all" }}
           className="border rounded my-3"
           onMouseEnter={() => setIsHover(true)}
@@ -177,6 +184,7 @@ function StatusPost({
         <DashCenter
           display="block"
           maxw="1300px"
+          background={background}
           style={{ pointerEvents: "all" }}
         >
           <div className="d-flex justify-content-between">
@@ -217,6 +225,7 @@ function StatusPost({
           </div>
         </DashCenter>
         <DashCenter
+          background={background}
           display="block"
           maxw="1300px"
           className="m-auto"
@@ -236,6 +245,7 @@ function StatusPost({
           </form>
         </DashCenter>
         <DashCenter
+          background={background}
           display="block"
           maxw="1300px"
           className="m-auto"

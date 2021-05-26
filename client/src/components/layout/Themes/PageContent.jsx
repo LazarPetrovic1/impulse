@@ -1,10 +1,13 @@
 import React, { useContext, useEffect } from "react";
 import { ThemeContext } from "../../../contexts/ThemeContext";
 import { FontContext } from "../../../contexts/FontContext";
+import { ColourContext } from "../../../contexts/ColourContext";
+import StyledPageContent from '../../../styled/StyledPageContent';
 
 function PageContent(props) {
   const { isDarkTheme, toggleTheme } = useContext(ThemeContext);
   const { isLegacyFont } = useContext(FontContext);
+  const { colour } = useContext(ColourContext)
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -22,18 +25,15 @@ function PageContent(props) {
     // eslint-disable-next-line
   }, []);
 
-  const styles = {
-    backgroundColor: isDarkTheme ? "transparent" : "#eee", // change to white
-    color: isDarkTheme ? "white" : "black",
-    minHeight: "100vh",
-    margin: 0,
-    padding: 0,
-    position: "relative",
-    zIndex: 1,
-    pointerEvents: "none",
-    fontFamily: `${isLegacyFont ? "Impulse" : "Roboto"}, sans-serif`,
-  };
-  return <div style={styles}>{props.children}</div>;
+  return (
+    <StyledPageContent
+      isDarkTheme={isDarkTheme}
+      isLegacyFont={isLegacyFont}
+      colour={colour}
+    >
+      {props.children}
+    </StyledPageContent>
+  );
 }
 
 export default PageContent;

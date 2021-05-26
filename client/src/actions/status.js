@@ -29,9 +29,11 @@ import {
 // export const saveStatus = (status) => async (dispatch) => {}
 // export const dismissStatus = (status) => async (dispatch) => {}
 
-export const impulsifyStatusComment = (id, commentId) => async (dispatch) => {
+export const impulsifyStatusComment = (id, commentId, likerId) => async (dispatch) => {
+  const body = JSON.stringify({ likerId })
+  const config = { headers: { "Content-Type": "application/json" } }
   try {
-    const res = await axios.put(`/api/status/${id}/${commentId}/impulse`)
+    const res = await axios.put(`/api/status/${id}/${commentId}/impulse`, body, config)
     dispatch({
       type: IMPULSIFY_STATUS_COMMENT,
       payload: {
@@ -49,9 +51,12 @@ export const impulsifyStatusComment = (id, commentId) => async (dispatch) => {
     });
   }
 }
-export const likeStatusComment = (id, commentId) => async (dispatch) => {
+export const likeStatusComment = (id, commentId, likerId) => async (dispatch) => {
+  const body = JSON.stringify({ likerId })
+  const config = { headers: { "Content-Type": "application/json" } }
   try {
-    const res = await axios.put(`/api/status/${id}/${commentId}/like`)
+    const res = await axios.put(`/api/status/${id}/${commentId}/like`, body, config)
+    await console.log("REZDEJTA", res.data);
     dispatch({
       type: LIKE_STATUS_COMMENT,
       payload: {
@@ -69,9 +74,11 @@ export const likeStatusComment = (id, commentId) => async (dispatch) => {
     });
   }
 }
-export const dislikeStatusComment = (id, commentId) => async (dispatch) => {
+export const dislikeStatusComment = (id, commentId, likerId) => async (dispatch) => {
+  const body = JSON.stringify({ likerId })
+  const config = { headers: { "Content-Type": "application/json" } }
   try {
-    const res = await axios.put(`/api/status/${id}/${commentId}/dislike`)
+    const res = await axios.put(`/api/status/${id}/${commentId}/dislike`, body, config)
     dispatch({
       type: DISLIKE_STATUS_COMMENT,
       payload: {
@@ -89,9 +96,11 @@ export const dislikeStatusComment = (id, commentId) => async (dispatch) => {
     });
   }
 }
-export const impulsifyReplyToStatusComment = (id, commentId, replyId) => async (dispatch) => {
+export const impulsifyReplyToStatusComment = (id, commentId, replyId, likerId) => async (dispatch) => {
+  const body = JSON.stringify({ likerId })
+  const config = { headers: { "Content-Type": "application/json" } }
   try {
-    const res = await axios.put(`/api/status/${id}/${commentId}/${replyId}/impulse`)
+    const res = await axios.put(`/api/status/${id}/${commentId}/${replyId}/impulse`, body, config)
     dispatch({
       type: IMPULSIFY_STATUS_REPLY,
       payload: {
@@ -110,9 +119,11 @@ export const impulsifyReplyToStatusComment = (id, commentId, replyId) => async (
     });
   }
 }
-export const likeReplyToStatusCommentt = (id, commentId, replyId) => async (dispatch) => {
+export const likeReplyToStatusComment = (id, commentId, replyId, likerId) => async (dispatch) => {
+  const body = JSON.stringify({ likerId })
+  const config = { headers: { "Content-Type": "application/json" } }
   try {
-    const res = await axios.put(`/api/status/${id}/${commentId}/${replyId}/like`)
+    const res = await axios.put(`/api/status/${id}/${commentId}/${replyId}/like`, body, config)
     dispatch({
       type: LIKE_STATUS_REPLY,
       payload: {
@@ -131,9 +142,11 @@ export const likeReplyToStatusCommentt = (id, commentId, replyId) => async (disp
     });
   }
 }
-export const dislikeReplyToStatusComment = (id, commentId, replyId) => async (dispatch) => {
+export const dislikeReplyToStatusComment = (id, commentId, replyId, likerId) => async (dispatch) => {
+  const body = JSON.stringify({ likerId })
+  const config = { headers: { "Content-Type": "application/json" } }
   try {
-    const res = await axios.put(`/api/status/${id}/${commentId}/${replyId}/dislike`)
+    const res = await axios.put(`/api/status/${id}/${commentId}/${replyId}/dislike`, body, config)
     dispatch({
       type: DISLIKE_STATUS_REPLY,
       payload: {
@@ -353,11 +366,12 @@ export const addCommentToStatus = (content, id) => async (dispatch) => {
   const body = JSON.stringify({ content });
   try {
     const res = await axios.post(`/api/status/comment/${id}`, body, config);
+    await console.log("REZ.DEJTA ADDCOMMENTTOSTATUS", res.data);
     dispatch({
       type: ADD_COMMENT_TO_STATUS,
       payload: {
         id,
-        comment: res.data,
+        items: res.data,
       },
     });
   } catch (e) {
@@ -388,6 +402,11 @@ export const getCommentsOfStatus = (id) => async (dispatch) => {
 export const editCommentOfStatus = (id, comment_id, content) => async (
   dispatch
 ) => {
+  console.log("ALL PARAMS", {
+    id,
+    comment_id,
+    content
+  });
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -400,9 +419,15 @@ export const editCommentOfStatus = (id, comment_id, content) => async (
       body,
       config
     );
+    await console.log("RETURN FROM BACK", res.data);
     dispatch({
       type: EDIT_COMMENT_OF_STATUS,
-      payload: [id, comment_id, res.data],
+      payload: {
+        id,
+        comment_id,
+        item: res.data
+      },
+      // payload: [id, comment_id, res.data],
     });
   } catch (e) {
     console.warn(e.message);
@@ -509,7 +534,11 @@ export const deleteReplyToCommentOfStatus = (
 ) => async (dispatch) => {
   try {
     await axios.delete(`/api/status/comment/${id}/${comment_id}/${reply_id}`);
-    const payload = [id, comment_id];
+    const payload = {
+      id,
+      comment_id,
+      reply_id
+    };
     dispatch({
       type: DELETE_REPLY_TO_COMMENT_OF_STATUS,
       payload,

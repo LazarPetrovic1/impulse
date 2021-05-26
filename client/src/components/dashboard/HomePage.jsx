@@ -12,12 +12,14 @@ import { Link } from "react-router-dom";
 import SideMenu from "./SideMenu";
 import HomePageAdditionalControls from "./utilcomps/HomePageAdditionalControls";
 import AddGroup from "./utilcomps/AddGroup";
+import { endFreeTrial } from '../../actions/auth';
 
 function HomePage({
   auth: { user, loading, isAuthenticated },
   setBulkMedia,
   allmedia,
   wipeAllMedia,
+  endFreeTrial
 }) {
   const [friends, setFriends] = useState(null);
   useEffect(() => () => setFriends(user && user.friends ? user.friends : []), /*eslint-disable-line*/ []);
@@ -52,6 +54,15 @@ function HomePage({
     })();
     // eslint-disable-next-line
   }, [page, friends]);
+
+  useEffect(() => {
+    if (user && user.trial && user.trial.isUsingTrial) {
+      if (new Date() > new Date(user.trial.dateEnded)) {
+        endFreeTrial()
+      }
+    }
+    // eslint-disable-next-line
+  }, [user]);
 
   useEffect(() => {
     if (user && user.friends) {
@@ -158,6 +169,7 @@ HomePage.propTypes = {
   auth: PropTypes.object.isRequired,
   setBulkMedia: PropTypes.func.isRequired,
   wipeAllMedia: PropTypes.func.isRequired,
+  endFreeTrial: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -168,4 +180,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   setBulkMedia,
   wipeAllMedia,
+  endFreeTrial
 })(HomePage);

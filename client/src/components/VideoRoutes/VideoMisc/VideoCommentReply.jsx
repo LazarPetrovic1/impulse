@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { getUserByUsername } from "../../../utils/users";
 import Moment from "react-moment";
 import PropTypes from "prop-types";
@@ -6,10 +6,16 @@ import { connect } from "react-redux";
 import {
   videoDeleteReplyToComment,
   videoEditReplyToComment,
+  impulsifyReplyToComment as impulsify,
+  likeReplyToComment as like,
+  dislikeReplyToComment as dislike
 } from "../../../actions/video";
 import { Link } from "react-router-dom";
 import DeleteIcon from "../../utils/icons/DeleteIcon";
 import EditIcon from "../../utils/icons/EditIcon";
+import { LanguageContext } from "../../../contexts/LanguageContext";
+import { sendNotif } from "../../../actions/notifs";
+import ShortLogo from "../../../styled/Logo/ShortLogo";
 
 function VideoCommentReply({
   videoId,
@@ -18,10 +24,16 @@ function VideoCommentReply({
   auth: { user },
   videoDeleteReplyToComment,
   videoEditReplyToComment,
+  impulsify,
+  like,
+  dislike,
+  sendNotif
 }) {
   const [byUser, setByUser] = useState(null);
   const [replyBody, setReplyBody] = useState(reply.content);
   const [isEditing, setIsEditing] = useState(false);
+  const [liked, setLiked] = useState(null);
+  const { language } = useContext(LanguageContext);
 
   useEffect(() => {
     (async function () {
@@ -39,6 +51,58 @@ function VideoCommentReply({
     e.preventDefault();
     await videoEditReplyToComment(videoId, commentId, reply._id, replyBody);
     await setIsEditing(false);
+  };
+
+  const setLikability = (val) => {
+    const id = reply._id;
+    const likerId = user._id;
+    const ownedById = reply.user;
+
+    if (liked === val) setLiked(null);
+    else setLiked(val);
+    switch (val) {
+      case "like":
+        like(videoId, commentId, id, likerId);
+        if (ownedById !== likerId) {
+          sendNotif({
+            userId: reply.user,
+            type: "like",
+            language,
+            username: user.username,
+            name: `${user.firstName} ${user.lastName}`,
+            url: `/videos/${videoId}`,
+          });
+        }
+        break;
+      case "dislike":
+        dislike(videoId, commentId, id, likerId);
+        if (ownedById !== likerId) {
+          sendNotif({
+            userId: reply.user,
+            type: "dislike",
+            language: localStorage.language,
+            username: user.username,
+            name: `${user.firstName} ${user.lastName}`,
+            url: `/videos/${videoId}`,
+          });
+        }
+        break;
+      case "impulse":
+        impulsify(videoId, commentId, id, likerId);
+        if (ownedById !== likerId) {
+          sendNotif({
+            userId: reply.user,
+            type: "impulse",
+            language: localStorage.language,
+            username: user.username,
+            name: `${user.firstName} ${user.lastName}`,
+            url: `/videos/${videoId}`,
+          });
+        }
+        break;
+      default:
+        return;
+    }
   };
 
   return (
@@ -91,6 +155,40 @@ function VideoCommentReply({
         ) : (
           <p>{reply.content}</p>
         )}
+        <div className="d-flex">
+          <div className="position-relative">
+            <i
+              onClick={() => setLikability("like")}
+              className={`fas fa-plus fa-2x p-3 pointer ${
+                liked === "like" && "text-success"
+              }`}
+            />
+            <span style={{ fontSize: "2.5rem" }} className="text-success">
+              {reply.endorsements && reply.endorsements.length}
+            </span>
+          </div>
+          <div className="position-relative">
+            <i
+              onClick={() => setLikability("dislike")}
+              className={`fas fa-minus fa-2x p-3 pointer ${
+                liked === "dislike" && "text-danger"
+              }`}
+            />
+            <span style={{ fontSize: "2.5rem" }} className="text-danger">
+              {reply.judgements && reply.judgements.length}
+            </span>
+          </div>
+          <div className="position-relative">
+            <ShortLogo
+              className={`px-3 pb-3 pointer`}
+              onClick={() => setLikability("impulse")}
+              liked={liked}
+            />
+            <span style={{ fontSize: "2.5rem" }} className="text-primary">
+              {reply.impulsions && reply.impulsions.length}
+            </span>
+          </div>
+        </div>
         <p className="m-0 text-right font-weight-bold">
           <span className="badge badge-secondary">
             <Moment format="DD. MMM YYYY">{reply.date}</Moment>
@@ -131,6 +229,10 @@ VideoCommentReply.propTypes = {
   auth: PropTypes.object.isRequired,
   videoDeleteReplyToComment: PropTypes.func.isRequired,
   videoEditReplyToComment: PropTypes.func.isRequired,
+  impulsify: PropTypes.func.isRequired,
+  like: PropTypes.func.isRequired,
+  dislike: PropTypes.func.isRequired,
+  sendNotif: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -140,4 +242,8 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   videoDeleteReplyToComment,
   videoEditReplyToComment,
+  impulsify,
+  like,
+  dislike,
+  sendNotif
 })(VideoCommentReply);

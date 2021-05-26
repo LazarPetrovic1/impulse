@@ -33,7 +33,7 @@ router.post(
   forum.addCommentToForumPost
 );
 router.get("/comment/:id", auth, forum.getCommentsOfForumPost);
-router.put("/comment/:id/:comment_id", auth, forum.editCommentOfForumPost);
+router.put("/comment/:id/:comment_id", auth, forum.editCommentOfForumPost); // .toObject()
 router.delete("/comment/:id/:comment_id", auth, forum.deleteCommentOfForumPost);
 router.put("/:id/dismiss", auth, forum.dismissPost);
 router.post(
@@ -45,7 +45,7 @@ router.put(
   "/comment/:id/:comment_id/:reply_id",
   auth,
   forum.editReplyToCommentOfForumPost
-);
+); // .toObject()
 router.get("/comment/:id/reply", auth, forum.getAllRepliesToCommentOfForumPost);
 router.delete(
   "/comment/:id/:comment_id/:reply_id",
@@ -70,7 +70,7 @@ router.put("/:id/:commentId/impulse", auth, forum.impulsifyCommentOfForumPost)
 router.put("/:id/:commentId/like", auth, forum.likeCommentOfForumPost)
 router.put("/:id/:commentId/dislike", auth, forum.dislikeCommentOfForumPost)
 router.put("/:id/:commentId/:replyId/impulse", auth, forum.impulsifyReplyToCommentOfForumPost)
-router.put("/:id/:commentId/like", auth, forum.likeReplyToCommentOfForumPost)
+router.put("/:id/:commentId/:replyId/like", auth, forum.likeReplyToCommentOfForumPost)
 router.put("/:id/:commentId/:replyId/dislike", auth, forum.dislikeReplyToCommentOfForumPost)
 
 module.exports = router;

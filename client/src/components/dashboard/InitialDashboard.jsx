@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useContext } from "react";
 import Spinner from "../layout/Spinner";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -23,11 +23,13 @@ import { getAllUsersMedia, wipeAllMedia } from "../../actions/allmedia.js";
 import StatusPost from "../media/StatusPost";
 import addbutton from "../../animations/addbutton.json";
 import GenericIcon from "../utils/icons/GenericIcon";
+import { ColourContext } from '../../contexts/ColourContext';
 
 function InitialDashboard(props) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [selectedToShow, setSelectedToShow] = useState("all");
+  const { background } = useContext(ColourContext)
   const {
     auth: { user, loading },
     history,
@@ -230,6 +232,7 @@ function InitialDashboard(props) {
           display="block"
           maxw="1300px"
           style={{ pointerEvents: "all" }}
+          background={background}
         >
           {allmedia &&
             media &&
@@ -252,6 +255,7 @@ function InitialDashboard(props) {
         <DashCenter
           justification="flex-start"
           maxw="1300px"
+          background={background}
           style={{ pointerEvents: "all" }}
         >
           {images.map((image, i) => (

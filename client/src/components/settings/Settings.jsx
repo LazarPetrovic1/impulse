@@ -13,6 +13,8 @@ import ProfileOverview from "../profile-rest/ProfileOverview";
 import SocialProfile from "../SocialRoutes/SocialProfile";
 import devoptions from "../../utils/devoptions";
 import TermsAndConditions from "./TermsAndConditions";
+import APIDocs from "./APIDocs";
+import ColourModal from './ColourModal';
 // import SettingsThemePlayground from "./SettingsThemePlayground";
 
 const settingsBarWidth = "250px";
@@ -38,6 +40,7 @@ function Settings() {
   const { isLegacyFont, toggleLegacyFont } = useContext(FontContext);
   const { isDevExp, toggleDevExp } = useContext(DevContext);
   const devCopy = useRef();
+  const [showColMod, setShowColMod] = useState(false)
 
   const copyText = () => {
     let textField = document.createElement("textarea");
@@ -93,6 +96,16 @@ function Settings() {
             >
               Theme Playground
             </li>
+            {
+              isDevExp && (
+                <li
+                  className={selectedSetting === 7 ? "selected" : ""}
+                  onClick={() => setSelectedSetting(7)}
+                >
+                  API Docs
+                </li>
+              )
+            }
           </ul>
         )}
         {selectedSetting === 6 && (
@@ -132,8 +145,15 @@ function Settings() {
               isDarkTheme={isDarkTheme}
               getCenter
             >
-              {_selectlanguage[language]}:
-              <SettingsLanguages />
+              <div className="d-flex justify-content-between w-100">
+                <div className="d-flex align-items-center">
+                  {_selectlanguage[language]}:
+                  <SettingsLanguages />
+                </div>
+                <button className="btn btn-secondary btn-lg" onClick={() => setShowColMod(true)}>
+                  <i className="fas fa-palette" />
+                </button>
+              </div>
             </SettingsListItem>
             <SettingsListItem
               className="list-group-item"
@@ -282,7 +302,9 @@ function Settings() {
         {selectedSetting === 4 && <SocialProfile />}
         {selectedSetting === 5 && <TermsAndConditions />}
         {/*selectedSetting === 6 && <SettingsThemePlayground />*/}
+        {selectedSetting === 7 && <APIDocs />}
       </div>
+      <ColourModal show={showColMod} onClose={() => setShowColMod(false)} title="Change text colour" />
     </div>
   );
 }

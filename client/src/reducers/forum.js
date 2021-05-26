@@ -13,7 +13,16 @@ import {
   FORUM_POST_ADD_REPLY,
   FORUM_POST_EDIT_COMMENT,
   FORUM_POST_DELETE_REPLY,
-  FORUM_POST_EDIT_REPLY
+  FORUM_POST_EDIT_REPLY,
+  IMPULSIFY_FORUM_POST,
+  LIKE_FORUM_POST,
+  DISLIKE_FORUM_POST,
+  IMPULSIFY_FORUM_POST_COMMENT,
+  LIKE_FORUM_POST_COMMENT,
+  DISLIKE_FORUM_POST_COMMENT,
+  IMPULSIFY_FORUM_POST_COMMENT_REPLY,
+  LIKE_FORUM_POST_COMMENT_REPLY,
+  DISLIKE_FORUM_POST_COMMENT_REPLY
 } from '../actions/types'
 
 const initialState = {
@@ -66,6 +75,25 @@ export default (state = initialState, action) => {
           post._id === payload.id ? { ...payload } : post
         )
       }
+    case IMPULSIFY_FORUM_POST:
+    case LIKE_FORUM_POST:
+    case DISLIKE_FORUM_POST:
+      return {
+        ...state,
+        loading: false,
+        post: {
+          ...state.post,
+          impulsions: payload.impulsions,
+          judgements: payload.judgements,
+          endorsements: payload.endorsements,
+        },
+        posts: state.posts.map(p => p._id === payload.id ? {
+          ...p,
+          impulsions: payload.impulsions,
+          judgements: payload.judgements,
+          endorsements: payload.endorsements,
+        } : p)
+      }
     case FORUM_POST_ADD_COMMENT:
       return {
         ...state,
@@ -101,9 +129,91 @@ export default (state = initialState, action) => {
           comments: payload
         }
       }
-    case FORUM_POST_EDIT_COMMENT:
-    case FORUM_POST_ADD_REPLY:
+    case IMPULSIFY_FORUM_POST_COMMENT:
+    case LIKE_FORUM_POST_COMMENT:
+    case DISLIKE_FORUM_POST_COMMENT:
+      return {
+        ...state,
+        loading: false,
+        post: {
+          ...state.post,
+          comments: state.post.comments.map(comm => comm._id === payload.commentId ? {
+            ...comm,
+            impulsions: payload.impulsions,
+            judgements: payload.judgements,
+            endorsements: payload.endorsements,
+          } : comm)
+        },
+        posts: state.posts.map(p => p._id === payload.id ? {
+          ...p,
+          comments: p.comments.map(comm => comm._id === payload.commentId ? {
+            ...comm,
+            impulsions: payload.impulsions,
+            judgements: payload.judgements,
+            endorsements: payload.endorsements,
+          } : comm)
+        } : p)
+      }
+    case IMPULSIFY_FORUM_POST_COMMENT_REPLY:
+    case LIKE_FORUM_POST_COMMENT_REPLY:
+    case DISLIKE_FORUM_POST_COMMENT_REPLY:
+      return {
+        ...state,
+        loading: false,
+        post: {
+          ...state.post,
+          comments: state.post.comments.map(comm => comm._id === payload.commentId ? {
+            ...comm,
+            replies: comm.replies.map(rep => rep._id === payload.replyId ? {
+              ...rep,
+              impulsions: payload.impulsions,
+              judgements: payload.judgements,
+              endorsements: payload.endorsements,
+            } : rep)
+          } : comm)
+        },
+        posts: state.posts.map(p => p._id === payload.id ? {
+          ...p,
+          comments: p.comments.map(comm => comm._id === payload.commentId ? {
+            ...comm,
+            replies: comm.replies.map(rep => rep._id === payload.replyId ? {
+              ...rep,
+              impulsions: payload.impulsions,
+              judgements: payload.judgements,
+              endorsements: payload.endorsements,
+            } : rep)
+          } : comm)
+        } : p)
+      }
     case FORUM_POST_EDIT_REPLY:
+      return {
+        ...state,
+        loading: false,
+        post: {
+          ...state.post,
+          comments: state.post.comments.map(comm =>
+            comm._id === payload.comment_id ? {
+              ...comm,
+              replies: comm.replies.map(rep => rep._id === payload.reply_id ? payload.item : rep)
+            } : comm
+          )
+        }
+      }
+    case FORUM_POST_ADD_REPLY:
+      return {
+        ...state,
+        loading: false,
+        post: {
+          ...state.post,
+          comments: state.post.comments.map(comm =>
+            comm._id === payload.comment_id ? {
+              ...comm,
+              replies: [...comm.replies, payload.item]
+            } : comm
+          )
+        }
+      }
+    case FORUM_POST_EDIT_COMMENT:
       return {
         ...state,
         loading: false,
