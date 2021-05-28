@@ -43,7 +43,9 @@ import NotifPage from "./components/notifs/NotifPage";
 import { Provider } from "react-redux";
 import store from "./store";
 import { loadUser } from "./actions/auth";
+import { findNotifs } from "./actions/notifs";
 import setAuthToken from "./utils/setAuthToken";
+import notifSound from "./assets/sound-effects/notifs/thunder.mp3";
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -53,6 +55,32 @@ function App() {
   useEffect(() => {
     store.dispatch(loadUser());
     // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (
+        store.getState().auth &&
+        store.getState().auth.user &&
+        store.getState().auth.user._id
+      ) {
+        store.dispatch(findNotifs(store.getState().auth.user._id));
+        if (store.getState().notifs.notifs.some((not) => !not.read)) {
+          let audio = new Audio(notifSound);
+          audio.play();
+        }
+      }
+    }, 5 * 60 * 1000);
+
+    if (
+      store.getState().auth &&
+      store.getState().auth.user &&
+      store.getState().auth.user._id
+    ) {
+      store.dispatch(findNotifs(store.getState().auth.user._id));
+    }
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -119,7 +147,11 @@ function App() {
                           path="/social/create-social-profile"
                           component={CreateSocialProfile}
                         />
-                        <PrivateRoute exact path="/upgrade" component={Upgrade} />
+                        <PrivateRoute
+                          exact
+                          path="/upgrade"
+                          component={Upgrade}
+                        />
                         <PrivateRoute
                           exact
                           path="/videos-all"

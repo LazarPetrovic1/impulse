@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -9,8 +9,7 @@ import SelectContainer from "../../styled/SelectContainer";
 import CenterListItem from "./CenterListItem";
 import MediumLogo from "../../styled/Logo/MediumLogo";
 import { navcomponent } from "../../utils/langObject";
-import { findNotifs } from "../../actions/notifs";
-import Notification from "../notifs/Notif";
+import Notifications from "../notifs/Notifs";
 import NotifCounter from "../notifs/NotifCounter";
 import GenericIcon from "../utils/icons/GenericIcon";
 import ImpulseIcon from "../utils/icons/ImpulseIcon";
@@ -25,17 +24,13 @@ import { readNotifs } from "../../actions/notifs";
 const { _settings, _logout, _register, _login, _notifs } = navcomponent;
 
 function Nav(props) {
-  const { logout, auth, findNotifs, notifs: notifications, readNotifs } = props;
+  const { logout, auth, notifs: notifications, readNotifs } = props;
   const { isAuthenticated } = auth;
   const [dropdown, setDropdown] = useState(false);
   const { notifs } = notifications;
   const { toggleTheme, isDarkTheme } = useContext(ThemeContext);
   const { changeLanguage, language } = useContext(LanguageContext);
   const { pathname } = props.location;
-  useEffect(() => {
-    if (auth && auth.user && auth.user._id) findNotifs(auth.user._id);
-    // eslint-disable-next-line
-  }, [auth]);
 
   const authLinks = (
     <ul className="navbar-nav ml-auto">
@@ -73,22 +68,7 @@ function Nav(props) {
               <i className="fas fa-caret-down pl-2" />
             </div>
           </div>
-          {dropdown && (
-            <div
-              className="position-absolute m-0 p-0"
-              style={{ minWidth: "300px", zIndex: 10 }}
-            >
-              {notifs &&
-                notifs.map((not) => <Notification not={not} key={not._id} />)}
-              <Link
-                to="/notifs"
-                className="btn btn-secondary text-light btn-block"
-                onClick={() => setDropdown(false)}
-              >
-                See all
-              </Link>
-            </div>
-          )}
+          {dropdown && <Notifications setDropdown={setDropdown} />}
         </div>
       </CenterListItem>
       <CenterListItem>
@@ -217,7 +197,6 @@ function Nav(props) {
 Nav.propTypes = {
   logout: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  findNotifs: PropTypes.func.isRequired,
   notifs: PropTypes.object.isRequired,
   readNotifs: PropTypes.func.isRequired,
 };
@@ -227,6 +206,6 @@ const mapStateToProps = (state) => ({
   notifs: state.notifs,
 });
 
-export default connect(mapStateToProps, { logout, findNotifs, readNotifs })(
+export default connect(mapStateToProps, { logout, readNotifs })(
   withRouter(Nav)
 );

@@ -4,9 +4,6 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import GroupItem from "./GroupItem";
 import { homepageadditionalcontrolscomponent } from "../../../utils/langObject";
-import AliceCarousel from "react-alice-carousel";
-import "react-alice-carousel/lib/alice-carousel.css";
-import { responsive } from "../../../utils/nonReduxConstants";
 import { createStatus } from "../../../actions/status";
 // import Lottie from "react-lottie-player";
 // import creategroup from "../../../animations/homepage/creategroup.json";
@@ -16,6 +13,14 @@ import EllipsisIcon from "../../utils/icons/EllipsisIcon";
 import GenericIcon from "../../utils/icons/GenericIcon";
 import { meInGroups } from "../../../actions/group.js";
 import ControlsButton from "../../../styled/HomePage/ControlsButton";
+import SwiperCore, { Navigation, A11y } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper.min.css";
+import "swiper/components/navigation/navigation.min.css";
+import "swiper/components/pagination/pagination.min.css";
+import "swiper/components/scrollbar/scrollbar.min.css";
+
+SwiperCore.use([Navigation, A11y]);
 
 const {
   _saysthhere,
@@ -80,13 +85,13 @@ function HomePageAdditionalControls({
         </ControlsButton>
       </div>
       {group && Array.isArray(group.groups) && group.groups.length > 0 && (
-        <AliceCarousel
-          mouseTracking
-          items={group.groups.map((gr) => (
-            <GroupItem group={gr} key={gr._id} />
+        <Swiper slidesPerView={3} navigation>
+          {group.groups.map((gr) => (
+            <SwiperSlide key={gr._id}>
+              <GroupItem group={gr} />
+            </SwiperSlide>
           ))}
-          responsive={responsive}
-        />
+        </Swiper>
       )}
       {group && Array.isArray(group.groups) && group.groups.length < 0 && (
         <div

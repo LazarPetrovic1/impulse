@@ -8,9 +8,14 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import sad from "../../assets/sad.svg";
 import { socialcomponent } from "../../utils/langObject";
-import AliceCarousel from "react-alice-carousel";
-import "react-alice-carousel/lib/alice-carousel.css";
-import { responsive } from "../../utils/nonReduxConstants";
+import { Swiper, SwiperSlide } from "swiper/react";
+import SwiperCore, { Navigation, A11y } from "swiper";
+import "swiper/swiper.min.css";
+import "swiper/components/navigation/navigation.min.css";
+import "swiper/components/pagination/pagination.min.css";
+import "swiper/components/scrollbar/scrollbar.min.css";
+
+SwiperCore.use([Navigation, A11y]);
 
 const {
   _lookforpeoplenear,
@@ -68,19 +73,18 @@ function Social({ auth }) {
       <h2>{_fromyourcity[language]}</h2>
       {fromCountry && (
         <section style={{ pointerEvents: "all" }}>
-          <AliceCarousel
-            mouseTracking
-            items={fromCountry
+          <Swiper slidesPerView={3} navigation>
+            {fromCountry
               .filter((fs) => fs.city === city && fs._id !== user._id)
               .map((fs) => (
-                <SocialSearchItem
-                  fs={fs}
-                  key={fs._id}
-                  src={`https://robohash.org/${fs._id}?set=set4&size=150x150`}
-                />
+                <SwiperSlide key={fs._id}>
+                  <SocialSearchItem
+                    fs={fs}
+                    src={`https://robohash.org/${fs._id}?set=set4&size=150x150`}
+                  />
+                </SwiperSlide>
               ))}
-            responsive={responsive}
-          />
+          </Swiper>
         </section>
       )}
       {fromCountry &&
@@ -96,19 +100,18 @@ function Social({ auth }) {
       <h2>{_fromyourcountry[language]}</h2>
       {fromCountry && (
         <section style={{ pointerEvents: "all" }}>
-          <AliceCarousel
-            mouseTracking
-            items={fromCountry
+          <Swiper slidesPerView={3} navigation>
+            {fromCountry
               .filter((fs) => fs._id !== user._id)
               .map((fs) => (
-                <SocialSearchItem
-                  fs={fs}
-                  key={fs._id}
-                  src={`https://robohash.org/${fs._id}?set=set4&size=150x150`}
-                />
+                <SwiperSlide key={fs._id}>
+                  <SocialSearchItem
+                    fs={fs}
+                    src={`https://robohash.org/${fs._id}?set=set4&size=150x150`}
+                  />
+                </SwiperSlide>
               ))}
-            responsive={responsive}
-          />
+          </Swiper>
         </section>
       )}
       {fromCountry &&

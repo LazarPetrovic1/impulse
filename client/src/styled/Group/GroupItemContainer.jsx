@@ -4,6 +4,7 @@ const GroupItemContainer = styled.section`
   @media only screen and (min-width: 601px) {
     article {
       max-width: 200px;
+      margin-left: 50px;
     }
     img {
       width: 200px;
