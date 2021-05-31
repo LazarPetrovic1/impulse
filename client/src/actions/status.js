@@ -24,16 +24,34 @@ import {
   IMPULSIFY_STATUS_REPLY,
   LIKE_STATUS_REPLY,
   DISLIKE_STATUS_REPLY,
+  ALL_MEDIA_OUTSIDE_SPAWN,
+  ALL_MEDIA_REMOVE,
+  ALL_MEDIA_EDIT,
+  ALL_MEDIA_OUTSIDE_STATCHANGE,
+  ALL_MEDIA_OUTSIDE_SPAWN_COMMENT,
+  ALL_MEDIA_OUTSIDE_COMMENT_REMOVE,
+  ALL_MEDIA_OUTSIDE_COMMENT_EDIT,
+  ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
+  ALL_MEDIA_OUTSIDE_SPAWN_REPLY,
+  ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
+  ALL_MEDIA_OUTSIDE_REPLY_REMOVE,
+  ALL_MEDIA_OUTSIDE_REPLY_EDIT,
 } from "./types";
 
 // export const saveStatus = (status) => async (dispatch) => {}
 // export const dismissStatus = (status) => async (dispatch) => {}
 
-export const impulsifyStatusComment = (id, commentId, likerId) => async (dispatch) => {
-  const body = JSON.stringify({ likerId })
-  const config = { headers: { "Content-Type": "application/json" } }
+export const impulsifyStatusComment = (id, commentId, likerId) => async (
+  dispatch
+) => {
+  const body = JSON.stringify({ likerId });
+  const config = { headers: { "Content-Type": "application/json" } };
   try {
-    const res = await axios.put(`/api/status/${id}/${commentId}/impulse`, body, config)
+    const res = await axios.put(
+      `/api/status/${id}/${commentId}/impulse`,
+      body,
+      config
+    );
     dispatch({
       type: IMPULSIFY_STATUS_COMMENT,
       payload: {
@@ -41,21 +59,38 @@ export const impulsifyStatusComment = (id, commentId, likerId) => async (dispatc
         commentId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
+      payload: {
+        type: "status",
+        id,
+        comment_id: commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: STATUS_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const likeStatusComment = (id, commentId, likerId) => async (dispatch) => {
-  const body = JSON.stringify({ likerId })
-  const config = { headers: { "Content-Type": "application/json" } }
+};
+export const likeStatusComment = (id, commentId, likerId) => async (
+  dispatch
+) => {
+  const body = JSON.stringify({ likerId });
+  const config = { headers: { "Content-Type": "application/json" } };
   try {
-    const res = await axios.put(`/api/status/${id}/${commentId}/like`, body, config)
+    const res = await axios.put(
+      `/api/status/${id}/${commentId}/like`,
+      body,
+      config
+    );
     await console.log("REZDEJTA", res.data);
     dispatch({
       type: LIKE_STATUS_COMMENT,
@@ -64,21 +99,38 @@ export const likeStatusComment = (id, commentId, likerId) => async (dispatch) =>
         commentId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
+      payload: {
+        type: "status",
+        id,
+        comment_id: commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: STATUS_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const dislikeStatusComment = (id, commentId, likerId) => async (dispatch) => {
-  const body = JSON.stringify({ likerId })
-  const config = { headers: { "Content-Type": "application/json" } }
+};
+export const dislikeStatusComment = (id, commentId, likerId) => async (
+  dispatch
+) => {
+  const body = JSON.stringify({ likerId });
+  const config = { headers: { "Content-Type": "application/json" } };
   try {
-    const res = await axios.put(`/api/status/${id}/${commentId}/dislike`, body, config)
+    const res = await axios.put(
+      `/api/status/${id}/${commentId}/dislike`,
+      body,
+      config
+    );
     dispatch({
       type: DISLIKE_STATUS_COMMENT,
       payload: {
@@ -86,21 +138,41 @@ export const dislikeStatusComment = (id, commentId, likerId) => async (dispatch)
         commentId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
+      payload: {
+        type: "status",
+        id,
+        comment_id: commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: STATUS_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const impulsifyReplyToStatusComment = (id, commentId, replyId, likerId) => async (dispatch) => {
-  const body = JSON.stringify({ likerId })
-  const config = { headers: { "Content-Type": "application/json" } }
+};
+export const impulsifyReplyToStatusComment = (
+  id,
+  commentId,
+  replyId,
+  likerId
+) => async (dispatch) => {
+  const body = JSON.stringify({ likerId });
+  const config = { headers: { "Content-Type": "application/json" } };
   try {
-    const res = await axios.put(`/api/status/${id}/${commentId}/${replyId}/impulse`, body, config)
+    const res = await axios.put(
+      `/api/status/${id}/${commentId}/${replyId}/impulse`,
+      body,
+      config
+    );
     dispatch({
       type: IMPULSIFY_STATUS_REPLY,
       payload: {
@@ -109,21 +181,42 @@ export const impulsifyReplyToStatusComment = (id, commentId, replyId, likerId) =
         replyId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
+      payload: {
+        type: "status",
+        id,
+        comment_id: commentId,
+        reply_id: replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: STATUS_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const likeReplyToStatusComment = (id, commentId, replyId, likerId) => async (dispatch) => {
-  const body = JSON.stringify({ likerId })
-  const config = { headers: { "Content-Type": "application/json" } }
+};
+export const likeReplyToStatusComment = (
+  id,
+  commentId,
+  replyId,
+  likerId
+) => async (dispatch) => {
+  const body = JSON.stringify({ likerId });
+  const config = { headers: { "Content-Type": "application/json" } };
   try {
-    const res = await axios.put(`/api/status/${id}/${commentId}/${replyId}/like`, body, config)
+    const res = await axios.put(
+      `/api/status/${id}/${commentId}/${replyId}/like`,
+      body,
+      config
+    );
     dispatch({
       type: LIKE_STATUS_REPLY,
       payload: {
@@ -132,21 +225,42 @@ export const likeReplyToStatusComment = (id, commentId, replyId, likerId) => asy
         replyId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
+      payload: {
+        type: "status",
+        id,
+        comment_id: commentId,
+        reply_id: replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: STATUS_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const dislikeReplyToStatusComment = (id, commentId, replyId, likerId) => async (dispatch) => {
-  const body = JSON.stringify({ likerId })
-  const config = { headers: { "Content-Type": "application/json" } }
+};
+export const dislikeReplyToStatusComment = (
+  id,
+  commentId,
+  replyId,
+  likerId
+) => async (dispatch) => {
+  const body = JSON.stringify({ likerId });
+  const config = { headers: { "Content-Type": "application/json" } };
   try {
-    const res = await axios.put(`/api/status/${id}/${commentId}/${replyId}/dislike`, body, config)
+    const res = await axios.put(
+      `/api/status/${id}/${commentId}/${replyId}/dislike`,
+      body,
+      config
+    );
     dispatch({
       type: DISLIKE_STATUS_REPLY,
       payload: {
@@ -155,16 +269,28 @@ export const dislikeReplyToStatusComment = (id, commentId, replyId, likerId) => 
         replyId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
+      payload: {
+        type: "status",
+        id,
+        comment_id: commentId,
+        reply_id: replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: STATUS_ERROR,
       payload: { msg: e.message },
     });
   }
-}
+};
 
 export const createStatus = (status) => async (dispatch) => {
   const body = JSON.stringify({ body: status });
@@ -179,6 +305,13 @@ export const createStatus = (status) => async (dispatch) => {
       type: CREATE_STATUS,
       payload: res.data,
     });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_SPAWN,
+      payload: {
+        type: "status",
+        item: res.data,
+      },
+    });
   } catch (e) {
     console.warn(e.message);
     dispatch({
@@ -187,7 +320,6 @@ export const createStatus = (status) => async (dispatch) => {
     });
   }
 };
-
 export const getAllStatuses = () => async (dispatch) => {
   try {
     const res = await axios.get("/api/status");
@@ -203,7 +335,6 @@ export const getAllStatuses = () => async (dispatch) => {
     });
   }
 };
-
 export const getMyStatuses = () => async (dispatch) => {
   try {
     const res = await axios.get("/api/status/mine");
@@ -219,7 +350,6 @@ export const getMyStatuses = () => async (dispatch) => {
     });
   }
 };
-
 export const getPersonsStatuses = (id) => async (dispatch) => {
   try {
     const res = await axios.get(`/api/status/${id}`);
@@ -242,6 +372,13 @@ export const deleteStatus = (id) => async (dispatch) => {
     dispatch({
       type: DELETE_STATUS,
       payload: id,
+    });
+    dispatch({
+      type: ALL_MEDIA_REMOVE,
+      payload: {
+        type: "status",
+        id,
+      },
     });
   } catch (e) {
     console.warn(e.message);
@@ -270,6 +407,14 @@ export const editStatus = (status, id) => async (dispatch) => {
       type: EDIT_STATUS,
       payload: res.data,
     });
+    dispatch({
+      type: ALL_MEDIA_EDIT,
+      payload: {
+        type: "status",
+        id,
+        item: res.data,
+      },
+    });
   } catch (e) {
     console.warn(e.message);
     dispatch({
@@ -291,6 +436,16 @@ export const impulsify = (postId, likerId) => async (dispatch) => {
     dispatch({
       type: IMPULSIFY_STATUS,
       payload: {
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+        id: postId,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_STATCHANGE,
+      payload: {
+        type: "status",
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
         judgements: res.data.judgements,
@@ -323,6 +478,16 @@ export const like = (postId, likerId) => async (dispatch) => {
         id: postId,
       },
     });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_STATCHANGE,
+      payload: {
+        type: "status",
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+        id: postId,
+      },
+    });
   } catch (e) {
     dispatch({
       type: STATUS_ERROR,
@@ -343,6 +508,16 @@ export const dislike = (postId, likerId) => async (dispatch) => {
     dispatch({
       type: DISLIKE_STATUS,
       payload: {
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+        id: postId,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_STATCHANGE,
+      payload: {
+        type: "status",
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
         judgements: res.data.judgements,
@@ -372,6 +547,14 @@ export const addCommentToStatus = (content, id) => async (dispatch) => {
       payload: {
         id,
         items: res.data,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_SPAWN_COMMENT,
+      payload: {
+        type: "status",
+        id,
+        item: res.data,
       },
     });
   } catch (e) {
@@ -405,7 +588,7 @@ export const editCommentOfStatus = (id, comment_id, content) => async (
   console.log("ALL PARAMS", {
     id,
     comment_id,
-    content
+    content,
   });
   const config = {
     headers: {
@@ -425,9 +608,18 @@ export const editCommentOfStatus = (id, comment_id, content) => async (
       payload: {
         id,
         comment_id,
-        item: res.data
+        item: res.data,
       },
       // payload: [id, comment_id, res.data],
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_EDIT,
+      payload: {
+        type: "status",
+        id,
+        comment_id,
+        item: res.data,
+      },
     });
   } catch (e) {
     console.warn(e.message);
@@ -444,6 +636,14 @@ export const deleteCommentOfStatus = (id, comment_id) => async (dispatch) => {
     dispatch({
       type: DELETE_COMMENT_OF_STATUS,
       payload: [id, comment_id],
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_REMOVE,
+      payload: {
+        type: "status",
+        id,
+        comment_id,
+      },
     });
   } catch (e) {
     console.warn(e.message);
@@ -473,6 +673,15 @@ export const replyToCommentOfStatus = (id, comment_id, content) => async (
       type: REPLY_TO_COMMENT_OF_STATUS,
       payload: [id, comment_id, res.data],
     });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_SPAWN_REPLY,
+      payload: {
+        type: "status",
+        id,
+        comment_id,
+        item: res.data,
+      },
+    });
   } catch (e) {
     console.warn(e.message);
     dispatch({
@@ -499,6 +708,16 @@ export const editReplyToCommentOfStatus = (
     dispatch({
       type: EDIT_REPLY_TO_COMMENT_OF_STATUS,
       payload: [id, comment_id, res.data],
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_EDIT,
+      payload: {
+        type: "status",
+        id,
+        comment_id,
+        reply_id,
+        item: res.data,
+      },
     });
   } catch (e) {
     console.warn(e.message);
@@ -537,11 +756,18 @@ export const deleteReplyToCommentOfStatus = (
     const payload = {
       id,
       comment_id,
-      reply_id
+      reply_id,
     };
     dispatch({
       type: DELETE_REPLY_TO_COMMENT_OF_STATUS,
       payload,
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_REMOVE,
+      payload: {
+        type: "status",
+        ...payload,
+      },
     });
   } catch (e) {
     console.warn(e.message);

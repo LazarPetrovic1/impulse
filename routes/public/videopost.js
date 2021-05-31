@@ -7,7 +7,11 @@ router.get("/public", async (req, res) => {
     res.json(posts);
   } catch (e) {
     console.error(e.message);
-    res.status(500).json({ msg: "The public API is experiencing some issues. Please be patient" });
+    res
+      .status(500)
+      .json({
+        msg: "The public API is experiencing some issues. Please be patient",
+      });
   }
 });
 router.get("/public/:id", async (req, res) => {
@@ -18,7 +22,13 @@ router.get("/public/:id", async (req, res) => {
   } catch (e) {
     console.error(e.message);
     if (e.kind === "ObjectId")
-    return res.status(404).json({ msg: "Post not found" });
-    res.status(500).json({ msg: "The public API is experiencing some issues. Please be patient" });
+      return res.status(404).json({ msg: "Post not found" });
+    res
+      .status(500)
+      .json({
+        msg: "The public API is experiencing some issues. Please be patient",
+      });
   }
 });
+
+module.exports = router;

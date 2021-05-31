@@ -1,63 +1,78 @@
-import React, { useState, useEffect, useContext, Fragment } from 'react';
-import Moment from 'react-moment';
-import { Link } from 'react-router-dom';
-import Spinner from './Spinner';
+import React, { useState, useEffect, useContext, Fragment } from "react";
+import Moment from "react-moment";
+import { Link } from "react-router-dom";
+import Spinner from "./Spinner";
 import { getUserByUsername } from "../../utils/users";
 import ShortLogo from "../../styled/Logo/ShortLogo";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 import {
   impulsifyImageComment as impulsify,
   likeImageComment as like,
   dislikeImageComment as dislike,
   imagePostReplyToComment as addReply,
   editImageComment as editComment,
-  deleteComment
-} from '../../actions/image';
-import { sendNotif } from '../../actions/notifs';
-import { LanguageContext } from '../../contexts/LanguageContext';
-import PropTypes from 'prop-types';
+  deleteComment,
+} from "../../actions/image";
+import { sendNotif } from "../../actions/notifs";
+import { LanguageContext } from "../../contexts/LanguageContext";
+import PropTypes from "prop-types";
 import DeleteIcon from "../utils/icons/DeleteIcon";
 import EditIcon from "../utils/icons/EditIcon";
-import Reply from './Reply';
+import Reply from "./Reply";
 
-function Comment({ auth, comm, imgId, impulsify, like, dislike, addReply, editComment, deleteComment }) {
-  const [user, setUser] = useState({})
+function Comment({
+  auth,
+  comm,
+  imgId,
+  impulsify,
+  like,
+  dislike,
+  addReply,
+  editComment,
+  deleteComment,
+}) {
+  const [user, setUser] = useState({});
   const [liked, setLiked] = useState(null);
   const [reply, setReply] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [commentBody, setCommentBody] = useState(comm.text);
   const [isReplying, setIsReplying] = useState(false);
-  const { language } = useContext(LanguageContext)
+  const { language } = useContext(LanguageContext);
   useEffect(() => {
-    let isMounted = true
+    let isMounted = true;
     if (isMounted) {
-      (async function() {
+      (async function () {
         try {
-          const res = await getUserByUsername(comm.name)
-          await setUser(res)
-        } catch(e) {
+          const res = await getUserByUsername(comm.name);
+          await setUser(res);
+        } catch (e) {
           console.warn("Error, dude");
         }
-      }());
+      })();
     }
-    return () => { isMounted = false }
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line
-  }, [])
+  }, []);
   useEffect(() => {
     if (comm) {
-      (async function() {
+      (async function () {
         try {
-          if (comm.judgements.filter((jud) => jud.user === user._id).length > 0) setLiked("dislike");
+          if (comm.judgements.filter((jud) => jud.user === user._id).length > 0)
+            setLiked("dislike");
           else if (
             comm.endorsements.filter((end) => end.user === user._id).length > 0
-          ) setLiked("like");
+          )
+            setLiked("like");
           else if (
             comm.impulsions.filter((imp) => imp.user === user._id).length > 0
-          ) setLiked("impulse");
+          )
+            setLiked("impulse");
         } catch (e) {
           console.warn(e.message);
         }
-      }())
+      })();
     }
     // eslint-disable-next-line
   }, [comm]);
@@ -126,7 +141,7 @@ function Comment({ auth, comm, imgId, impulsify, like, dislike, addReply, editCo
     }
   };
 
-  return user ? (
+  return user && comm && Object.keys(comm).length > 0 ? (
     <section
       className="my-5 position-relative"
       style={{ pointerEvents: "all" }}
@@ -136,7 +151,8 @@ function Comment({ auth, comm, imgId, impulsify, like, dislike, addReply, editCo
           {user && (
             <img
               src={
-                Array.isArray(user.profileImages) && user.profileImages.length > 0
+                Array.isArray(user.profileImages) &&
+                user.profileImages.length > 0
                   ? user.profileImages[user.profileImages.length - 1].url
                   : `https://robohash.org/${user._id}?set=set4&size=50x50`
               }
@@ -182,51 +198,48 @@ function Comment({ auth, comm, imgId, impulsify, like, dislike, addReply, editCo
           </span>
         </p>
       </div>
-        <div
-          style={{ top: "1rem", right: "1rem" }}
-          className="position-absolute"
-        >
-          {isReplying ? (
-            <button
-              onClick={() => setIsReplying(false)}
-              className="btn btn-dark btn-lg mx-2"
-            >
-              <i className="fas fa-times" />
-            </button>
-          ) : (
-            <button
-              onClick={() => setIsReplying(true)}
-              className="btn btn-primary btn-lg mx-2"
-            >
-                <i className="fas fa-plus" />
-            </button>
-          )}
-          {comm.user === auth.user._id && (
-            <Fragment>
-              {isEditing ? (
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="btn btn-dark btn-lg mx-2"
-                >
-                  <i className="fas fa-times" />
-                </button>
-              ) : (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="btn btn-secondary btn-lg mx-2 p-0"
-                  style={{ paddingRight: "12px" }}
-                >
-                  <EditIcon width={49} height={46} />
-                </button>
-              )}
+      <div style={{ top: "1rem", right: "1rem" }} className="position-absolute">
+        {isReplying ? (
+          <button
+            onClick={() => setIsReplying(false)}
+            className="btn btn-dark btn-lg mx-2"
+          >
+            <i className="fas fa-times" />
+          </button>
+        ) : (
+          <button
+            onClick={() => setIsReplying(true)}
+            className="btn btn-primary btn-lg mx-2"
+          >
+            <i className="fas fa-plus" />
+          </button>
+        )}
+        {comm.user === auth.user._id && (
+          <Fragment>
+            {isEditing ? (
               <button
-                className="btn btn-danger btn-lg mx-2 p-0"
-                onClick={() => deleteComment(imgId, comm._id)}
+                onClick={() => setIsEditing(false)}
+                className="btn btn-dark btn-lg mx-2"
               >
-                <DeleteIcon width={49} height={46} />
+                <i className="fas fa-times" />
               </button>
-            </Fragment>
-          )}
+            ) : (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="btn btn-secondary btn-lg mx-2 p-0"
+                style={{ paddingRight: "12px" }}
+              >
+                <EditIcon width={49} height={46} />
+              </button>
+            )}
+            <button
+              className="btn btn-danger btn-lg mx-2 p-0"
+              onClick={() => deleteComment(imgId, comm._id)}
+            >
+              <DeleteIcon width={49} height={46} />
+            </button>
+          </Fragment>
+        )}
       </div>
       {isReplying && (
         <form onSubmit={onSubmit} className="d-flex mt-4">
@@ -276,7 +289,7 @@ function Comment({ auth, comm, imgId, impulsify, like, dislike, addReply, editCo
           </span>
         </div>
       </div>
-      {comm.replies.map(reply => (
+      {comm.replies.map((reply) => (
         <Reply
           key={reply._id}
           imgId={imgId}
@@ -293,7 +306,9 @@ function Comment({ auth, comm, imgId, impulsify, like, dislike, addReply, editCo
         />
       ))*/}
     </section>
-  ) : <Spinner />
+  ) : (
+    <Spinner />
+  );
 }
 
 Comment.propTypes = {
@@ -306,11 +321,11 @@ Comment.propTypes = {
   addReply: PropTypes.func.isRequired,
   editComment: PropTypes.func.isRequired,
   deleteComment: PropTypes.func.isRequired,
-}
+};
 
 const mapStateToProps = (state) => ({
-  auth: state.auth
-})
+  auth: state.auth,
+});
 
 export default connect(mapStateToProps, {
   impulsify,
@@ -318,7 +333,7 @@ export default connect(mapStateToProps, {
   dislike,
   addReply,
   editComment,
-  deleteComment
+  deleteComment,
 })(Comment);
 
 // <CommentContainer className="border">

@@ -15,7 +15,7 @@ const io = socketio(server, {
 });
 
 const corsOptions = {
-  origin: ['*'],
+  origin: ["*"],
   allowedHeaders: [
     "Access-Control-Expose-Headers",
     "Content-Range",
@@ -24,11 +24,11 @@ const corsOptions = {
     "Authorization",
     "Access-Control-Allow-Methods",
     "Access-Control-Request-Headers",
-    "Content-Length"
+    "Content-Length",
   ],
   credentials: true,
-  enablePreflight: true
-}
+  enablePreflight: true,
+};
 
 const connectDB = require("./config/db");
 
@@ -58,6 +58,11 @@ app.use("/api/group", require("./routes/api/group"));
 app.use("/api/status", require("./routes/api/status"));
 app.use("/api/checkregister", require("./routes/api/register"));
 app.use("/api/allmedia", require("./routes/api/allmedia"));
+
+app.use("/impulse/api/v1/users", require("./routes/public/users"));
+app.use("/impulse/api/v1/status", require("./routes/public/status"));
+app.use("/impulse/api/v1/videos", require("./routes/public/videopost"));
+app.use("/impulse/api/v1/forum", require("./routes/public/forumpost"));
 
 require("./utils/cron")(app, io);
 

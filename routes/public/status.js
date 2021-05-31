@@ -15,12 +15,16 @@ router.post("/public/:id", async (req, res) => {
       endorsements: [],
       judgements: [],
       impulsions: [],
-      savedBy: []
-    }
+      savedBy: [],
+    };
     return res.json(newPost);
   } catch (e) {
     console.error(e.message);
-    res.status(500).json({ msg: "The public API is experiencing some issues. Please be patient" });
+    res
+      .status(500)
+      .json({
+        msg: "The public API is experiencing some issues. Please be patient",
+      });
   }
 });
 router.get("/public", async (req, res) => {
@@ -29,7 +33,11 @@ router.get("/public", async (req, res) => {
     res.json(statuses);
   } catch (e) {
     console.error(e.message);
-    res.status(500).json({ msg: "The public API is experiencing some issues. Please be patient" });
+    res
+      .status(500)
+      .json({
+        msg: "The public API is experiencing some issues. Please be patient",
+      });
   }
 });
 router.get("/public/status/:id", async (req, res) => {
@@ -38,17 +46,27 @@ router.get("/public/status/:id", async (req, res) => {
     res.json(status);
   } catch (e) {
     console.error(e.message);
-    res.status(500).json({ msg: "The public API is experiencing some issues. Please be patient" });
+    res
+      .status(500)
+      .json({
+        msg: "The public API is experiencing some issues. Please be patient",
+      });
   }
 });
 router.delete("/public/:id", async (req, res) => {
   try {
-    const statuses = await Status.find({})
-    const newStatuses = await Array.from(statuses).filter(s => s.id.toString() !== req.params.id.toString())
+    const statuses = await Status.find({});
+    const newStatuses = await Array.from(statuses).filter(
+      (s) => s.id.toString() !== req.params.id.toString()
+    );
     res.json({ msg: "Post deleted successfully" });
   } catch (e) {
     console.error(e.message);
-    res.status(500).json({ msg: "The public API is experiencing some issues. Please be patient" });
+    res
+      .status(500)
+      .json({
+        msg: "The public API is experiencing some issues. Please be patient",
+      });
   }
 });
 router.get("/public/:id", async (req, res) => {
@@ -57,7 +75,11 @@ router.get("/public/:id", async (req, res) => {
     res.json(statuses);
   } catch (e) {
     console.error(e.message);
-    res.status(500).json({ msg: "The public API is experiencing some issues. Please be patient" });
+    res
+      .status(500)
+      .json({
+        msg: "The public API is experiencing some issues. Please be patient",
+      });
   }
 });
 router.put("/public/impulse/:id", async (req, res) => {
@@ -113,7 +135,11 @@ router.put("/public/impulse/:id", async (req, res) => {
     console.error(e.message);
     if (e.kind === "ObjectId")
       return res.status(404).json({ msg: "Post not found" });
-    res.status(500).json({ msg: "The public API is experiencing some issues. Please be patient" });
+    res
+      .status(500)
+      .json({
+        msg: "The public API is experiencing some issues. Please be patient",
+      });
   }
 });
 router.put("/public/like/:id", async (req, res) => {
@@ -169,7 +195,11 @@ router.put("/public/like/:id", async (req, res) => {
     console.error(e.message);
     if (e.kind === "ObjectId")
       return res.status(404).json({ msg: "Post not found" });
-    res.status(500).json({ msg: "The public API is experiencing some issues. Please be patient" });
+    res
+      .status(500)
+      .json({
+        msg: "The public API is experiencing some issues. Please be patient",
+      });
   }
 });
 router.put("/public/dislike/:id", async (req, res) => {
@@ -226,6 +256,12 @@ router.put("/public/dislike/:id", async (req, res) => {
     console.error(e.message);
     if (e.kind === "ObjectId")
       return res.status(404).json({ msg: "Post not found" });
-    res.status(500).json({ msg: "The public API is experiencing some issues. Please be patient" });
+    res
+      .status(500)
+      .json({
+        msg: "The public API is experiencing some issues. Please be patient",
+      });
   }
 });
+
+module.exports = router;

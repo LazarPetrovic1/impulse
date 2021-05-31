@@ -22,20 +22,32 @@ import {
   LIKE_VIDEO_COMMENT,
   IMPULSIFY_VIDEO_REPLY,
   LIKE_VIDEO_REPLY,
-  DISLIKE_VIDEO_REPLY
+  DISLIKE_VIDEO_REPLY,
+  ALL_MEDIA_OUTSIDE_SPAWN,
+  // ALL_MEDIA_REMOVE,
+  // ALL_MEDIA_EDIT,
+  ALL_MEDIA_OUTSIDE_STATCHANGE,
+  ALL_MEDIA_OUTSIDE_SPAWN_COMMENT,
+  ALL_MEDIA_OUTSIDE_COMMENT_REMOVE,
+  ALL_MEDIA_OUTSIDE_COMMENT_EDIT,
+  ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
+  ALL_MEDIA_OUTSIDE_SPAWN_REPLY,
+  ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
+  ALL_MEDIA_OUTSIDE_REPLY_REMOVE,
+  ALL_MEDIA_OUTSIDE_REPLY_EDIT,
 } from "./types";
 import axios from "axios";
 
-export const addView = (id) => async dispatch => {
+export const addView = (id) => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/videoposts/views/${id}`)
+    const res = await axios.get(`/api/videoposts/views/${id}`);
     dispatch({
       type: INCREMENT_VIEWS,
       payload: {
         id,
-        views: res.data
-      }
-    })
+        views: res.data,
+      },
+    });
   } catch (e) {
     dispatch({
       type: VIDEO_ERROR,
@@ -46,11 +58,17 @@ export const addView = (id) => async dispatch => {
 
 // export const saveVideo = (id) => async (dispatch) => {}
 // export const dismissVideo = (id) => async (dispatch) => {}
-export const impulsifyComment = (id, commentId, likerId) => async (dispatch) => {
-  const body = JSON.stringify({ likerId })
-  const config = { headers: { "Content-Type": "application/json" } }
+export const impulsifyComment = (id, commentId, likerId) => async (
+  dispatch
+) => {
+  const body = JSON.stringify({ likerId });
+  const config = { headers: { "Content-Type": "application/json" } };
   try {
-    const res = await axios.put(`/api/videoposts/${id}/${commentId}/impulse`, body, config)
+    const res = await axios.put(
+      `/api/videoposts/${id}/${commentId}/impulse`,
+      body,
+      config
+    );
     dispatch({
       type: IMPULSIFY_VIDEO_COMMENT,
       payload: {
@@ -58,22 +76,37 @@ export const impulsifyComment = (id, commentId, likerId) => async (dispatch) => 
         commentId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
+      payload: {
+        type: "video",
+        id,
+        comment_id: commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: VIDEO_ERROR,
       payload: { msg: e.message },
     });
   }
-}
+};
 export const likeComment = (id, commentId, likerId) => async (dispatch) => {
-  const body = JSON.stringify({ likerId })
-  const config = { headers: { "Content-Type": "application/json" } }
+  const body = JSON.stringify({ likerId });
+  const config = { headers: { "Content-Type": "application/json" } };
   try {
     console.log("LIKECOMMENTVIDEO", { id, commentId, likerId });
-    const res = await axios.put(`/api/videoposts/${id}/${commentId}/like`, body, config)
+    const res = await axios.put(
+      `/api/videoposts/${id}/${commentId}/like`,
+      body,
+      config
+    );
     dispatch({
       type: LIKE_VIDEO_COMMENT,
       payload: {
@@ -81,21 +114,36 @@ export const likeComment = (id, commentId, likerId) => async (dispatch) => {
         commentId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
+      payload: {
+        type: "video",
+        id,
+        comment_id: commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: VIDEO_ERROR,
       payload: { msg: e.message },
     });
   }
-}
+};
 export const dislikeComment = (id, commentId, likerId) => async (dispatch) => {
-  const body = JSON.stringify({ likerId })
-  const config = { headers: { "Content-Type": "application/json" } }
+  const body = JSON.stringify({ likerId });
+  const config = { headers: { "Content-Type": "application/json" } };
   try {
-    const res = await axios.put(`/api/videoposts/${id}/${commentId}/dislike`, body, config)
+    const res = await axios.put(
+      `/api/videoposts/${id}/${commentId}/dislike`,
+      body,
+      config
+    );
     dispatch({
       type: DISLIKE_VIDEO_COMMENT,
       payload: {
@@ -103,21 +151,41 @@ export const dislikeComment = (id, commentId, likerId) => async (dispatch) => {
         commentId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
+      payload: {
+        type: "video",
+        id,
+        comment_id: commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: VIDEO_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const impulsifyReplyToComment = (id, commentId, replyId, likerId) => async (dispatch) => {
-  const body = JSON.stringify({ likerId })
-  const config = { headers: { "Content-Type": "application/json" } }
+};
+export const impulsifyReplyToComment = (
+  id,
+  commentId,
+  replyId,
+  likerId
+) => async (dispatch) => {
+  const body = JSON.stringify({ likerId });
+  const config = { headers: { "Content-Type": "application/json" } };
   try {
-    const res = await axios.put(`/api/videoposts/${id}/${commentId}/${replyId}/impulse`, body, config)
+    const res = await axios.put(
+      `/api/videoposts/${id}/${commentId}/${replyId}/impulse`,
+      body,
+      config
+    );
     dispatch({
       type: IMPULSIFY_VIDEO_REPLY,
       payload: {
@@ -126,21 +194,39 @@ export const impulsifyReplyToComment = (id, commentId, replyId, likerId) => asyn
         replyId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
+      payload: {
+        type: "video",
+        id,
+        comment_id: commentId,
+        reply_id: replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: VIDEO_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const likeReplyToComment = (id, commentId, replyId, likerId) => async (dispatch) => {
-  const body = JSON.stringify({ likerId })
-  const config = { headers: { "Content-Type": "application/json" } }
+};
+export const likeReplyToComment = (id, commentId, replyId, likerId) => async (
+  dispatch
+) => {
+  const body = JSON.stringify({ likerId });
+  const config = { headers: { "Content-Type": "application/json" } };
   try {
-    const res = await axios.put(`/api/videoposts/${id}/${commentId}/${replyId}/like`, body, config)
+    const res = await axios.put(
+      `/api/videoposts/${id}/${commentId}/${replyId}/like`,
+      body,
+      config
+    );
     dispatch({
       type: LIKE_VIDEO_REPLY,
       payload: {
@@ -149,21 +235,42 @@ export const likeReplyToComment = (id, commentId, replyId, likerId) => async (di
         replyId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
+      payload: {
+        type: "video",
+        id,
+        comment_id: commentId,
+        reply_id: replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: VIDEO_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const dislikeReplyToComment = (id, commentId, replyId, likerId) => async (dispatch) => {
-  const body = JSON.stringify({ likerId })
-  const config = { headers: { "Content-Type": "application/json" } }
+};
+export const dislikeReplyToComment = (
+  id,
+  commentId,
+  replyId,
+  likerId
+) => async (dispatch) => {
+  const body = JSON.stringify({ likerId });
+  const config = { headers: { "Content-Type": "application/json" } };
   try {
-    const res = await axios.put(`/api/videoposts/${id}/${commentId}/${replyId}/dislike`, body, config)
+    const res = await axios.put(
+      `/api/videoposts/${id}/${commentId}/${replyId}/dislike`,
+      body,
+      config
+    );
     dispatch({
       type: DISLIKE_VIDEO_REPLY,
       payload: {
@@ -172,16 +279,28 @@ export const dislikeReplyToComment = (id, commentId, replyId, likerId) => async 
         replyId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
+      payload: {
+        type: "video",
+        id,
+        comment_id: commentId,
+        reply_id: replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: VIDEO_ERROR,
       payload: { msg: e.message },
     });
   }
-}
+};
 
 export const getVideo = (id) => async (dispatch) => {
   try {
@@ -250,6 +369,13 @@ export const createVideo = (
       type: CREATE_VIDEO,
       payload: res.data,
     });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_SPAWN,
+      payload: {
+        type: "video",
+        item: res.data,
+      },
+    });
     dispatch(getAllVideos());
   } catch (e) {
     dispatch({
@@ -275,6 +401,16 @@ export const impulsifyVideo = (postId, likerId) => async (dispatch) => {
       type: IMPULSIFY_VIDEO,
       payload: res.data,
     });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_STATCHANGE,
+      payload: {
+        type: "video",
+        id: postId,
+        impulsions: res.data.impulsions,
+        judgements: res.data.judgements,
+        endorsements: res.data.endorsements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: VIDEO_ERROR,
@@ -294,6 +430,16 @@ export const likeVideo = (postId, likerId) => async (dispatch) => {
     dispatch({
       type: LIKE_VIDEO,
       payload: res.data,
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_STATCHANGE,
+      payload: {
+        type: "video",
+        id: postId,
+        impulsions: res.data.impulsions,
+        judgements: res.data.judgements,
+        endorsements: res.data.endorsements,
+      },
     });
   } catch (e) {
     dispatch({
@@ -319,6 +465,16 @@ export const dislikeVideo = (postId, likerId) => async (dispatch) => {
       type: DISLIKE_VIDEO,
       payload: res.data,
     });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_STATCHANGE,
+      payload: {
+        type: "video",
+        id: postId,
+        impulsions: res.data.impulsions,
+        judgements: res.data.judgements,
+        endorsements: res.data.endorsements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: VIDEO_ERROR,
@@ -340,6 +496,14 @@ export const commentVideo = (id, text) => async (dispatch) => {
       payload: res.data,
     });
     dispatch(getVideo(id));
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_SPAWN_COMMENT,
+      payload: {
+        type: "video",
+        id,
+        item: res.data,
+      },
+    });
   } catch (e) {
     dispatch({
       type: VIDEO_ERROR,
@@ -350,12 +514,19 @@ export const commentVideo = (id, text) => async (dispatch) => {
 export const videoDeleteComment = (id, comment_id) => async (dispatch) => {
   try {
     await axios.delete(`/api/videoposts/comment/${id}/${comment_id}`);
-
     dispatch({
       type: VIDEO_DELETE_COMMENT,
       payload: comment_id,
     });
     dispatch(videoGetComments(id));
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_REMOVE,
+      payload: {
+        type: "video",
+        id,
+        comment_id,
+      },
+    });
   } catch (e) {
     console.warn(e.message);
 
@@ -396,6 +567,15 @@ export const videoEditComment = (id, comment_id, content) => async (
       payload: res.data,
     });
     dispatch(videoGetComments(id));
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_EDIT,
+      payload: {
+        type: "video",
+        id,
+        comment_id,
+        item: res.data,
+      },
+    });
   } catch (e) {
     console.warn(e.message);
     dispatch({ type: VIDEO_ERROR });
@@ -420,6 +600,15 @@ export const videoReplyToComment = (id, comment_id, content) => async (
       payload: res.data,
     });
     dispatch(videoGetComments(id));
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_SPAWN_REPLY,
+      payload: {
+        type: "video",
+        id,
+        comment_id,
+        item: res.data,
+      },
+    });
   } catch (e) {
     console.warn(e.message);
     dispatch({ type: VIDEO_ERROR });
@@ -441,6 +630,14 @@ export const videoDeleteReplyToComment = (id, comment_id, reply_id) => async (
       payload,
     });
     dispatch(videoGetComments(id));
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_REMOVE,
+      payload: {
+        type: "video",
+        id,
+        ...payload,
+      },
+    });
   } catch (e) {
     console.warn(e.message);
     dispatch({ type: VIDEO_ERROR });
@@ -468,6 +665,16 @@ export const videoEditReplyToComment = (
       payload: res.data,
     });
     dispatch(videoGetComments(id));
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_EDIT,
+      payload: {
+        type: "status",
+        id,
+        comment_id,
+        reply_id,
+        item: res.data,
+      },
+    });
   } catch (e) {
     console.warn(e.message);
     dispatch({ type: VIDEO_ERROR });

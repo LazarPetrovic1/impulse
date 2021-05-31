@@ -21,7 +21,17 @@ import {
   EDIT_IMAGE_COMMENT_REPLY,
   ADD_COMMENT,
   DELETE_COMMENT,
-  DELETE_REPLY
+  DELETE_REPLY,
+  ALL_MEDIA_OUTSIDE_SPAWN,
+  ALL_MEDIA_OUTSIDE_STATCHANGE,
+  ALL_MEDIA_OUTSIDE_SPAWN_COMMENT,
+  ALL_MEDIA_OUTSIDE_COMMENT_REMOVE,
+  ALL_MEDIA_OUTSIDE_COMMENT_EDIT,
+  ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
+  ALL_MEDIA_OUTSIDE_SPAWN_REPLY,
+  ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
+  ALL_MEDIA_OUTSIDE_REPLY_REMOVE,
+  ALL_MEDIA_OUTSIDE_REPLY_EDIT,
 } from "./types";
 
 // export const saveImage = (id) => async dispatch => {
@@ -37,64 +47,104 @@ import {
 // }
 // export const dismissImage = (id) => async dispatch => {}
 
-export const editImageComment = (id, comment_id, content) => async dispatch => {
-  const body = JSON.stringify({ content })
+export const editImageComment = (id, comment_id, content) => async (
+  dispatch
+) => {
+  const body = JSON.stringify({ content });
   const config = {
     headers: {
-      "Content-Type": "application/json"
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
   try {
-    const res = await axios.put(`/api/imageposts/comment/${id}/${comment_id}`, body, config)
+    const res = await axios.put(
+      `/api/imageposts/comment/${id}/${comment_id}`,
+      body,
+      config
+    );
     dispatch({
       type: EDIT_IMAGE_COMMENT,
       payload: {
         id,
         comment_id,
-        item: res.data
-      }
-    })
+        item: res.data,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_EDIT,
+      payload: {
+        type: "image",
+        id,
+        comment_id,
+        item: res.data,
+      },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
-      payload: { msg: e.message }
-    })
+      payload: { msg: e.message },
+    });
   }
 };
-export const editImageCommentReply = (id, comment_id, reply_id, content) => async dispatch => {
-  const body = JSON.stringify({ content })
+export const editImageCommentReply = (
+  id,
+  comment_id,
+  reply_id,
+  content
+) => async (dispatch) => {
+  const body = JSON.stringify({ content });
   const config = {
     headers: {
-      "Content-Type": "application/json"
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
   try {
-    const res = await axios.put(`/api/imageposts/comment/${id}/${comment_id}/${reply_id}`, body, config)
+    const res = await axios.put(
+      `/api/imageposts/comment/${id}/${comment_id}/${reply_id}`,
+      body,
+      config
+    );
     dispatch({
       type: EDIT_IMAGE_COMMENT_REPLY,
       payload: {
         id,
         comment_id,
         reply_id,
-        item: res.data
-      }
-    })
+        item: res.data,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_EDIT,
+      payload: {
+        type: "image",
+        id,
+        comment_id,
+        reply_id,
+        item: res.data,
+      },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
-      payload: { msg: e.message }
-    })
+      payload: { msg: e.message },
+    });
   }
 };
-export const impulsifyImageComment = (id, commentId, likerId) => async dispatch => {
-  const body = JSON.stringify({ likerId })
+export const impulsifyImageComment = (id, commentId, likerId) => async (
+  dispatch
+) => {
+  const body = JSON.stringify({ likerId });
   const config = {
     headers: {
-      "Content-Type": "application/json"
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
   try {
-    const res = await axios.put(`/api/imageposts/${id}/${commentId}/impulse`, body, config)
+    const res = await axios.put(
+      `/api/imageposts/${id}/${commentId}/impulse`,
+      body,
+      config
+    );
     dispatch({
       type: IMPULSIFY_IMAGE_COMMENT,
       payload: {
@@ -102,25 +152,42 @@ export const impulsifyImageComment = (id, commentId, likerId) => async dispatch 
         commentId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
+      payload: {
+        type: "image",
+        id,
+        comment_id: commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const likeImageComment = (id, commentId, likerId) => async dispatch => {
-  const body = JSON.stringify({ likerId })
+};
+export const likeImageComment = (id, commentId, likerId) => async (
+  dispatch
+) => {
+  const body = JSON.stringify({ likerId });
   const config = {
     headers: {
-      "Content-Type": "application/json"
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
   try {
-    const res = await axios.put(`/api/imageposts/${id}/${commentId}/like`, body, config)
+    const res = await axios.put(
+      `/api/imageposts/${id}/${commentId}/like`,
+      body,
+      config
+    );
     dispatch({
       type: LIKE_IMAGE_COMMENT,
       payload: {
@@ -128,25 +195,42 @@ export const likeImageComment = (id, commentId, likerId) => async dispatch => {
         commentId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
+      payload: {
+        type: "image",
+        id,
+        comment_id: commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const dislikeImageComment = (id, commentId, likerId) => async dispatch => {
-  const body = JSON.stringify({ likerId })
+};
+export const dislikeImageComment = (id, commentId, likerId) => async (
+  dispatch
+) => {
+  const body = JSON.stringify({ likerId });
   const config = {
     headers: {
-      "Content-Type": "application/json"
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
   try {
-    const res = await axios.put(`/api/imageposts/${id}/${commentId}/dislike`, body, config)
+    const res = await axios.put(
+      `/api/imageposts/${id}/${commentId}/dislike`,
+      body,
+      config
+    );
     dispatch({
       type: DISLIKE_IMAGE_COMMENT,
       payload: {
@@ -154,25 +238,45 @@ export const dislikeImageComment = (id, commentId, likerId) => async dispatch =>
         commentId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
+      payload: {
+        type: "image",
+        id,
+        comment_id: commentId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const impulsifyReplyToImageComment = (id, commentId, replyId, likerId) => async dispatch => {
-  const body = JSON.stringify({ likerId })
+};
+export const impulsifyReplyToImageComment = (
+  id,
+  commentId,
+  replyId,
+  likerId
+) => async (dispatch) => {
+  const body = JSON.stringify({ likerId });
   const config = {
     headers: {
-      "Content-Type": "application/json"
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
   try {
-    const res = await axios.put(`/api/imageposts/${id}/${commentId}/${replyId}/impulse`, body, config)
+    const res = await axios.put(
+      `/api/imageposts/${id}/${commentId}/${replyId}/impulse`,
+      body,
+      config
+    );
     dispatch({
       type: IMPULSIFY_IMAGE_REPLY,
       payload: {
@@ -181,25 +285,46 @@ export const impulsifyReplyToImageComment = (id, commentId, replyId, likerId) =>
         replyId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
+      payload: {
+        type: "image",
+        id,
+        comment_id: commentId,
+        reply_id: replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const likeReplyToImageComment = (id, commentId, replyId, likerId) => async dispatch => {
-  const body = JSON.stringify({ likerId })
+};
+export const likeReplyToImageComment = (
+  id,
+  commentId,
+  replyId,
+  likerId
+) => async (dispatch) => {
+  const body = JSON.stringify({ likerId });
   const config = {
     headers: {
-      "Content-Type": "application/json"
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
   try {
-    const res = await axios.put(`/api/imageposts/${id}/${commentId}/${replyId}/like`, body, config)
+    const res = await axios.put(
+      `/api/imageposts/${id}/${commentId}/${replyId}/like`,
+      body,
+      config
+    );
     dispatch({
       type: LIKE_IMAGE_REPLY,
       payload: {
@@ -208,25 +333,46 @@ export const likeReplyToImageComment = (id, commentId, replyId, likerId) => asyn
         replyId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
+      payload: {
+        type: "image",
+        id,
+        comment_id: commentId,
+        reply_id: replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const dislikeReplyToImageComment = (id, commentId, replyId, likerId) => async dispatch => {
-  const body = JSON.stringify({ likerId })
+};
+export const dislikeReplyToImageComment = (
+  id,
+  commentId,
+  replyId,
+  likerId
+) => async (dispatch) => {
+  const body = JSON.stringify({ likerId });
   const config = {
     headers: {
-      "Content-Type": "application/json"
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
   try {
-    const res = await axios.put(`/api/imageposts/${id}/${commentId}/${replyId}/dislike`, body, config)
+    const res = await axios.put(
+      `/api/imageposts/${id}/${commentId}/${replyId}/dislike`,
+      body,
+      config
+    );
     dispatch({
       type: DISLIKE_IMAGE_REPLY,
       payload: {
@@ -235,17 +381,30 @@ export const dislikeReplyToImageComment = (id, commentId, replyId, likerId) => a
         replyId,
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
-        judgements: res.data.judgements
-      }
-    })
+        judgements: res.data.judgements,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
+      payload: {
+        type: "image",
+        id,
+        comment_id: commentId,
+        reply_id: replyId,
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+      },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
       payload: { msg: e.message },
     });
   }
-}
-export const wipeImages = () => async (dispatch) => dispatch({ type: WIPE_IMAGES });
+};
+export const wipeImages = () => async (dispatch) =>
+  dispatch({ type: WIPE_IMAGES });
 export const getImages = (id, page, limit) => async (dispatch) => {
   try {
     const res = await axios.get(
@@ -278,6 +437,10 @@ export const createImage = (base64EncodedImage, content) => async (
       type: CREATE_IMAGE,
       payload: res.data,
     });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_SPAWN,
+      payload: { type: "image", item: res.data },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
@@ -294,6 +457,10 @@ export const addComment = ({ id, text, ownedById }) => async (dispatch) => {
       type: ADD_COMMENT,
       payload: { id, item: res.data },
     });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_SPAWN_COMMENT,
+      payload: { type: "image", id, item: res.data },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
@@ -301,13 +468,24 @@ export const addComment = ({ id, text, ownedById }) => async (dispatch) => {
     });
   }
 };
-export const deleteComment = (id, commentId) => async dispatch => {
+export const deleteComment = (id, commentId) => async (dispatch) => {
   try {
-    const res = await axios.delete(`/api/imageposts/comment/${id}/${commentId}`)
+    const res = await axios.delete(
+      `/api/imageposts/comment/${id}/${commentId}`
+    );
     dispatch({
       type: DELETE_COMMENT,
-      payload: { id, commentId, items: res.data }
-    })
+      payload: { id, commentId, items: res.data },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_COMMENT_REMOVE,
+      payload: {
+        type: "image",
+        id,
+        comment_id: commentId,
+        items: res.data,
+      },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
@@ -337,6 +515,16 @@ export const impulsify = (postId, ownedById, likerId) => async (dispatch) => {
         id: postId,
       },
     });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_STATCHANGE,
+      payload: {
+        type: "image",
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+        id: postId,
+      },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
@@ -356,6 +544,16 @@ export const like = (postId, ownedById, likerId) => async (dispatch) => {
     dispatch({
       type: LIKE_IMAGE,
       payload: {
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+        id: postId,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_STATCHANGE,
+      payload: {
+        type: "image",
         impulsions: res.data.impulsions,
         endorsements: res.data.endorsements,
         judgements: res.data.judgements,
@@ -391,6 +589,16 @@ export const dislike = (postId, ownedById, likerId) => async (dispatch) => {
         id: postId,
       },
     });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_STATCHANGE,
+      payload: {
+        type: "image",
+        impulsions: res.data.impulsions,
+        endorsements: res.data.endorsements,
+        judgements: res.data.judgements,
+        id: postId,
+      },
+    });
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
@@ -398,42 +606,68 @@ export const dislike = (postId, ownedById, likerId) => async (dispatch) => {
     });
   }
 };
-export const imagePostReplyToComment = (id, comment_id, content) => async dispatch => {
+export const imagePostReplyToComment = (id, comment_id, content) => async (
+  dispatch
+) => {
   const config = {
     headers: {
-      'Content-Type': 'application/json'
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
   try {
-    const res = await axios.post(`/api/imageposts/comment/${id}/${comment_id}/reply`, JSON.stringify({ content }), config)
+    const res = await axios.post(
+      `/api/imageposts/comment/${id}/${comment_id}/reply`,
+      JSON.stringify({ content }),
+      config
+    );
     await console.log("REZDEJTA", res.data);
     dispatch({
       type: IMAGE_POST_ADD_REPLY,
       payload: {
         id,
         comment_id,
-        items: res.data
-      }
-    })
+        items: res.data,
+      },
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_SPAWN_REPLY,
+      payload: {
+        type: "image",
+        id,
+        comment_id,
+        item: res.data,
+      },
+    });
   } catch (e) {
-    console.warn(e.message)
-    dispatch({ type: IMAGE_ERROR, payload: e.message })
+    console.warn(e.message);
+    dispatch({ type: IMAGE_ERROR, payload: e.message });
   }
 };
-export const deleteImageReply = (id, comment_id, reply_id) => async dispatch => {
+export const deleteImageReply = (id, comment_id, reply_id) => async (
+  dispatch
+) => {
   try {
-    await axios.delete(`/api/imageposts/comment/${id}/${comment_id}/${reply_id}`)
+    await axios.delete(
+      `/api/imageposts/comment/${id}/${comment_id}/${reply_id}`
+    );
     const payload = {
       id,
       comment_id,
-      reply_id
-    }
+      reply_id,
+    };
     dispatch({
       type: DELETE_REPLY,
-      payload
-    })
+      payload,
+    });
+    dispatch({
+      type: ALL_MEDIA_OUTSIDE_REPLY_REMOVE,
+      payload: {
+        type: "image",
+        ...payload,
+      },
+    });
   } catch (e) {
-    console.warn(e.message)
-    dispatch({ type: IMAGE_ERROR, payload: e.message })
+    console.warn(e.message);
+    dispatch({ type: IMAGE_ERROR, payload: e.message });
   }
 };
