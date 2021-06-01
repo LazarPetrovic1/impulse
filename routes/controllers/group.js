@@ -93,8 +93,8 @@ async function postInGroup(req, res) {
 }
 async function getAllPosts(req, res) {
   try {
-    const group = await Group.findById(req.params.id)
-    return res.json(group.posts)
+    const group = await Group.findById(req.params.id);
+    return res.json(group.posts);
   } catch (e) {
     res.status(500).send("Internal server error.");
   }
@@ -118,7 +118,7 @@ async function seeAllWhoImpulsed(req, res) {
   try {
     let users = [];
     const group = await Group.findById(req.params.id);
-    const post = await group.posts.find(p => p._id === req.params.postId)
+    const post = await group.posts.find((p) => p._id === req.params.postId);
     if (post) {
       for await (const person of post.impulsions) {
         let user = await User.findById(person.user).select(
@@ -129,18 +129,18 @@ async function seeAllWhoImpulsed(req, res) {
         );
       }
     } else {
-      return res.json({ msg: "Either loading or 404: Not Found." })
+      return res.json({ msg: "Either loading or 404: Not Found." });
     }
     res.json(users);
   } catch (e) {
-    res.status(500).json({ msg: "Internal server error" })
+    res.status(500).json({ msg: "Internal server error" });
   }
 }
 async function seeAllWhoLiked(req, res) {
   try {
     let users = [];
     const group = await Group.findById(req.params.id);
-    const post = await group.posts.find(p => p._id === req.params.postId)
+    const post = await group.posts.find((p) => p._id === req.params.postId);
     if (post) {
       for await (const person of post.endorsements) {
         let user = await User.findById(person.user).select(
@@ -151,18 +151,18 @@ async function seeAllWhoLiked(req, res) {
         );
       }
     } else {
-      return res.json({ msg: "Either loading or 404: Not Found." })
+      return res.json({ msg: "Either loading or 404: Not Found." });
     }
     res.json(users);
   } catch (e) {
-    return res.json({ msg: "Either loading or 404: Not Found." })
+    return res.json({ msg: "Either loading or 404: Not Found." });
   }
 }
 async function seeAllWhoDisliked(req, res) {
   try {
     let users = [];
     const group = await Group.findById(req.params.id);
-    const post = await group.posts.find(p => p._id === req.params.postId)
+    const post = await group.posts.find((p) => p._id === req.params.postId);
     if (post) {
       for await (const person of post.judgements) {
         let user = await User.findById(person.user).select(
@@ -173,11 +173,11 @@ async function seeAllWhoDisliked(req, res) {
         );
       }
     } else {
-      return res.json({ msg: "Either loading or 404: Not Found." })
+      return res.json({ msg: "Either loading or 404: Not Found." });
     }
     res.json(users);
   } catch (e) {
-    return res.json({ msg: "Either loading or 404: Not Found." })
+    return res.json({ msg: "Either loading or 404: Not Found." });
   }
 }
 async function impulsePost(req, res) {
@@ -385,7 +385,7 @@ async function commentGroupPost(req, res) {
       endorsements: [],
       judgements: [],
       impulsions: [],
-      replies: []
+      replies: [],
     };
     post.comments.unshift(newComment);
     await group.save();
@@ -398,10 +398,10 @@ async function commentGroupPost(req, res) {
 async function getPostComments(req, res) {
   try {
     const group = await Group.findById(req.params.id);
-    const post = await group.posts.find(p => p._id === req.params.postId)
-    return res.json(post.comments)
+    const post = await group.posts.find((p) => p._id === req.params.postId);
+    return res.json(post.comments);
   } catch (e) {
-    return res.json({ msg: "Either loading or 404: Not Found." })
+    return res.json({ msg: "Either loading or 404: Not Found." });
   }
 }
 async function updateComment(req, res) {
@@ -537,11 +537,14 @@ async function deleteReply(req, res) {
 async function impulsifyComment(req, res) {
   try {
     const group = await Group.findById(req.params.id);
-    const post = await group.posts.find(p => p.id === req.params.postId)
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const post = await group.posts.find((p) => p.id === req.params.postId);
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
     if (
-      comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
-        .length > 0
+      comment.impulsions.filter(
+        (imp) => imp.user.toString() === req.body.likerId
+      ).length > 0
     ) {
       comment.impulsions.splice(
         comment.impulsions
@@ -556,10 +559,11 @@ async function impulsifyComment(req, res) {
         judgements: comment.judgements,
       });
     }
-    comment.impulsions.unshift({ user: req.body.likerId })
+    comment.impulsions.unshift({ user: req.body.likerId });
     if (
-      comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
-        .length > 0
+      comment.judgements.filter(
+        (jud) => jud.user.toString() === req.body.likerId
+      ).length > 0
     ) {
       comment.judgements.splice(
         comment.judgements
@@ -596,80 +600,79 @@ async function impulsifyComment(req, res) {
 }
 async function likeComment(req, res) {
   try {
-  const group = await Group.findById(req.params.id);
-  const post = await group.posts.find(p => p.id === req.params.postId)
-  const comment = await post.comments.find(c => c.id === req.params.commentId)
-  if (
-    comment.endorsements.filter(
-      (end) => end.user.toString() === req.body.likerId
-    ).length > 0
-  ) {
-    comment.endorsements.splice(
-      comment.endorsements
-        .map((end) => end.user.toString())
-        .indexOf(req.body.likerId),
-      1
+    const group = await Group.findById(req.params.id);
+    const post = await group.posts.find((p) => p.id === req.params.postId);
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
     );
-    console.log("IMPALZHNS", comment.impulsions);
-    console.log("DZADZMENC", comment.judgements);
-    console.log("ENDORSMENC", comment.endorsements);
+    if (
+      comment.endorsements.filter(
+        (end) => end.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      comment.endorsements.splice(
+        comment.endorsements
+          .map((end) => end.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+      await group.save();
+      return res.json({
+        impulsions: comment.impulsions,
+        endorsements: comment.endorsements,
+        judgements: comment.judgements,
+      });
+    }
+    comment.endorsements.unshift({ user: req.body.likerId });
+    if (
+      comment.judgements.filter(
+        (jud) => jud.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      comment.judgements.splice(
+        comment.judgements
+          .map((jud) => jud.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    if (
+      comment.impulsions.filter(
+        (imp) => imp.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      // Get remove index
+      comment.impulsions.splice(
+        comment.impulsions
+          .map((imp) => imp.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
     await group.save();
     return res.json({
       impulsions: comment.impulsions,
       endorsements: comment.endorsements,
       judgements: comment.judgements,
     });
-  }
-  comment.endorsements.unshift({ user: req.body.likerId });
-  if (
-    comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
-      .length > 0
-  ) {
-    comment.judgements.splice(
-      comment.judgements
-        .map((jud) => jud.user.toString())
-        .indexOf(req.body.likerId),
-      1
-    );
-  }
-  if (
-    comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
-      .length > 0
-  ) {
-    // Get remove index
-    comment.impulsions.splice(
-      comment.impulsions
-        .map((imp) => imp.user.toString())
-        .indexOf(req.body.likerId),
-      1
-    );
-  }
-  await group.save();
-  await console.log("RES.JSON", {
-    impulsions: comment.impulsions,
-    endorsements: comment.endorsements,
-    judgements: comment.judgements,
-  });
-  return res.json({
-      impulsions: comment.impulsions,
-      endorsements: comment.endorsements,
-      judgements: comment.judgements,
-    });
   } catch (e) {
     console.error(e.message);
-      if (e.kind === "ObjectId")
-        return res.status(404).json({ msg: "Post not found" });
-      res.status(500).send("Internal server error.");
-    }
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
+  }
 }
 async function dislikeComment(req, res) {
   try {
     const group = await Group.findById(req.params.id);
-    const post = await group.posts.find(p => p.id === req.params.postId)
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const post = await group.posts.find((p) => p.id === req.params.postId);
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
     if (
-      comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
-        .length > 0
+      comment.judgements.filter(
+        (jud) => jud.user.toString() === req.body.likerId
+      ).length > 0
     ) {
       comment.judgements.splice(
         comment.judgements
@@ -699,8 +702,9 @@ async function dislikeComment(req, res) {
       );
     }
     if (
-      comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
-        .length > 0
+      comment.impulsions.filter(
+        (imp) => imp.user.toString() === req.body.likerId
+      ).length > 0
     ) {
       // Get remove index
       comment.impulsions.splice(
@@ -725,10 +729,14 @@ async function dislikeComment(req, res) {
 }
 async function impulsifyReplyToImageComment(req, res) {
   try {
-    const group = await Group.findById(req.params.id)
-    const post = await group.posts.find(p => p.id === req.params.postId )
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
-    const reply = await comment.replies.find(r => r.id === req.params.replyId)
+    const group = await Group.findById(req.params.id);
+    const post = await group.posts.find((p) => p.id === req.params.postId);
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
+    const reply = await comment.replies.find(
+      (r) => r.id === req.params.replyId
+    );
     if (
       reply.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -746,7 +754,7 @@ async function impulsifyReplyToImageComment(req, res) {
         judgements: reply.judgements,
       });
     }
-    reply.impulsions.unshift({ user: req.body.likerId })
+    reply.impulsions.unshift({ user: req.body.likerId });
     if (
       reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0
@@ -786,10 +794,14 @@ async function impulsifyReplyToImageComment(req, res) {
 }
 async function likeReplyToImageComment(req, res) {
   try {
-    const group = await Group.findById(req.params.id)
-    const post = await group.posts.find(p => p.id === req.params.postId )
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
-    const reply = await comment.replies.find(r => r.id === req.params.replyId)
+    const group = await Group.findById(req.params.id);
+    const post = await group.posts.find((p) => p.id === req.params.postId);
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
+    const reply = await comment.replies.find(
+      (r) => r.id === req.params.replyId
+    );
     if (
       reply.endorsements.filter(
         (end) => end.user.toString() === req.body.likerId
@@ -840,17 +852,21 @@ async function likeReplyToImageComment(req, res) {
     });
   } catch (e) {
     console.error(e.message);
-      if (e.kind === "ObjectId")
-        return res.status(404).json({ msg: "Post not found" });
-      res.status(500).send("Internal server error.");
-    }
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
+  }
 }
 async function dislikeReplyToImageComment(req, res) {
   try {
-    const group = await Group.findById(req.params.id)
-    const post = await group.posts.find(p => p.id === req.params.postId )
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
-    const reply = await comment.replies.find(r => r.id === req.params.replyId)
+    const group = await Group.findById(req.params.id);
+    const post = await group.posts.find((p) => p.id === req.params.postId);
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
+    const reply = await comment.replies.find(
+      (r) => r.id === req.params.replyId
+    );
     if (
       reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0
@@ -935,7 +951,7 @@ const group = {
   dislikeComment,
   impulsifyReplyToImageComment,
   likeReplyToImageComment,
-  dislikeReplyToImageComment
+  dislikeReplyToImageComment,
 };
 
 module.exports = group;

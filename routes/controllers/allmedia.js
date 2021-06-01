@@ -5,41 +5,48 @@ const Status = require("../../models/Status");
 async function getUsersMedia(req, res) {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-  const results = {};
   try {
-    const imageposts = await ImagePost.find({
-      user: req.params.id,
-    }).sort({
+    const imageposts = await ImagePost.find({ user: req.params.id }).sort({
       date: -1,
     });
-    const videoposts = await VideoPost.find({
-      user: req.params.id,
-    }).sort({
+    const videoposts = await VideoPost.find({ user: req.params.id }).sort({
       date: -1,
     });
-    const statusposts = await Status.find({
-      user: req.params.id,
-    }).sort({
+    const statusposts = await Status.find({ user: req.params.id }).sort({
       date: -1,
     });
-    const posts = [...statusposts, ...imageposts, ...videoposts].sort(
-      (a, b) => new Date(b.date) - new Date(a.date)
-    );
-    const hasMoreValue = endIndex < posts.length;
-    if (endIndex < posts.length)
-      results.next = {
-        page: page + 1,
-        limit,
-        hasMore: true,
-      };
-    if (!hasMoreValue)
-      results.next = {
-        hasMore: false,
-      };
-    results.results = await posts.slice(startIndex, endIndex);
-    res.json(results);
+    if (
+      imageposts.length > 0 &&
+      videoposts.length > 0 &&
+      statusposts.length > 0
+    ) {
+      const posts = [...statusposts, ...imageposts, ...videoposts].sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      );
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+      const results = {};
+      const hasMoreValue = posts.length > endIndex;
+      console.log({
+        hasMoreValue,
+        len: posts.length,
+        endIndex,
+      });
+      if (hasMoreValue)
+        results.next = {
+          page: page + 1,
+          limit,
+          hasMore: true,
+        };
+      if (!hasMoreValue)
+        results.next = {
+          hasMore: false,
+        };
+      results.results = await posts.slice(startIndex, endIndex);
+      res.json(results);
+    } else {
+      res.json({ msg: "Not found" });
+    }
   } catch (e) {
     console.error(e.message);
     res.status(500).json({

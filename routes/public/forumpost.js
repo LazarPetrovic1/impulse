@@ -7,21 +7,22 @@ const ForumPost = require("../../models/ForumPost");
 // Make post
 router.post(
   "/public/:id",
-  [
-    auth,
-    [
-      check("title", "Title is required.").not().isEmpty(),
-      check("body", "Content (at least textual) is required for a post")
-        .not()
-        .isEmpty(),
-    ],
-  ],
+  // [
+  //   auth,
+  //   [
+  //     check("title", "Title is required.").not().isEmpty(),
+  //     check("body", "Content (at least textual) is required for a post")
+  //       .not()
+  //       .isEmpty(),
+  //   ],
+  // ],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty())
-      return res.status(400).json({ errors: errors.array() });
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty())
+    //   return res.status(400).json({ errors: errors.array() });
     try {
       const user = await User.findById(req.params.id).select("username");
+      console.log("REKBADI", req.body);
       const newPost = {
         user: req.params.id,
         author: user.username,
@@ -38,7 +39,7 @@ router.post(
 );
 router.get("/public/user/:id", async (req, res) => {
   try {
-    const forumposts = await Forum.findMany({ user: req.params.id });
+    const forumposts = await ForumPost.find({ user: req.params.id });
     return res.json(forumposts);
   } catch (e) {
     console.log(e.message);
@@ -83,7 +84,7 @@ router.put("/public/:id", async (req, res) => {
     const post = await ForumPost.findById(req.params.id);
     const { body } = req.body;
     const newPost = {
-      ...post,
+      ...post.toObject(),
       body,
     };
     return res.json(newPost);
@@ -97,15 +98,20 @@ router.put("/public/:id", async (req, res) => {
 // Add comment
 router.post(
   "/public/comment/:id/:uid",
-  [auth, [check("content", "Text is required.").not().isEmpty()]],
+  // [auth, [check("content", "Text is required.").not().isEmpty()]],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) {
+    //   return res.status(400).json({ errors: errors.array() });
+    // }
     try {
+      console.log("REKPARAMZ", req.params);
       const user = await User.findById(req.params.uid).select("username");
       const post = await ForumPost.findById(req.params.id);
+      await console.log("JUZA POUST", {
+        user,
+        post,
+      });
       const newComment = {
         user: user.id,
         content: req.body.content,
@@ -207,7 +213,7 @@ router.put(
         (rep) => rep.id === req.params.reply_id
       );
       const newReply = {
-        ...reply,
+        ...reply.toObject(),
         content: req.body.content,
       };
       comment.replies = comment.replies.map((rep) =>
@@ -220,11 +226,13 @@ router.put(
   }
 ); // .toObject()
 router.get("/public/comment/:id/:comment_id/reply", async (req, res) => {
+  console.log(req.params);
   try {
     const post = await ForumPost.findById(req.params.id);
     const comment = await post.comments.find(
-      (comm) => comm.id.toString() === req.params.comment_id
+      (comm) => comm.id.toString() === req.params.comment_id.toString()
     );
+    await console.log({ post, comment });
     return res.json(comment.replies);
   } catch (e) {
     res.status(500).send("Internal server error.");

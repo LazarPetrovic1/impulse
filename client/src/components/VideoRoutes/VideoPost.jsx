@@ -29,7 +29,6 @@ function Video({
   like,
   dislike,
   impulsify,
-  getVideo,
   auth: { user },
   sendNotif,
   commentVideo,
@@ -42,30 +41,36 @@ function Video({
   const [comment, setComment] = useState("");
   const { language } = useContext(LanguageContext);
   const [seeMore, setSeeMore] = useState(false);
+  const {
+    by,
+    category,
+    comments,
+    date,
+    description,
+    endorsements,
+    impulsions,
+    // isVideo,
+    judgements,
+    meta,
+    name,
+    // savedBy,
+    url,
+    views,
+    _id,
+  } = video;
 
   useTimeout(() => {
     if (stopViews) {
       return;
     }
-    addView(video && video.video && video.video._id);
-  }, parseInt(video && video.video && video.video.meta && video.video.meta.duration) / 2);
+    addView(_id);
+  }, parseInt(meta.duration) / 2);
 
   useEffect(() => {
     (async function () {
       try {
-        await getVideo(match.params.id);
-      } catch (e) {
-        console.warn("Error, dude");
-      }
-    })();
-    // eslint-disable-next-line
-  }, []);
-
-  useEffect(() => {
-    (async function () {
-      try {
-        if (video && video.video && video.video.by) {
-          const res = await getUserByUsername(video.video.by);
+        if (by) {
+          const res = await getUserByUsername(by);
           await setByUser(res);
         }
       } catch (e) {
@@ -73,33 +78,23 @@ function Video({
       }
     })();
     // eslint-disable-next-line
-  }, [video && video.video && video.video.by, video]);
+  }, [by, video]);
 
   useEffect(() => {
-    if (video.video) {
-      if (
-        video.video.judgements.filter((jud) => jud.user === user._id).length > 0
-      ) {
-        setLiked("dislike");
-      } else if (
-        video.video.endorsements.filter((end) => end.user === user._id).length >
-        0
-      ) {
-        setLiked("like");
-      } else if (
-        video.video.impulsions.filter((imp) => imp.user === user._id).length > 0
-      ) {
-        setLiked("impulse");
-      }
+    if (judgements.filter((jud) => jud.user === user._id).length > 0) {
+      setLiked("dislike");
+    } else if (endorsements.filter((end) => end.user === user._id).length > 0) {
+      setLiked("like");
+    } else if (impulsions.filter((imp) => imp.user === user._id).length > 0) {
+      setLiked("impulse");
     }
     // eslint-disable-next-line
-  }, [video && video.video && video.video]);
+  }, [video]);
 
   const setLikability = (val) => {
-    const id = match.params.id;
+    const id = _id;
     const likerId = user._id;
-    console.log({ id, likerId });
-    const ownedById = video.video.user;
+    const ownedById = video.user;
 
     if (liked === val) setLiked(null);
     else setLiked(val);
@@ -108,12 +103,12 @@ function Video({
         like(id, likerId);
         if (ownedById !== likerId) {
           sendNotif({
-            userId: video.video.user,
+            userId: ownedById,
             type: "like",
             language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
-            url: `/videos/${video.video._id}`,
+            url: `/videos/${_id}`,
           });
         }
         break;
@@ -121,12 +116,12 @@ function Video({
         dislike(id, likerId);
         if (ownedById !== likerId) {
           sendNotif({
-            userId: video.video.user,
+            userId: ownedById,
             type: "dislike",
             language: localStorage.language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
-            url: `/videos/${video.video._id}`,
+            url: `/videos/${_id}`,
           });
         }
         break;
@@ -134,12 +129,12 @@ function Video({
         impulsify(id, likerId);
         if (ownedById !== likerId) {
           sendNotif({
-            userId: video.video.user,
+            userId: ownedById,
             type: "impulse",
             language: localStorage.language,
             username: user.username,
             name: `${user.firstName} ${user.lastName}`,
-            url: `/videos/${video.video._id}`,
+            url: `/videos/${_id}`,
           });
         }
         break;
@@ -156,17 +151,17 @@ function Video({
 
   return (
     <div style={{ pointerEvents: "all" }} className="mb-5">
-      {video.video && (
+      {video && (
         <div style={maxw} className="m-auto">
           <div className="d-flex justify-content-center">
-            <ResponsiveVideo src={video.video.url} type="video/*" />
+            <ResponsiveVideo src={url} type="video/*" />
           </div>
           <div className="d-flex">
             <div className="d-flex flex-column" style={{ flex: 1 }}>
-              <h1 className="my-3">{video.video.name}</h1>
+              <h1 className="my-3">{name}</h1>
               <p className="font-weight-bold">
                 <span className="badge badge-secondary">
-                  <Moment format="DD. MMM YYYY">{video.video.date}</Moment>
+                  <Moment format="DD. MMM YYYY">{date}</Moment>
                 </span>
               </p>
               <hr />
@@ -181,8 +176,7 @@ function Video({
                     }`}
                   />
                   <span style={{ fontSize: "2.5rem" }} className="text-success">
-                    {video.video.endorsements &&
-                      video.video.endorsements.length}
+                    {endorsements && endorsements.length}
                   </span>
                 </div>
                 <div className="position-relative">
@@ -193,7 +187,7 @@ function Video({
                     }`}
                   />
                   <span style={{ fontSize: "2.5rem" }} className="text-danger">
-                    {video.video.judgements && video.video.judgements.length}
+                    {judgements && judgements.length}
                   </span>
                 </div>
                 <div className="position-relative">
@@ -203,19 +197,19 @@ function Video({
                     liked={liked}
                   />
                   <span style={{ fontSize: "2.5rem" }} className="text-primary">
-                    {video.video.impulsions && video.video.impulsions.length}
+                    {impulsions && impulsions.length}
                   </span>
                 </div>
               </section>
               <section>
                 <ViewCounter className="text-right mb-0">
                   <span>
-                    {parseInt(video.video.views) < 1 ? (
+                    {parseInt(views) < 1 ? (
                       <Fragment>No views</Fragment>
-                    ) : parseInt(video.video.views) === 1 ? (
+                    ) : parseInt(views) === 1 ? (
                       <Fragment>1 view</Fragment>
                     ) : (
-                      <Fragment>{parseInt(video.video.views)} views</Fragment>
+                      <Fragment>{parseInt(views)} views</Fragment>
                     )}
                   </span>
                 </ViewCounter>
@@ -223,14 +217,12 @@ function Video({
             </div>
           </div>
           <div className="d-flex flex-column">
-            {video.video.description && (
+            {description && (
               <article>
                 <div className="my-3 lead">
-                  {seeMore
-                    ? video.video.description
-                    : truncate(video.video.description, 130)}
+                  {seeMore ? description : truncate(description, 130)}
                 </div>
-                {video.video.description.length >= 130 && (
+                {description.length >= 130 && (
                   <button
                     className="btn btn-block btn-outline-secondary my-3 font-weight-bold"
                     onClick={() => setSeeMore(!seeMore)}
@@ -239,10 +231,8 @@ function Video({
                     {seeMore ? "See less" : "See more"}
                   </button>
                 )}
-                {video.video.category && (
-                  <h4 className="text-secondary my-3">
-                    Category: {video.video.category}
-                  </h4>
+                {category && (
+                  <h4 className="text-secondary my-3">Category: {category}</h4>
                 )}
               </article>
             )}
@@ -250,7 +240,7 @@ function Video({
           <div className="shadow border border-secondary p-3 rounded">
             <Link
               style={{ textDecoration: "none", color: "#eee" }}
-              to={`/social/profile/${video.video.user}`}
+              to={`/social/profile/${video.user}`}
               className="d-flex align-items-center"
             >
               {byUser && (
@@ -270,7 +260,7 @@ function Video({
                   style={{ width: "50px", height: "50px" }}
                 />
               )}
-              <h3 className="m-0">@{video.video.by}</h3>
+              <h3 className="m-0">@{by}</h3>
             </Link>
           </div>
         </div>
@@ -291,15 +281,10 @@ function Video({
       </div>
       <div style={maxw} className="m-auto">
         {video &&
-          video.video &&
-          video.video.comments &&
-          video.video.comments.length > 0 &&
-          video.video.comments.map((comm) => (
-            <VideoComment
-              key={comm._id}
-              comment={comm}
-              videoId={video.video._id}
-            />
+          comments &&
+          comments.length > 0 &&
+          comments.map((comm) => (
+            <VideoComment key={comm._id} comment={comm} videoId={_id} />
           ))}
       </div>
     </div>
@@ -320,7 +305,6 @@ Video.propTypes = {
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  video: state.video,
 });
 
 export default connect(mapStateToProps, {

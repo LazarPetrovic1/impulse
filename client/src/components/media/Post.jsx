@@ -11,26 +11,33 @@ import { Link } from "react-router-dom";
 function Post({ image, setIsSlider, auth, i, match }) {
   const { user } = auth;
   const [owner, setOwner] = useState(null);
-  const [imgState, setImgState] = useState(image)
+  const [imgState, setImgState] = useState(image);
   useEffect(() => {
-    (async function () {
-      try {
-        const res = await axios.get(`/api/users/${image.user}`);
-        await setOwner(res.data);
-      } catch (e) {
-        console.warn("Error, dude");
-      }
-    })();
+    let isMounted = true;
+    if (isMounted) {
+      (async function () {
+        try {
+          const res = await axios.get(`/api/users/${image.user}`);
+          await setOwner(res.data);
+        } catch (e) {
+          console.warn("Error, dude");
+        }
+      })();
+    }
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line
   }, []);
   useEffect(() => {
     if (JSON.stringify(imgState) !== JSON.stringify(image)) {
-      setImgState(image)
+      setImgState(image);
     }
     // eslint-disable-next-line
-  }, [image])
+  }, [image]);
   return (
-    imgState && owner && (
+    imgState &&
+    owner && (
       <article style={{ width: "100%" }}>
         <div className="my-3 d-flex">
           <div>

@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useContext,
+} from "react";
 import Spinner from "../layout/Spinner";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -12,7 +18,6 @@ import { uploadProfileImage } from "../../actions/auth";
 import AddMediaButton from "../../styled/AddMediaButton";
 import AddMediaModal from "../layout/AddMediaModal";
 import Post from "../media/Post";
-import GenericPost from "../media/GenericPost";
 import { POST_DELIMITER } from "../../utils/nonReduxConstants";
 import ProfileImage from "./utilcomps/ProfileImage";
 import Selection from "./utilcomps/Selection";
@@ -23,13 +28,14 @@ import { getAllUsersMedia, wipeAllMedia } from "../../actions/allmedia.js";
 import StatusPost from "../media/StatusPost";
 import addbutton from "../../animations/addbutton.json";
 import GenericIcon from "../utils/icons/GenericIcon";
-import { ColourContext } from '../../contexts/ColourContext';
+import { ColourContext } from "../../contexts/ColourContext";
+import VideoPost from "../VideoRoutes/VideoPost";
 
 function InitialDashboard(props) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [selectedToShow, setSelectedToShow] = useState("all");
-  const { background } = useContext(ColourContext)
+  const { background } = useContext(ColourContext);
   const {
     auth: { user, loading },
     history,
@@ -47,6 +53,7 @@ function InitialDashboard(props) {
     allmedia,
     getPersonsStatuses,
     status,
+    match,
   } = props;
   const { media } = allmedia;
 
@@ -59,7 +66,7 @@ function InitialDashboard(props) {
   const gettingImages = async () => {
     try {
       if (hasMore) {
-        const hasMoreValue = await getImages("mine", page, POST_DELIMITER);
+        const hasMoreValue = await getImages(user._id, page, POST_DELIMITER);
         await setHasMore(hasMoreValue);
       }
     } catch (e) {
@@ -69,14 +76,15 @@ function InitialDashboard(props) {
 
   const gettingAllUserMedia = async () => {
     try {
-      if (hasMore) {
-        const hasMoreValue = await getAllUsersMedia(
-          "mine",
-          page,
-          POST_DELIMITER
-        );
-        await setHasMore(hasMoreValue);
+      if (!hasMore) {
+        return;
       }
+      const hasMoreValue = await getAllUsersMedia(
+        user._id,
+        page,
+        POST_DELIMITER
+      );
+      await setHasMore(hasMoreValue);
     } catch (e) {
       console.warn(e.message);
     }
@@ -86,9 +94,9 @@ function InitialDashboard(props) {
     if (selectedToShow === "images") {
       gettingImages();
     } else if (selectedToShow === "textual") {
-      getPersonsStatuses("mine");
+      getPersonsStatuses(user._id);
     } else if (selectedToShow === "videos") {
-      getUsersVideo("mine");
+      getUsersVideo(user._id);
     } else {
       gettingAllUserMedia();
     }
@@ -159,7 +167,7 @@ function InitialDashboard(props) {
     reader.onloadend = () => setPreviewSource(reader.result);
   };
 
-  return !loading && user ? (
+  return !loading && Object.keys(user).length > 0 ? (
     <div>
       <ProfileImage
         setProfileUploadButton={setProfileUploadButton}
@@ -237,18 +245,26 @@ function InitialDashboard(props) {
           {allmedia &&
             media &&
             media.map((post, i) =>
-              post.url && post.url.length > 0 ? (
-                <GenericPost
-                  post={post}
-                  i={i}
-                  setIsGenericSlider={setIsGenericSlider}
-                  key={post._id}
-                />
-              ) : (
+              post.type && post.type === "textual" ? (
                 <StatusPost status={post} key={post._id} />
-              )
+              ) : !post.isVideo && post.url ? (
+                <Post
+                  image={post}
+                  setIsSlider={setIsGenericSlider}
+                  i={i}
+                  key={post._id}
+                  match={match}
+                />
+              ) : post.isVideo && post.url ? (
+                <VideoPost
+                  match={match}
+                  stopViews
+                  key={post._id}
+                  video={post}
+                />
+              ) : null
             )}
-          <div ref={infiniteScrollPost} />
+          <div ref={infiniteScrollPost} style={{ height: "50px" }} />
         </DashCenter>
       )}
       {selectedToShow === "images" && images && images.length > 0 && (
@@ -266,7 +282,7 @@ function InitialDashboard(props) {
               i={i}
             />
           ))}
-          <div ref={infiniteScrollPost} />
+          <div ref={infiniteScrollPost} style={{ height: "50px" }} />
         </DashCenter>
       )}
       {selectedToShow === "videos" && videos && videos.length > 0 && (

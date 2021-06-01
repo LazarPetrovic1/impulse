@@ -8,7 +8,6 @@ const cloudinary = require("../../utils/cloudinary");
 //   const CHUNK_SIZE = 10 ** 6
 //   try {
 //     const range = req.headers["content-range"]
-//     await console.log("REJNDZ", range);
 //     if (!range) {
 //       res.status(400).json({ msg: "Requires range header" })
 //     }
@@ -20,7 +19,6 @@ const cloudinary = require("../../utils/cloudinary");
 //     const videoSize = await newRes.bytes
 //     const videoPath = await newRes.url
 //     const start = Number(range.split("/")[0].replace(/\D/g, ""))
-//     await console.log("START", start);
 //     const end = Math.min(start + CHUNK_SIZE, videoSize - 1)
 //     const contentLength = end - start + 1
 //     const headers = {
@@ -43,10 +41,10 @@ const cloudinary = require("../../utils/cloudinary");
 
 async function addView(req, res) {
   try {
-    const post = await VideoPost.findById(req.params.id)
-    post.views += 1
-    await post.save()
-    res.json(post.views)
+    const post = await VideoPost.findById(req.params.id);
+    post.views += 1;
+    await post.save();
+    res.json(post.views);
   } catch (e) {
     console.warn(e.message);
   }
@@ -72,7 +70,7 @@ async function uploadVideo(req, res) {
       meta: req.body.meta,
       category: req.body.category,
       savedBy: [],
-      views: 0
+      views: 0,
     });
     const post = await newPost.save();
     res.json(post);
@@ -98,7 +96,7 @@ async function getVideoById(req, res) {
   } catch (e) {
     console.error(e.message);
     if (e.kind === "ObjectId")
-    return res.status(404).json({ msg: "Post not found" });
+      return res.status(404).json({ msg: "Post not found" });
     res.status(500).send("Internal server error.");
   }
 }
@@ -120,20 +118,28 @@ async function deleteVideo(req, res) {
 // no update
 async function saveVideo(req, res) {
   try {
-    const post = await VideoPost.findById(req.params.id)
-    if (await post.savedBy.filter(sb => sb.user.toString() === req.user.id.toString()).length > 0) post.savedBy = await post.savedBy.filter(sb => sb.user.toString() !== req.user.id.toString())
-    else post.savedBy.push({ user: req.user.id })
-    await post.save()
-    res.json(post)
+    const post = await VideoPost.findById(req.params.id);
+    if (
+      (await post.savedBy.filter(
+        (sb) => sb.user.toString() === req.user.id.toString()
+      ).length) > 0
+    )
+      post.savedBy = await post.savedBy.filter(
+        (sb) => sb.user.toString() !== req.user.id.toString()
+      );
+    else post.savedBy.push({ user: req.user.id });
+    await post.save();
+    res.json(post);
   } catch (e) {
-    if (e.kind === 'ObjectId') return res.status(404).json({ msg: 'Post not found' })
-    res.status(500).send('Internal server error.')
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
   }
 }
 async function commentVideo(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty())
-  return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ errors: errors.array() });
   try {
     const user = await User.findById(req.user.id).select("-password");
     const post = await VideoPost.findById(req.params.id);
@@ -144,7 +150,7 @@ async function commentVideo(req, res) {
       endorsements: [],
       judgements: [],
       impulsions: [],
-      replies: []
+      replies: [],
     };
     post.comments.unshift(newComment);
     await post.save();
@@ -171,7 +177,7 @@ async function updateComment(req, res) {
     if (!comment) return res.status(404).json({ msg: "Comment not found." });
     const { content } = req.body;
     if (comment.user.toString() !== req.user.id)
-    return res.status(401).json({ msg: "User not authorised." });
+      return res.status(401).json({ msg: "User not authorised." });
     const newComment = {
       ...comment.toObject(),
       user: comment.user,
@@ -180,17 +186,17 @@ async function updateComment(req, res) {
       replies: comment.replies,
     };
     const index = post.comments
-    .map((comm) => comm.id)
-    .indexOf(req.params.comment_id);
+      .map((comm) => comm.id)
+      .indexOf(req.params.comment_id);
     post.comments = post.comments.map((comm) =>
-    comm.id === req.params.comment_id ? newComment : comm
-  );
-  await post.save();
-  return res.json(post.comments[index]);
-} catch (e) {
-  console.error(e.message);
-  res.status(500).send("Internal server error.");
-}
+      comm.id === req.params.comment_id ? newComment : comm
+    );
+    await post.save();
+    return res.json(post.comments[index]);
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).send("Internal server error.");
+  }
 }
 async function deleteComment(req, res) {
   try {
@@ -200,10 +206,10 @@ async function deleteComment(req, res) {
     );
     if (!comment) return res.status(404).json({ msg: "Comment not found." });
     if (comment.user.toString() !== req.user.id)
-    return res.status(401).json({ msg: "User not authorised." });
+      return res.status(401).json({ msg: "User not authorised." });
     const removeIndex = post.comments
-    .map((comment) => comment.user.toString())
-    .indexOf(req.user.id);
+      .map((comment) => comment.user.toString())
+      .indexOf(req.user.id);
     post.comments.splice(removeIndex, 1);
     await post.save();
     return res.json(post.comments);
@@ -214,17 +220,17 @@ async function deleteComment(req, res) {
 }
 async function dismissVideo(req, res) {
   try {
-    const user = await User.findById(req.user.id)
-    const { dismissedPosts } = req.body
+    const user = await User.findById(req.user.id);
+    const { dismissedPosts } = req.body;
     const newUser = await User.findByIdAndUpdate(
       req.user.id,
       { dismissedPosts: [...dismissedPosts, req.params.id] },
       { new: true }
-    )
-    return res.json(newUser)
+    );
+    return res.json(newUser);
   } catch (e) {
-    console.error(e.message)
-    res.status(500).send('Internal server error.')
+    console.error(e.message);
+    res.status(500).send("Internal server error.");
   }
 }
 async function replyToComment(req, res) {
@@ -240,20 +246,20 @@ async function replyToComment(req, res) {
       by: user.username,
       endorsements: [],
       judgements: [],
-      impulsions: []
+      impulsions: [],
     };
     const newComment = {
       ...comment.toObject(),
       replies: [...comment.replies, newReply],
     };
     const index = post.comments
-    .map((comm) => comm.id)
-    .indexOf(req.params.comment_id);
+      .map((comm) => comm.id)
+      .indexOf(req.params.comment_id);
     post.comments = post.comments.map((comm) =>
-    comm.id === req.params.comment_id ? newComment : comm
-  );
-  await post.save();
-  res.json(post.comments[index]);
+      comm.id === req.params.comment_id ? newComment : comm
+    );
+    await post.save();
+    res.json(post.comments[index]);
   } catch (e) {
     res.status(500).send("Internal server error.");
   }
@@ -275,13 +281,13 @@ async function updateReply(req, res) {
       by: user.username,
     };
     comment.replies = comment.replies.map((rep) =>
-    rep.id === req.params.reply_id ? newReply : rep
-  );
-  await post.save();
-  res.json(comment);
-} catch (e) {
-  res.status(500).send("Internal server error.");
-}
+      rep.id === req.params.reply_id ? newReply : rep
+    );
+    await post.save();
+    res.json(comment);
+  } catch (e) {
+    res.status(500).send("Internal server error.");
+  }
 }
 async function getRepliesToComment(req, res) {
   try {
@@ -301,10 +307,10 @@ async function deleteReply(req, res) {
     const reply = comment.replies.find((rep) => rep.id === req.params.reply_id);
     if (!reply) return res.status(404).json({ msg: "Reply not found." });
     if (reply.user.toString() !== req.user.id)
-    return res.status(401).json({ msg: "User not authorised." });
+      return res.status(401).json({ msg: "User not authorised." });
     const removeIndex = comment.replies
-    .map((rep) => rep.user.toString())
-    .indexOf(req.user.id);
+      .map((rep) => rep.user.toString())
+      .indexOf(req.user.id);
     comment.replies = comment.replies.filter(
       (rep) => rep.id !== req.params.reply_id
     );
@@ -351,7 +357,7 @@ async function seeAllWhoImpulsed(req, res) {
         );
       }
     } else {
-      return res.json({ msg: "Either loading or 404: Not Found." })
+      return res.json({ msg: "Either loading or 404: Not Found." });
     }
     res.json(users);
   } catch (e) {
@@ -375,7 +381,7 @@ async function seeAllWhoLiked(req, res) {
         );
       }
     } else {
-      return res.json({ msg: "Either loading or 404: Not Found." })
+      return res.json({ msg: "Either loading or 404: Not Found." });
     }
     res.json(users);
   } catch (e) {
@@ -399,7 +405,7 @@ async function seeAllWhoDisliked(req, res) {
         );
       }
     } else {
-      return res.json({ msg: "Either loading or 404: Not Found." })
+      return res.json({ msg: "Either loading or 404: Not Found." });
     }
     res.json(users);
   } catch (e) {
@@ -586,11 +592,14 @@ async function dislikeVideo(req, res) {
 }
 async function impulsifyComment(req, res) {
   try {
-    const post = await VideoPost.findById(req.params.id)
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const post = await VideoPost.findById(req.params.id);
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
     if (
-      comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
-        .length > 0
+      comment.impulsions.filter(
+        (imp) => imp.user.toString() === req.body.likerId
+      ).length > 0
     ) {
       comment.impulsions.splice(
         comment.impulsions
@@ -605,10 +614,11 @@ async function impulsifyComment(req, res) {
         judgements: comment.judgements,
       });
     }
-    comment.impulsions.unshift({ user: req.body.likerId })
+    comment.impulsions.unshift({ user: req.body.likerId });
     if (
-      comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
-        .length > 0
+      comment.judgements.filter(
+        (jud) => jud.user.toString() === req.body.likerId
+      ).length > 0
     ) {
       comment.judgements.splice(
         comment.judgements
@@ -644,59 +654,63 @@ async function impulsifyComment(req, res) {
   }
 }
 async function likeComment(req, res) {
-try {
-  const post = await VideoPost.findById(req.params.id);
-  const comment = await post.comments.find(c => c.id === req.params.commentId)
-  if (
-    comment.endorsements.filter(
-      (end) => end.user.toString() === req.body.likerId
-    ).length > 0
-  ) {
-    comment.endorsements.splice(
-      comment.endorsements
-        .map((end) => end.user.toString())
-        .indexOf(req.body.likerId),
-      1
+  try {
+    const post = await VideoPost.findById(req.params.id);
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
     );
+    if (
+      comment.endorsements.filter(
+        (end) => end.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      comment.endorsements.splice(
+        comment.endorsements
+          .map((end) => end.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+      await post.save();
+      return res.json({
+        impulsions: comment.impulsions,
+        endorsements: comment.endorsements,
+        judgements: comment.judgements,
+      });
+    }
+    comment.endorsements.unshift({ user: req.body.likerId });
+    if (
+      comment.judgements.filter(
+        (jud) => jud.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      comment.judgements.splice(
+        comment.judgements
+          .map((jud) => jud.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    if (
+      comment.impulsions.filter(
+        (imp) => imp.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      // Get remove index
+      comment.impulsions.splice(
+        comment.impulsions
+          .map((imp) => imp.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
     await post.save();
     return res.json({
       impulsions: comment.impulsions,
       endorsements: comment.endorsements,
       judgements: comment.judgements,
     });
-  }
-  comment.endorsements.unshift({ user: req.body.likerId });
-  if (
-    comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
-      .length > 0
-  ) {
-    comment.judgements.splice(
-      comment.judgements
-        .map((jud) => jud.user.toString())
-        .indexOf(req.body.likerId),
-      1
-    );
-  }
-  if (
-    comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
-      .length > 0
-  ) {
-    // Get remove index
-    comment.impulsions.splice(
-      comment.impulsions
-        .map((imp) => imp.user.toString())
-        .indexOf(req.body.likerId),
-      1
-    );
-  }
-  await post.save();
-  return res.json({
-    impulsions: comment.impulsions,
-    endorsements: comment.endorsements,
-    judgements: comment.judgements,
-  });
-} catch (e) {
-  console.error(e.message);
+  } catch (e) {
+    console.error(e.message);
     if (e.kind === "ObjectId")
       return res.status(404).json({ msg: "Post not found" });
     res.status(500).send("Internal server error.");
@@ -705,10 +719,13 @@ try {
 async function dislikeComment(req, res) {
   try {
     const post = await VideoPost.findById(req.params.id);
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
     if (
-      comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
-        .length > 0
+      comment.judgements.filter(
+        (jud) => jud.user.toString() === req.body.likerId
+      ).length > 0
     ) {
       comment.judgements.splice(
         comment.judgements
@@ -738,8 +755,9 @@ async function dislikeComment(req, res) {
       );
     }
     if (
-      comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
-        .length > 0
+      comment.impulsions.filter(
+        (imp) => imp.user.toString() === req.body.likerId
+      ).length > 0
     ) {
       // Get remove index
       comment.impulsions.splice(
@@ -764,9 +782,13 @@ async function dislikeComment(req, res) {
 }
 async function impulsifyReplyToComment(req, res) {
   try {
-    const post = await VideoPost.findById(req.params.id)
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
-    const reply = await comment.replies.find(r => r.id === req.params.replyId)
+    const post = await VideoPost.findById(req.params.id);
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
+    const reply = await comment.replies.find(
+      (r) => r.id === req.params.replyId
+    );
     if (
       reply.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -784,7 +806,7 @@ async function impulsifyReplyToComment(req, res) {
         judgements: reply.judgements,
       });
     }
-    reply.impulsions.unshift({ user: req.body.likerId })
+    reply.impulsions.unshift({ user: req.body.likerId });
     if (
       reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0
@@ -825,8 +847,12 @@ async function impulsifyReplyToComment(req, res) {
 async function likeReplyToComment(req, res) {
   try {
     const post = await VideoPost.findById(req.params.id);
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
-    const reply = await comment.replies.find(r => r.id === req.params.replyId)
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
+    const reply = await comment.replies.find(
+      (r) => r.id === req.params.replyId
+    );
     if (
       reply.endorsements.filter(
         (end) => end.user.toString() === req.body.likerId
@@ -877,16 +903,20 @@ async function likeReplyToComment(req, res) {
     });
   } catch (e) {
     console.error(e.message);
-      if (e.kind === "ObjectId")
-        return res.status(404).json({ msg: "Post not found" });
-      res.status(500).send("Internal server error.");
-    }
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
+  }
 }
 async function dislikeReplyToComment(req, res) {
   try {
     const post = await VideoPost.findById(req.params.id);
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
-    const reply = await comment.replies.find(r => r.id === req.params.replyId)
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
+    const reply = await comment.replies.find(
+      (r) => r.id === req.params.replyId
+    );
     if (
       reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0
@@ -974,7 +1004,7 @@ const video = {
   dislikeComment,
   impulsifyReplyToComment,
   likeReplyToComment,
-  dislikeReplyToComment
+  dislikeReplyToComment,
 };
 
 module.exports = video;

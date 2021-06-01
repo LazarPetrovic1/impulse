@@ -12,22 +12,25 @@ import { Link } from "react-router-dom";
 import SideMenu from "./SideMenu";
 import HomePageAdditionalControls from "./utilcomps/HomePageAdditionalControls";
 import AddGroup from "./utilcomps/AddGroup";
-import { endFreeTrial } from '../../actions/auth';
+import { endFreeTrial } from "../../actions/auth";
 
 function HomePage({
   auth: { user, loading, isAuthenticated },
   setBulkMedia,
   allmedia,
   wipeAllMedia,
-  endFreeTrial
+  endFreeTrial,
 }) {
   const [friends, setFriends] = useState(null);
-  useEffect(() => () => setFriends(user && user.friends ? user.friends : []), /*eslint-disable-line*/ []);
   const [friendsMedia, setFriendsMedia] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isGenericSlider, setIsGenericSlider] = useState([false, 0]);
   const [show, setShow] = useState(false);
+  useEffect(
+    () => () => setFriends(user && user.friends ? user.friends : []),
+    /*eslint-disable-line*/ []
+  );
   const observer = useRef();
   const infiniteScrollPost = useCallback(
     (node) => {
@@ -58,7 +61,7 @@ function HomePage({
   useEffect(() => {
     if (user && user.trial && user.trial.isUsingTrial) {
       if (new Date() > new Date(user.trial.dateEnded)) {
-        endFreeTrial()
+        endFreeTrial();
       }
     }
     // eslint-disable-next-line
@@ -180,5 +183,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   setBulkMedia,
   wipeAllMedia,
-  endFreeTrial
+  endFreeTrial,
 })(HomePage);
