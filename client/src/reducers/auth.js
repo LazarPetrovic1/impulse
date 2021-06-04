@@ -9,6 +9,10 @@ import {
   DELETE_ACCOUNT,
   ADD_PROFILE_IMAGE,
   PREMIUM_USER,
+  UNFRIEND_PERSON,
+  BLOCK_PERSON,
+  SEND_FRIEND_REQUEST,
+  UNBLOCK_PERSON,
 } from "../actions/types";
 
 const initialState = {
@@ -50,6 +54,42 @@ export default (state = initialState, action) => {
         token: null,
         isAuthenticated: false,
         loading: false,
+      };
+    case UNFRIEND_PERSON:
+      return {
+        ...state,
+        loading: false,
+        user: {
+          ...state.user,
+          friends: payload,
+        },
+      };
+    case BLOCK_PERSON:
+      return {
+        ...state,
+        loading: false,
+        user: {
+          ...state.user,
+          friends: payload.friends,
+          blocked: payload.blocked,
+        },
+      };
+    case UNBLOCK_PERSON:
+      return {
+        ...state,
+        loading: false,
+        user: {
+          ...state.user,
+          blocked: payload.blocked,
+        },
+      };
+    case SEND_FRIEND_REQUEST:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          friendRequestsSent: payload,
+        },
       };
     default:
       return state;

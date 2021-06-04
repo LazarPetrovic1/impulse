@@ -12,8 +12,13 @@ import {
   LOGOUT,
   CLEAR_PROFILE,
   PREMIUM_USER,
+  BLOCK_PERSON,
+  UNFRIEND_PERSON,
+  UNBLOCK_PERSON,
 } from "./types";
 import setAuthToken from "../utils/setAuthToken";
+import io from "socket.io-client";
+const socket = io.connect(`http://localhost:5000`);
 
 // Load a user
 export const loadUser = () => async (dispatch) => {
@@ -256,4 +261,42 @@ export const stopPremiumAccount = () => async (dispatch) => {
       type: LOGIN_FAIL,
     });
   }
+};
+
+export const unfriendPerson = ({ senderId, blockedId }) => async (dispatch) => {
+  await socket.emit("unfriendPerson", { senderId, blockedId });
+  // eslint-disable-next-line
+  const person = socket.on("unfriendedPerson", (senderUser) => {
+    dispatch({
+      type: UNFRIEND_PERSON,
+      payload: senderUser.friends,
+    });
+  });
+};
+
+export const blockPerson = ({ senderId, blockedId }) => async (dispatch) => {
+  await socket.emit("blockPerson", { senderId, blockedId });
+  // eslint-disable-next-line
+  const person = socket.on("blockedPerson", (senderUser) => {
+    dispatch({
+      type: BLOCK_PERSON,
+      payload: {
+        friends: senderUser.friends,
+        blocked: senderUser.blocked,
+      },
+    });
+  });
+};
+
+export const unblockPerson = ({ senderId, blockedId }) => async (dispatch) => {
+  await socket.emit("unblockPerson", { senderId, blockedId });
+  // eslint-disable-next-line
+  const person = socket.on("unblockedPerson", (senderUser) => {
+    dispatch({
+      type: UNBLOCK_PERSON,
+      payload: {
+        blocked: senderUser.blocked,
+      },
+    });
+  });
 };

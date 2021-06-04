@@ -5,7 +5,6 @@ import MarkdownRenderer from "react-markdown-renderer";
 import GroupMediaItem from "./GroupMediaItem";
 import Spinner from "../layout/Spinner";
 import Modal from "../utils/Modal";
-import { deletePostInGroup } from "../../actions/group";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import DeleteIcon from "../utils/icons/DeleteIcon";
@@ -15,13 +14,16 @@ import {
   likePostInGroup as like,
   dislikePostInGroup as dislike,
   commentGroupPost,
+  deletePostInGroup,
+  getPostComments,
 } from "../../actions/group";
 import { sendNotif } from "../../actions/notifs";
 import { LanguageContext } from "../../contexts/LanguageContext";
 import ShortLogo from "../../styled/Logo/ShortLogo";
 import GroupPostComment from "./utils/GroupPostComment";
-import GroupPostInput from './inputs/GroupPostInput';
+import GroupPostInput from "./inputs/GroupPostInput";
 import { ColourContext } from "../../contexts/ColourContext";
+import { COMMENT_DELIMITER } from "../../utils/nonReduxConstants";
 
 function GroupPost({
   post,
@@ -33,13 +35,18 @@ function GroupPost({
   dislike,
   sendNotif,
   commentGroupPost,
+  getPostComments,
 }) {
   const [user, setUser] = useState(null);
   const [showDelete, setShowDelete] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [liked, setLiked] = useState(null);
   const { language } = useContext(LanguageContext);
-  const { background } = useContext(ColourContext)
+  const { background } = useContext(ColourContext);
+  const [page, setPage] = useState(1);
+  const [hasMoreComments, setHasMoreComments] = useState(true);
+  const [commentsLength, setCommentsLength] = useState(0);
+  const [areCommentsHidden, setAreCommentsHidden] = useState(false);
   useEffect(() => {
     (async function () {
       try {
@@ -51,6 +58,29 @@ function GroupPost({
     })();
     // eslint-disable-next-line
   }, []);
+  useEffect(() => {
+    (async function () {
+      try {
+        if (!hasMoreComments) {
+          return;
+        }
+        if (page === 1 && post.comments.length > 0) {
+          return;
+        }
+        const res = await getPostComments(
+          groupid,
+          post._id,
+          page,
+          COMMENT_DELIMITER
+        );
+        await setHasMoreComments(res.hasMore);
+        await setCommentsLength(res.commentsLength);
+      } catch (e) {
+        console.warn(e.message);
+      }
+    })();
+    // eslint-disable-next-line
+  }, [page]);
   useEffect(() => {
     if (post && user && user._id) {
       if (post.judgements.filter((jud) => jud.user === user._id).length > 0) {
@@ -123,12 +153,6 @@ function GroupPost({
         return;
     }
   };
-  // const onSubmit = async (e) => {
-  //   e.preventDefault();
-  //   // await addCommentTopost(comment, post._id);
-  //   await commentGroupPost(group._id, post._id, comment);
-  //   await setComment("");
-  // };
   return user && group && post ? (
     <section className="mb-5">
       <DashCenter
@@ -226,33 +250,44 @@ function GroupPost({
         style={{ pointerEvents: "all" }}
       >
         <GroupPostInput groupId={group._id} postId={post._id} />
-        {/* <form onSubmit={onSubmit} className="d-flex mt-4">
-          <input
-            type="text"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            className="form-control"
-            placeholder="Type a message"
-          />
-          <button className="btn btn-secondary" type="submit">
-            <i className="fas fa-paper-plane" />
-          </button>
-        </form> */}
+        <button
+          className="btn btn-block pt-2"
+          style={{ background: "transparent", color: "white" }}
+          onClick={() => setPage(page + 1)}
+        >
+          Load more comments{" "}
+          {page > 1 &&
+            commentsLength > 0 &&
+            `${post.comments.length}/${commentsLength}`}
+        </button>
+        <button
+          className="btn btn-block pt-2"
+          style={{ background: "transparent", color: "white" }}
+          onClick={() => setAreCommentsHidden(!areCommentsHidden)}
+        >
+          {areCommentsHidden ? "Expand" : "Hide"} comments
+        </button>
       </DashCenter>
-      <DashCenter
-        display="block"
-        background={background}
-        maxw="1300px"
-        className="m-auto"
-        style={{ pointerEvents: "all" }}
-      >
-        {post &&
-          post.comments &&
-          post.comments.length > 0 &&
-          post.comments.map((comm) => (
-            <GroupPostComment key={comm._id} comment={comm} postId={post._id} />
-          ))}
-      </DashCenter>
+      {!areCommentsHidden && (
+        <DashCenter
+          display="block"
+          background={background}
+          maxw="1300px"
+          className="m-auto"
+          style={{ pointerEvents: "all" }}
+        >
+          {post &&
+            post.comments &&
+            post.comments.length > 0 &&
+            post.comments.map((comm) => (
+              <GroupPostComment
+                key={comm._id}
+                comment={comm}
+                postId={post._id}
+              />
+            ))}
+        </DashCenter>
+      )}
       <Modal
         title="Delete post"
         show={showDialog}
@@ -290,6 +325,7 @@ GroupPost.propTypes = {
   dislike: PropTypes.func.isRequired,
   sendNotif: PropTypes.func.isRequired,
   commentGroupPost: PropTypes.func.isRequired,
+  getPostComments: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, {
@@ -299,4 +335,5 @@ export default connect(mapStateToProps, {
   dislike,
   sendNotif,
   commentGroupPost,
+  getPostComments,
 })(GroupPost);

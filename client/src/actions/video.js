@@ -31,7 +31,7 @@ import {
   ALL_MEDIA_OUTSIDE_COMMENT_REMOVE,
   ALL_MEDIA_OUTSIDE_COMMENT_EDIT,
   ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
-  ALL_MEDIA_OUTSIDE_SPAWN_REPLY,
+  ALL_MEDIA_OUTSIDE_SPAWN_REPLY_VIDEO,
   ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
   ALL_MEDIA_OUTSIDE_REPLY_REMOVE,
   ALL_MEDIA_OUTSIDE_REPLY_EDIT,
@@ -595,13 +595,14 @@ export const videoReplyToComment = (id, comment_id, content) => async (
       JSON.stringify({ content }),
       config
     );
+    await console.log("VIDEO REPLY", res.data);
     dispatch({
       type: VIDEO_ADD_REPLY,
       payload: res.data,
     });
     dispatch(videoGetComments(id));
     dispatch({
-      type: ALL_MEDIA_OUTSIDE_SPAWN_REPLY,
+      type: ALL_MEDIA_OUTSIDE_SPAWN_REPLY_VIDEO,
       payload: {
         type: "video",
         id,

@@ -47,6 +47,15 @@
         min-height: calc(100vh - 56px);
         width: 100vw;
       }
+
+      #canvas {
+        background: linear-gradient(
+          90deg,
+          rgba(17, 17, 17, 1) 0%,
+          rgba(0, 0, 55, 1) 44%,
+          rgba(17, 17, 17, 1) 100%
+        );
+      }
     </style>
   </head>
   <body>
@@ -56,8 +65,6 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <script type="text/javascript">
       const title = document.title;
-      // const script = document.querySelector("script#theme")
-      // const theme = JSON.parse(localStorage.getItem('premiumTheme'))
       window.addEventListener("blur", () => {
         document.title = "Come back, I miss you.";
       });

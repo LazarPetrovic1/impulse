@@ -326,9 +326,9 @@ export const dashboardcomponent = {
 
 export const sidemenucomponent = {
   _forum: {
-    en: "Forum",
-    sr: "Forum",
-    de: "Forum",
+    en: "Issues",
+    sr: "Greske",
+    de: "Fehler",
   },
   _social: {
     en: "Social",

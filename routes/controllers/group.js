@@ -34,9 +34,43 @@ async function getAllGroups(req, res) {
   }
 }
 async function getGroup(req, res) {
+  // RESUME FUNC!!!
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+  const commentPage = parseInt(req.query.comment_page) || 1;
+  const commentLimit = parseInt(req.query.comment_limit) || 10;
+  const replyPage = parseInt(req.query.reply_page) || 1;
+  const replyLimit = parseInt(req.query.reply_limit) || 5;
+  const [startIndexPosts, startIndexComments, startIndexReplies] = [
+    (page - 1) * limit,
+    (commentPage - 1) * commentLimit,
+    (replyPage - 1) * replyLimit,
+  ];
+  const [endIndexPosts, endIndexComments, endIndexReplies] = [
+    page * limit,
+    commentPage * commentLimit,
+    replyPage * replyLimit,
+  ];
+  const results = {};
+
   try {
     const group = await Group.findById(req.params.id);
-    res.json(group);
+    const posts = await group.posts.slice(startIndexPosts, endIndexPosts);
+    const newPosts = await posts.map((post) => {
+      post.comments = post.comments
+        .slice(startIndexComments, endIndexComments)
+        .map((comm) => {
+          comm.replies = comm.replies.slice(startIndexReplies, endIndexReplies);
+          return comm;
+        });
+      return post;
+    });
+    const hasMoreValuePosts = posts.length > endIndexPosts;
+    const newGroup = {
+      ...group.toObject(),
+      posts: newPosts,
+    };
+    res.json(newGroup);
   } catch (e) {
     console.error(e.message);
     res.status(500).send("Internal server error.");
@@ -54,7 +88,7 @@ async function deleteGroup(req, res) {
 }
 // some group updates...
 // save group technically in redux
-// black group as well as dismiss post functionalities needed
+// block group as well as dismiss post functionalities needed
 async function postInGroup(req, res) {
   try {
     const group = await Group.findById(req.params.id);
@@ -397,9 +431,28 @@ async function commentGroupPost(req, res) {
 }
 async function getPostComments(req, res) {
   try {
+    const commentPage = parseInt(req.query.comment_page) || 1;
+    const commentLimit = parseInt(req.query.comment_limit) || 10;
+    const startIndexComments = (commentPage - 1) * commentLimit;
+    const endIndexComments = commentPage * commentLimit;
     const group = await Group.findById(req.params.id);
-    const post = await group.posts.find((p) => p._id === req.params.postId);
-    return res.json(post.comments);
+    const post = await group.posts.find((p) => p.id === req.params.postId);
+    const newComments = await post.comments.slice(
+      startIndexComments,
+      endIndexComments
+    );
+    if (startIndexComments < post.comments.length) {
+      return res.json({
+        comments: newComments,
+        commentsLength: post.comments.length,
+        hasMore: true,
+      });
+    }
+    return res.json({
+      hasMore: false,
+      commentsLength: post.comments.length,
+      comments: [],
+    });
   } catch (e) {
     return res.json({ msg: "Either loading or 404: Not Found." });
   }
@@ -471,7 +524,7 @@ async function replyToComment(req, res) {
     };
     const newComment = {
       ...comment.toObject(),
-      replies: [...comment.replies, newReply],
+      replies: [newReply, ...comment.replies],
     };
     const index = post.comments
       .map((comm) => comm.id)
@@ -483,6 +536,37 @@ async function replyToComment(req, res) {
     res.json(post.comments[index]);
   } catch (e) {
     res.status(500).send("Internal server error.");
+  }
+}
+async function getCommentReplies(req, res) {
+  try {
+    const replyPage = parseInt(req.query.reply_page) || 1;
+    const replyLimit = parseInt(req.query.reply_limit) || 10;
+    const startIndexReplies = (replyPage - 1) * replyLimit;
+    const endIndexReplies = replyPage * replyLimit;
+    const group = await Group.findById(req.params.id);
+    const post = await group.posts.find((p) => p.id === req.params.postId);
+    const comment = await post.comments.find(
+      (comm) => comm.id === req.params.commentId
+    );
+    const newReplies = await comment.replies.slice(
+      startIndexReplies,
+      endIndexReplies
+    );
+    if (startIndexReplies < comment.replies.length) {
+      return res.json({
+        replies: newReplies,
+        repliesLength: comment.replies.length,
+        hasMore: true,
+      });
+    }
+    return res.json({
+      hasMore: false,
+      repliesLength: comment.replies.length,
+      replies: [],
+    });
+  } catch (e) {
+    return res.json({ msg: "Either loading or 404: Not Found." });
   }
 }
 async function updateReply(req, res) {
@@ -944,6 +1028,7 @@ const group = {
   updateComment,
   deleteComment,
   replyToComment,
+  getCommentReplies,
   updateReply,
   deleteReply,
   impulsifyComment,

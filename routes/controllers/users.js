@@ -133,7 +133,7 @@ async function searchUsers(req, res) {
 async function getAuthor(req, res) {
   try {
     const user = await User.findById(req.params.id).select(
-      "firstName lastName"
+      "firstName lastName username"
     );
     return res.json(user);
   } catch (e) {

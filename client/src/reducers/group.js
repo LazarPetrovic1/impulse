@@ -11,9 +11,11 @@ import {
   LIKE_POST_IN_GROUP,
   DISLIKE_POST_IN_GROUP,
   COMMENT_GROUP_POST,
+  GET_COMMENTS_OF_GROUP_POST,
   UPDATE_GROUP_POST_COMMENT,
   DELETE_GROUP_POST_COMMENT,
   REPLY_TO_GROUP_POST_COMMENT,
+  GET_REPLIES_TO_COMMENT_OF_GROUP_POST,
   UPDATE_GROUP_POST_REPLY,
   DELETE_GROUP_POST_REPLY,
   IMPULSIFY_GROUP_POST_COMMENT,
@@ -21,7 +23,7 @@ import {
   LIKE_GROUP_POST_COMMENT,
   IMPULSIFY_GROUP_POST_REPLY,
   LIKE_GROUP_POST_REPLY,
-  DISLIKE_GROUP_POST_REPLY
+  DISLIKE_GROUP_POST_REPLY,
 } from "../actions/types";
 
 const initialState = {
@@ -86,12 +88,16 @@ export default (state = initialState, action) => {
             post._id === payload.postId
               ? {
                   ...post,
-                  comments: post.comments.map(comm => comm._id === payload.commentId ? {
-                    ...comm,
-                    impulsions: payload.impulsions,
-                    endorsements: payload.endorsements,
-                    judgements: payload.judgements,
-                  } : comm)
+                  comments: post.comments.map((comm) =>
+                    comm._id === payload.commentId
+                      ? {
+                          ...comm,
+                          impulsions: payload.impulsions,
+                          endorsements: payload.endorsements,
+                          judgements: payload.judgements,
+                        }
+                      : comm
+                  ),
                 }
               : post
           ),
@@ -100,29 +106,37 @@ export default (state = initialState, action) => {
     case IMPULSIFY_GROUP_POST_REPLY:
     case LIKE_GROUP_POST_REPLY:
     case DISLIKE_GROUP_POST_REPLY:
-    return {
-      ...state,
-      loading: false,
-      group: {
-        ...state.group,
-        posts: state.group.posts.map((post) =>
-          post._id === payload.postId
-            ? {
-                ...post,
-                comments: post.comments.map(comm => comm._id === payload.commentId ? {
-                  ...comm,
-                  replies: comm.replies.map(rep => rep._id === payload.replyId ? {
-                    ...rep,
-                    impulsions: payload.impulsions,
-                    endorsements: payload.endorsements,
-                    judgements: payload.judgements,
-                  } : rep)
-                } : comm)
-              }
-            : post
-        ),
-      },
-    };
+      return {
+        ...state,
+        loading: false,
+        group: {
+          ...state.group,
+          posts: state.group.posts.map((post) =>
+            post._id === payload.postId
+              ? {
+                  ...post,
+                  comments: post.comments.map((comm) =>
+                    comm._id === payload.commentId
+                      ? {
+                          ...comm,
+                          replies: comm.replies.map((rep) =>
+                            rep._id === payload.replyId
+                              ? {
+                                  ...rep,
+                                  impulsions: payload.impulsions,
+                                  endorsements: payload.endorsements,
+                                  judgements: payload.judgements,
+                                }
+                              : rep
+                          ),
+                        }
+                      : comm
+                  ),
+                }
+              : post
+          ),
+        },
+      };
     case DELETE_GROUP:
       return {
         ...state,
@@ -164,6 +178,22 @@ export default (state = initialState, action) => {
           ),
         },
       };
+    case GET_COMMENTS_OF_GROUP_POST:
+      return {
+        ...state,
+        loading: false,
+        group: {
+          ...state.group,
+          posts: state.group.posts.map((post) =>
+            post._id === payload.postId
+              ? {
+                  ...post,
+                  comments: [...post.comments, ...payload.comments],
+                }
+              : post
+          ),
+        },
+      };
     case REPLY_TO_GROUP_POST_COMMENT:
     case UPDATE_GROUP_POST_COMMENT:
       return {
@@ -177,6 +207,29 @@ export default (state = initialState, action) => {
                   ...post,
                   comments: post.comments.map((comm) =>
                     comm._id === payload.commentId ? payload.comment : comm
+                  ),
+                }
+              : post
+          ),
+        },
+      };
+    case GET_REPLIES_TO_COMMENT_OF_GROUP_POST:
+      return {
+        ...state,
+        loading: false,
+        group: {
+          ...state.group,
+          posts: state.group.posts.map((post) =>
+            post._id === payload.postId
+              ? {
+                  ...post,
+                  comments: post.comments.map((comm) =>
+                    comm._id === payload.commentId
+                      ? {
+                          ...comm,
+                          replies: [...comm.replies, ...payload.replies],
+                        }
+                      : comm
                   ),
                 }
               : post

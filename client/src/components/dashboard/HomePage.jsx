@@ -1,11 +1,16 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  Fragment,
+} from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Spinner from "../layout/Spinner";
 import { getFriendsMediaInBulk } from "../../utils/friends";
 import { POST_DELIMITER } from "../../utils/nonReduxConstants";
 import GenericSlider from "../media/GenericSlider";
-import GenericPost from "../media/GenericPost";
 import DashCenter from "../../styled/DashCenter";
 import { setBulkMedia, wipeAllMedia } from "../../actions/allmedia.js";
 import { Link } from "react-router-dom";
@@ -13,6 +18,9 @@ import SideMenu from "./SideMenu";
 import HomePageAdditionalControls from "./utilcomps/HomePageAdditionalControls";
 import AddGroup from "./utilcomps/AddGroup";
 import { endFreeTrial } from "../../actions/auth";
+import ImagePost from "../media/Post";
+import StatusPost from "../media/StatusPost";
+import VideoPost from "../VideoRoutes/VideoPost";
 
 function HomePage({
   auth: { user, loading, isAuthenticated },
@@ -20,6 +28,7 @@ function HomePage({
   allmedia,
   wipeAllMedia,
   endFreeTrial,
+  match,
 }) {
   const [friends, setFriends] = useState(null);
   const [friendsMedia, setFriendsMedia] = useState([]);
@@ -48,13 +57,15 @@ function HomePage({
   );
 
   useEffect(() => {
-    (async function () {
-      try {
-        await gettingAllUserMedia();
-      } catch (e) {
-        console.warn("Error, dude!");
-      }
-    })();
+    if (friends) {
+      (async function () {
+        try {
+          await gettingAllUserMedia();
+        } catch (e) {
+          console.warn("Error, dude!");
+        }
+      })();
+    }
     // eslint-disable-next-line
   }, [page, friends]);
 
@@ -143,7 +154,7 @@ function HomePage({
             maxw="1300px"
             style={{ pointerEvents: "all" }}
           >
-            {friendsMedia &&
+            {/*friendsMedia &&
               friendsMedia.map((post, i) => (
                 <GenericPost
                   post={post}
@@ -151,6 +162,25 @@ function HomePage({
                   setIsGenericSlider={setIsGenericSlider}
                   key={post._id}
                 />
+              ))*/}
+            {allmedia &&
+              allmedia.media &&
+              allmedia.media.map((post, i) => (
+                <Fragment key={post._id}>
+                  {post.type && post.type === "textual" ? (
+                    <StatusPost status={post} />
+                  ) : !post.isVideo && post.url ? (
+                    <ImagePost
+                      image={post}
+                      setIsSlider={setIsGenericSlider}
+                      i={i}
+                      match={match}
+                      backupImage={post}
+                    />
+                  ) : post.isVideo && post.url ? (
+                    <VideoPost match={match} video={post} />
+                  ) : null}
+                </Fragment>
               ))}
             <div ref={infiniteScrollPost} />
           </DashCenter>
@@ -173,6 +203,7 @@ HomePage.propTypes = {
   setBulkMedia: PropTypes.func.isRequired,
   wipeAllMedia: PropTypes.func.isRequired,
   endFreeTrial: PropTypes.func.isRequired,
+  allmedia: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({

@@ -110,7 +110,7 @@ setup();
 function setup() {
   stage = new c.StageGL("canvas");
   stage.tickChildren = false;
-  stage.style.backgroundColor = "#201624";
+  stage.style.background = "#201624";
   stage.setClearColor("#201624"); // #206699
 
   window.addEventListener("resize", onResize);

@@ -17,6 +17,7 @@ import { sendNotif, sendFriendRequest } from "../../actions/notifs";
 import { LanguageContext } from "../../contexts/LanguageContext";
 import PropTypes from "prop-types";
 import { POST_DELIMITER } from "../../utils/nonReduxConstants";
+import GuestMoreOptions from "./utilcomps/GuestMoreOptions";
 
 function GuestDashboard(props) {
   const [page, setPage] = useState(1);
@@ -29,13 +30,14 @@ function GuestDashboard(props) {
     sendNotif,
     sendFriendRequest,
     wipeImages,
+    history,
   } = props;
   const { language } = useContext(LanguageContext);
   const [isSlider, setIsSlider] = useState([false, 0]);
   const [guest, setGuest] = useState({});
+  const [isFriends, setIsFriends] = useState(false);
+  const [showAdditionalActions, setShowAdditionalActions] = useState(false);
   const observer = useRef();
-
-  console.log(guest);
 
   const infiniteScrollPost = useCallback(
     (node) => {
@@ -52,6 +54,31 @@ function GuestDashboard(props) {
     },
     [hasMore]
   );
+
+  useEffect(() => {
+    (async function () {
+      try {
+        if (
+          auth.user.blockedPeople.find(
+            (person) => person.user.toString() === match.params.id.toString()
+          )
+        ) {
+          history.push("/");
+        }
+        const isPending = await auth.user.friendRequestsSent.find(
+          (user) => user.user === match.params.id
+        );
+        const isFriend = await auth.user.friends.find(
+          (fr) => fr.user === match.params.id
+        );
+        if (isPending) setIsFriends("pending");
+        else if (isFriend) setIsFriends("friends");
+      } catch (e) {
+        console.warn("Error, dude", e.message);
+      }
+    })();
+    // eslint-disable-next-line
+  }, [auth, match.params.id]);
 
   const gettingImages = async () => {
     try {
@@ -110,8 +137,6 @@ function GuestDashboard(props) {
     sendFriendRequest({ senderId: auth.user._id, accepterId: match.params.id });
   };
 
-  console.log("GEST", guest);
-
   return Object.keys(guest).length > 0 ? (
     <div className="container pt-5" style={{ pointerEvents: "all" }}>
       <div className="text-center">
@@ -128,14 +153,15 @@ function GuestDashboard(props) {
         <h4 className="text-muted">(@{guest.username})</h4>
       </div>
       <div className="d-flex justify-content-end">
-        <button className="btn btn-secondary" onClick={addFriend}>
-          {auth.user.friendRequestsSent.find(
-            (user) => user.user === match.params.id
-          ) ? (
+        <button
+          className="btn btn-secondary"
+          onClick={() => setShowAdditionalActions(true)}
+        >
+          {isFriends === "pending" ? (
             <div className="spinner-border text-success" role="status">
               <span className="sr-only">Loading...</span>
             </div>
-          ) : auth.user.friends.find((fr) => fr.id === match.params.id) ? (
+          ) : isFriends === "friends" ? (
             <i className="fas fa-check-double" />
           ) : (
             <i className="fas fa-user-plus" />
@@ -217,6 +243,14 @@ function GuestDashboard(props) {
           setIsSlider={setIsSlider}
         />
       )}
+      <GuestMoreOptions
+        title="Additional actions"
+        show={showAdditionalActions}
+        onClose={() => setShowAdditionalActions(false)}
+        addFriend={addFriend}
+        isFriends={isFriends}
+        blockedId={match.params.id}
+      />
     </div>
   ) : (
     <Spinner />

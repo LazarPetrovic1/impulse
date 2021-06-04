@@ -3,7 +3,7 @@ import {
   // GET_NOTIF,
   // NOTIF_ERROR,
   POST_NOTIF,
-  USER_LOADED,
+  SEND_FRIEND_REQUEST,
 } from "./types";
 import io from "socket.io-client";
 
@@ -61,8 +61,8 @@ export const sendFriendRequest = ({ senderId, accepterId }) => async (
   await socket.emit("sendFriendRequest", { senderId, accepterId });
   await socket.on("sentFriendRequest", (user) => {
     dispatch({
-      type: USER_LOADED,
-      payload: user,
+      type: SEND_FRIEND_REQUEST,
+      payload: user.friendRequestsSent,
     });
   });
 };

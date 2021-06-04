@@ -197,6 +197,53 @@ const socketHolder = (io) =>
         console.warn(e.message);
       }
     });
+    socket.on("blockPerson", async ({ senderId, blockedId }) => {
+      try {
+        const senderUser = await User.findById(senderId);
+        const blockedFriend = await User.findById(blockedId);
+        await senderUser.blockedPeople.push({ user: blockedFriend.id });
+        senderUser.friends = await senderUser.friends.filter(
+          (friend) => friend.user.toString() !== blockedId.toString()
+        );
+        blockedFriend.friends = await blockedFriend.friends.filter(
+          (friend) => friend.user.toString() !== senderId.toString()
+        );
+        await senderUser.save();
+        await blockedFriend.save();
+        await io.emit("blockedPerson", senderUser);
+      } catch (e) {
+        console.warn(e.message);
+      }
+    });
+    socket.on("unblockPerson", async ({ senderId, blockedId }) => {
+      try {
+        const senderUser = await User.findById(senderId);
+        senderUser.blockedPeople = await senderUser.blockedPeople.filter(
+          (person) => person.user.toString() !== blockedId.toString()
+        );
+        await senderUser.save();
+        await io.emit("unblockedPerson", senderUser);
+      } catch (e) {
+        console.warn(e.message);
+      }
+    });
+    socket.on("unfriendPerson", async ({ senderId, blockedId }) => {
+      try {
+        const senderUser = await User.findById(senderId);
+        const blockedFriend = await User.findById(blockedId);
+        senderUser.friends = await senderUser.friends.filter(
+          (friend) => friend.user.toString() !== blockedId.toString()
+        );
+        blockedFriend.friends = await blockedFriend.friends.filter(
+          (friend) => friend.user.toString() !== senderId.toString()
+        );
+        await senderUser.save();
+        await blockedFriend.save();
+        await io.emit("unfriendedPerson", senderUser);
+      } catch (e) {
+        console.warn(e.message);
+      }
+    });
     socket.on("findGroupChats", async ({ userId }) => {
       try {
         const chats = await Chat.find({

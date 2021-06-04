@@ -145,7 +145,7 @@ function Video({
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await commentVideo(match.params.id, comment);
+    await commentVideo(_id, comment);
     await setComment("");
   };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { getUserByUsername } from "../../../utils/users";
 import {
@@ -30,7 +30,7 @@ function VideoComment({
   like,
   dislike,
   impulsify,
-  sendNotif
+  sendNotif,
 }) {
   const [liked, setLiked] = useState(null);
   const { language } = useContext(LanguageContext);
@@ -171,50 +171,49 @@ function VideoComment({
           </span>
         </p>
       </div>
-      {comment.user === user._id && (
-        <div
-          style={{ top: "1rem", right: "1rem" }}
-          className="position-absolute"
-        >
-          {isReplying ? (
-            <button
-              onClick={() => setIsReplying(false)}
-              className="btn btn-dark btn-lg mx-2"
-            >
-              <i className="fas fa-times" />
-            </button>
-          ) : (
-            <button
-              onClick={() => setIsReplying(true)}
-              className="btn btn-primary btn-lg mx-2"
-            >
-              <i className="fas fa-plus" />
-            </button>
-          )}
-          {isEditing ? (
-            <button
-              onClick={() => setIsEditing(false)}
-              className="btn btn-dark btn-lg mx-2"
-            >
-              <i className="fas fa-times" />
-            </button>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="btn btn-secondary btn-lg mx-2 p-0"
-              style={{ paddingRight: "12px" }}
-            >
-              <EditIcon width={49} height={46} />
-            </button>
-          )}
+      <div style={{ top: "1rem", right: "1rem" }} className="position-absolute">
+        {isReplying ? (
           <button
-            className="btn btn-danger btn-lg mx-2 p-0"
-            onClick={() => videoDeleteComment(videoId, comment._id)}
+            onClick={() => setIsReplying(false)}
+            className="btn btn-dark btn-lg mx-2"
           >
-            <DeleteIcon width={49} height={46} />
+            <i className="fas fa-times" />
           </button>
-        </div>
-      )}
+        ) : (
+          <button
+            onClick={() => setIsReplying(true)}
+            className="btn btn-primary btn-lg mx-2"
+          >
+            <i className="fas fa-plus" />
+          </button>
+        )}
+        {comment.user === user._id && (
+          <Fragment>
+            {isEditing ? (
+              <button
+                onClick={() => setIsEditing(false)}
+                className="btn btn-dark btn-lg mx-2"
+              >
+                <i className="fas fa-times" />
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="btn btn-secondary btn-lg mx-2 p-0"
+                style={{ paddingRight: "12px" }}
+              >
+                <EditIcon width={49} height={46} />
+              </button>
+            )}
+            <button
+              className="btn btn-danger btn-lg mx-2 p-0"
+              onClick={() => videoDeleteComment(videoId, comment._id)}
+            >
+              <DeleteIcon width={49} height={46} />
+            </button>
+          </Fragment>
+        )}
+      </div>
       {isReplying && (
         <form onSubmit={onSubmit} className="d-flex mt-4">
           <input
@@ -297,5 +296,5 @@ export default connect(mapStateToProps, {
   like,
   dislike,
   impulsify,
-  sendNotif
+  sendNotif,
 })(VideoComment);

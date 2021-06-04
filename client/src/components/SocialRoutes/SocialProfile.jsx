@@ -7,12 +7,13 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import ShortLogo from "../../styled/Logo/ShortLogo";
 import EditIcon from "../utils/icons/EditIcon";
+import BlockedPerson from "./BlockedPerson";
 
 function SocialProfile({
   setAlert,
   getCurrentProfile,
   profile: { profile, loading },
-  auth,
+  auth: { user },
 }) {
   useEffect(() => {
     getCurrentProfile();
@@ -21,13 +22,13 @@ function SocialProfile({
 
   return profile && !loading ? (
     <article className="container" style={{ pointerEvents: "all" }}>
-      <h1>Welcome, {auth.user.firstName}</h1>
+      <h1>Welcome, {user.firstName}</h1>
       <ul className="list-group">
         <li className="list-group-item" style={{ color: "#111" }}>
           <ShortLogo liked="impulse" height="20px" width="20px" />
           &nbsp;&nbsp;
           <Link style={{ color: "#111" }} to="/">
-            https://impul.se/social/profile/{auth.user._id}
+            https://impul.se/social/profile/{user._id}
           </Link>
         </li>
         {profile.employment === "None" ? null : (
@@ -133,6 +134,26 @@ function SocialProfile({
           <EditIcon width={42} height={36} insert="Edit information" />
         </Link>
       </div>
+      <h2>Blocked people</h2>
+      <p className="my-2">Click the close button to unblock them.</p>
+      {user.blockedPeople.length > 0 ? (
+        user.blockedPeople.map((bp) => <BlockedPerson key={bp.user} bp={bp} />)
+      ) : (
+        <div
+          class="alert alert-success alert-dismissible fade show"
+          role="alert"
+        >
+          No people blocked!
+          <button
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      )}
     </article>
   ) : !profile ? (
     <div className="m-auto" style={{ width: "80%" }}>

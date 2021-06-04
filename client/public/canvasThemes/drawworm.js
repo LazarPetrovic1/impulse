@@ -25,7 +25,7 @@ function DrawWorm() {
     width = window.innerWidth;
     height = window.innerHeight;
 
-    canvas.style.backgroundColor = "#000";
+    canvas.style.background = "#000";
     canvas.width = width;
     canvas.height = height;
 

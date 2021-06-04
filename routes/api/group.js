@@ -20,18 +20,30 @@ router.get("/:id/:postId/dislike", auth, group.seeAllWhoDisliked);
 router.put("/impulse/:id/:postId", auth, group.impulsePost);
 router.put("/like/:id/:postId", auth, group.likePost);
 router.put("/dislike/:id/:postId", auth, group.dislikePost);
-router.get("/:id/:postId", auth, group.getPostComments)
-
+router.get("/:id/:postId", auth, group.getPostComments);
+router.get("/:id/:postId/:commentId", auth, group.getCommentReplies);
 router.put("/:id/:postId/:commentId", auth, group.updateComment);
 router.delete("/:id/:postId/:commentId", auth, group.deleteComment);
 // dismissPost
 router.post("/:id/:postId/:commentId", auth, group.replyToComment);
-router.put("/:id/:postId/:commentId/impulse", auth, group.impulsifyComment)
-router.put("/:id/:postId/:commentId/like", auth, group.likeComment)
-router.put("/:id/:postId/:commentId/dislike", auth, group.dislikeComment)
-router.put("/:id/:postId/:commentId/:replyId/like", auth, group.likeReplyToImageComment)
-router.put("/:id/:postId/:commentId/:replyId/dislike", auth, group.dislikeReplyToImageComment)
-router.put("/:id/:postId/:commentId/:replyId/impulse", auth, group.impulsifyReplyToImageComment)
+router.put("/:id/:postId/:commentId/impulse", auth, group.impulsifyComment);
+router.put("/:id/:postId/:commentId/like", auth, group.likeComment);
+router.put("/:id/:postId/:commentId/dislike", auth, group.dislikeComment);
+router.put(
+  "/:id/:postId/:commentId/:replyId/like",
+  auth,
+  group.likeReplyToImageComment
+);
+router.put(
+  "/:id/:postId/:commentId/:replyId/dislike",
+  auth,
+  group.dislikeReplyToImageComment
+);
+router.put(
+  "/:id/:postId/:commentId/:replyId/impulse",
+  auth,
+  group.impulsifyReplyToImageComment
+);
 
 router.put("/:id/:postId/:commentId/:replyId", auth, group.updateReply);
 router.delete("/:id/:postId/:commentId/:replyId", auth, group.deleteReply);

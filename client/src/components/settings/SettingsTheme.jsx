@@ -137,7 +137,8 @@ function SettingsTheme({ auth: { user } }) {
     </Fragment>
   );
 
-  return user.isPremium || user.trial.isUsingTrial ? (
+  return (user && user.isPremium) ||
+    (user && user.trial && user.trial.isUsingTrial) ? (
     <PremiumThemes themes={themes} onClick={onClick} />
   ) : (
     basicthemes

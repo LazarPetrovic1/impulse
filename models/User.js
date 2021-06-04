@@ -112,6 +112,14 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  blockedPeople: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+      },
+    },
+  ],
 });
 
 module.exports = User = model("user", UserSchema);

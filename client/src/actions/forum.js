@@ -14,6 +14,7 @@ import {
   FORUM_POST_EDIT_REPLY,
   FORUM_POST_DISMISS,
   FORUM_ERROR,
+  FORUM_SEARCH,
   SAVE_FORUM_POST,
   IMPULSIFY_FORUM_POST,
   LIKE_FORUM_POST,
@@ -614,6 +615,23 @@ export const dislikeReplyToForumPostComment = (
         judgements: res.data.judgements,
       },
     });
+  } catch (e) {
+    dispatch({
+      type: FORUM_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+};
+export const searchForum = (val) => (dispatch) => {
+  try {
+    if (val.length < 2) {
+      dispatch(getAllForumPosts());
+    } else {
+      dispatch({
+        type: FORUM_SEARCH,
+        payload: val,
+      });
+    }
   } catch (e) {
     dispatch({
       type: FORUM_ERROR,

@@ -3,7 +3,7 @@ var canvas = document.getElementById("canvas"),
   can_h = parseInt(canvas.getAttribute("height")),
   ctx = canvas.getContext("2d");
 
-canvas.style.backgroundColor = "#111";
+canvas.style.background = "#111";
 
 // console.log(typeof can_w);
 

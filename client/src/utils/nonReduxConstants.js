@@ -5,3 +5,6 @@ export const responsive = {
   568: { items: 2 },
   1024: { items: 4 },
 };
+
+export const COMMENT_DELIMITER = 10;
+export const REPLY_DELIMITER = 5;

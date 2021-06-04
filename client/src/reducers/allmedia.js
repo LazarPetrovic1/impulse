@@ -12,6 +12,7 @@ import {
   ALL_MEDIA_OUTSIDE_COMMENT_EDIT,
   ALL_MEDIA_OUTSIDE_COMMENT_STATCHANGE,
   ALL_MEDIA_OUTSIDE_SPAWN_REPLY,
+  ALL_MEDIA_OUTSIDE_SPAWN_REPLY_VIDEO,
   ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
   ALL_MEDIA_OUTSIDE_REPLY_REMOVE,
   ALL_MEDIA_OUTSIDE_REPLY_EDIT,
@@ -157,6 +158,21 @@ export default (state = initialState, action) => {
                         replies: [...comm.replies, payload.item],
                       }
                     : comm
+                ),
+              }
+            : med
+        ),
+      };
+    case ALL_MEDIA_OUTSIDE_SPAWN_REPLY_VIDEO:
+      return {
+        ...state,
+        loading: false,
+        media: state.media.map((med) =>
+          med._id === payload.id
+            ? {
+                ...med,
+                comments: med.comments.map((comm) =>
+                  comm._id === payload.comment_id ? payload.item : comm
                 ),
               }
             : med

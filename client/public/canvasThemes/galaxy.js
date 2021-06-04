@@ -231,7 +231,7 @@ function G(data) {
 
 //******************************************************
 var canvas = document.querySelector("#canvas");
-canvas.style.backgroundColor = "#111";
+canvas.style.background = "#111";
 var ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;

@@ -33,23 +33,10 @@ function Forum({
     getAllForumPosts();
   }, [getAllForumPosts]);
 
-  const search = (text) => {
-    // REWORK FUNCTION
-    if (text === "") getAllForumPosts();
-    else
-      posts.filter((post) =>
-        post.body.toLowerCase().includes(text.toLowerCase())
-      );
-  };
-
   const dismissForumPost = (id) => {
     forumPostDismiss(id, user.dismissedPosts);
     setAlert("Post dismissed! We will not show it to you again.", "success");
     window.location.reload();
-  };
-
-  const reset = (setter) => {
-    setter("");
   };
 
   const nonDismissedPosts = posts.filter(
@@ -66,7 +53,7 @@ function Forum({
         Here's something you might be interested in
       </h1>
       <div className="m-auto">
-        <ForumSearchBar search={search} reset={reset} />
+        <ForumSearchBar />
       </div>
       <ForumGrid>
         <ForumMenu />

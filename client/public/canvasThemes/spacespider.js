@@ -6,7 +6,7 @@ window.onload = function () {
     mouse = { x: false, y: false },
     last_mouse = {};
 
-  canvas.style.backgroundColor = "#111";
+  canvas.style.background = "#111";
   //initiation
 
   function dist(p1x, p1y, p2x, p2y) {

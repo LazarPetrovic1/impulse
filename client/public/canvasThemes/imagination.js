@@ -139,7 +139,7 @@ function init() {
   canvas = document.getElementById("canvas");
   context = canvas.getContext("2d");
   canvas.style.tapHighlightColor = "transparent";
-  canvas.style.backgroundColor = "#000";
+  canvas.style.background = "#000";
   canvas.style.userSelect = "none";
   canvas.style.cursor = "crosshair"; // || "default"
 
