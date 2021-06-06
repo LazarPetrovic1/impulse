@@ -35,6 +35,7 @@ import {
   ALL_MEDIA_OUTSIDE_REPLY_STATCHANGE,
   ALL_MEDIA_OUTSIDE_REPLY_REMOVE,
   ALL_MEDIA_OUTSIDE_REPLY_EDIT,
+  GET_FULL_VIDEOS,
 } from "./types";
 import axios from "axios";
 
@@ -101,7 +102,6 @@ export const likeComment = (id, commentId, likerId) => async (dispatch) => {
   const body = JSON.stringify({ likerId });
   const config = { headers: { "Content-Type": "application/json" } };
   try {
-    console.log("LIKECOMMENTVIDEO", { id, commentId, likerId });
     const res = await axios.put(
       `/api/videoposts/${id}/${commentId}/like`,
       body,
@@ -330,11 +330,26 @@ export const getUsersVideo = (id) => async (dispatch) => {
     });
   }
 };
-export const getAllVideos = () => async (dispatch) => {
+export const getAllVideos = (page, limit) => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/videoposts`);
+    const res = await axios.get(`/api/videoposts?page=${page}&limit=${limit}`);
     dispatch({
       type: GET_VIDEOS,
+      payload: res.data.posts,
+    });
+    return res.data.hasMore;
+  } catch (e) {
+    dispatch({
+      type: VIDEO_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+};
+export const getFullVideos = (page, limit) => async (dispatch) => {
+  try {
+    const res = await axios.get(`/api/videoposts/full`);
+    dispatch({
+      type: GET_FULL_VIDEOS,
       payload: res.data,
     });
   } catch (e) {
@@ -376,7 +391,7 @@ export const createVideo = (
         item: res.data,
       },
     });
-    dispatch(getAllVideos());
+    dispatch(getFullVideos());
   } catch (e) {
     dispatch({
       type: VIDEO_ERROR,
@@ -561,7 +576,6 @@ export const videoEditComment = (id, comment_id, content) => async (
       JSON.stringify({ content }),
       config
     );
-    await console.log(res.data);
     dispatch({
       type: VIDEO_EDIT_COMMENT,
       payload: res.data,
@@ -595,7 +609,6 @@ export const videoReplyToComment = (id, comment_id, content) => async (
       JSON.stringify({ content }),
       config
     );
-    await console.log("VIDEO REPLY", res.data);
     dispatch({
       type: VIDEO_ADD_REPLY,
       payload: res.data,
@@ -684,7 +697,7 @@ export const videoEditReplyToComment = (
 export const searchVideos = (val, pathname) => (dispatch) => {
   if (val.length < 2) {
     if (pathname === "/videos-all") {
-      dispatch(getAllVideos());
+      dispatch(getFullVideos());
     } else if (pathname === "/videos-mine") {
       dispatch(getUsersVideo("mine"));
     }

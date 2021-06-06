@@ -46,7 +46,6 @@ function GuestDashboard(props) {
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
           setPage((prevPage) => prevPage + 1);
-          console.log("Visible");
         }
       });
       if (node) observer.current.observe(node);

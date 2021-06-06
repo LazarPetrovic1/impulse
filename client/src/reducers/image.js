@@ -17,9 +17,11 @@ import {
   IMAGE_POST_ADD_REPLY,
   EDIT_IMAGE_COMMENT,
   ADD_COMMENT,
+  GET_IMAGE_COMMENTS,
   DELETE_COMMENT,
   EDIT_IMAGE_COMMENT_REPLY,
-  DELETE_REPLY
+  DELETE_REPLY,
+  IMAGE_POST_GET_REPLIES,
 } from "../actions/types";
 
 const initialState = {
@@ -58,97 +60,194 @@ export default (state = initialState, action) => {
         loading: false,
         image: state.image && {
           ...state.image,
-          comments: payload.item
+          comments: payload.item,
         },
-        images: state.images.map(img => img._id === payload.id ? {
-          ...img,
-          comments: payload.item
-        } : img)
-      }
+        images: state.images.map((img) =>
+          img._id === payload.id
+            ? {
+                ...img,
+                comments: payload.item,
+              }
+            : img
+        ),
+      };
+    case GET_IMAGE_COMMENTS:
+      return {
+        ...state,
+        loading: false,
+        images: state.images.map((img) =>
+          img._id === payload.id
+            ? {
+                ...img,
+                comments: [...img.comments, ...payload.comments],
+              }
+            : img
+        ),
+      };
     case DELETE_COMMENT:
       return {
         ...state,
         image: state.image && {
           ...state.image,
           // comments: state.image.comments.filter(comm => comm._id !== payload.commentId),
-          comments: payload.items
+          comments: payload.items,
         },
-        images: state.images.map(img => img._id === payload.id ? {
-          ...img,
-          // comments: img.comments.filter(comm => comm._id !== payload.commentId),
-          comments: payload.items
-        } : img)
-      }
+        images: state.images.map((img) =>
+          img._id === payload.id
+            ? {
+                ...img,
+                // comments: img.comments.filter(comm => comm._id !== payload.commentId),
+                comments: payload.items,
+              }
+            : img
+        ),
+      };
     case IMAGE_POST_ADD_REPLY:
       return {
         ...state,
         loading: false,
-        images: state.images.map(img => img._id === payload.id ? {
-          ...img,
-          comments: img.comments.map(comm => comm._id === payload.comment_id ? {
-            ...comm,
-            replies: payload.items
-          } : comm)
-        } : img),
+        images: state.images.map((img) =>
+          img._id === payload.id
+            ? {
+                ...img,
+                comments: img.comments.map((comm) =>
+                  comm._id === payload.comment_id
+                    ? {
+                        ...comm,
+                        replies: payload.items,
+                      }
+                    : comm
+                ),
+              }
+            : img
+        ),
         image: state.image && {
           ...state.image,
-          comments: state.image.comments.map(comm => comm._id === payload.comment_id ? {
-            ...comm,
-            replies: payload.items
-          } : comm)
-        }
-      }
+          comments: state.image.comments.map((comm) =>
+            comm._id === payload.comment_id
+              ? {
+                  ...comm,
+                  replies: payload.items,
+                }
+              : comm
+          ),
+        },
+      };
+    case IMAGE_POST_GET_REPLIES:
+      return {
+        ...state,
+        loading: false,
+        images: state.images.map((img) =>
+          img._id === payload.id
+            ? {
+                ...img,
+                comments: img.comments.map((comm) =>
+                  comm._id === payload.commentId
+                    ? {
+                        ...comm,
+                        replies: [...comm.replies, ...payload.replies],
+                      }
+                    : comm
+                ),
+              }
+            : img
+        ),
+      };
     case EDIT_IMAGE_COMMENT:
       return {
         ...state,
         loading: false,
-        images: state.images.map(img => img._id === payload.id ? {
-          ...img,
-          comments: img.comments.map(comm => comm._id === payload.comment_id ? payload.item : comm)
-        } : img),
-        image: state.images.map(img => img._id === payload.id ? {
-          ...img,
-          comments: img.comments.map(comm => comm._id === payload.comment_id ? payload.item : comm)
-        } : null)
-      }
+        images: state.images.map((img) =>
+          img._id === payload.id
+            ? {
+                ...img,
+                comments: img.comments.map((comm) =>
+                  comm._id === payload.comment_id ? payload.item : comm
+                ),
+              }
+            : img
+        ),
+        image: state.images.map((img) =>
+          img._id === payload.id
+            ? {
+                ...img,
+                comments: img.comments.map((comm) =>
+                  comm._id === payload.comment_id ? payload.item : comm
+                ),
+              }
+            : null
+        ),
+      };
     case DELETE_REPLY:
       return {
         ...state,
         loading: false,
         image: state.image && {
           ...state.image,
-          comments: state.image.comments.map(comm => comm._id === payload.id ? {
-            ...comm,
-            replies: comm.replies.filter(rep => rep._id !== payload.reply_id)
-          } : comm)
+          comments: state.image.comments.map((comm) =>
+            comm._id === payload.id
+              ? {
+                  ...comm,
+                  replies: comm.replies.filter(
+                    (rep) => rep._id !== payload.reply_id
+                  ),
+                }
+              : comm
+          ),
         },
-        images: state.images.map(img => img._id === payload.id ? {
-          ...img,
-          comments: img.comments.map(comm => comm._id === payload.comment_id ? {
-            ...comm,
-            replies: comm.replies.filter(rep => rep._id !== payload.reply_id)
-          } : comm)
-        } : img)
-      }
+        images: state.images.map((img) =>
+          img._id === payload.id
+            ? {
+                ...img,
+                comments: img.comments.map((comm) =>
+                  comm._id === payload.comment_id
+                    ? {
+                        ...comm,
+                        replies: comm.replies.filter(
+                          (rep) => rep._id !== payload.reply_id
+                        ),
+                      }
+                    : comm
+                ),
+              }
+            : img
+        ),
+      };
     case EDIT_IMAGE_COMMENT_REPLY:
       return {
         ...state,
         loading: false,
         image: state.image && {
           ...state.image,
-          comments: state.image.comments.map(comm => comm._id === payload.comment_id ? {
-            ...comm,
-            replies: comm.replies.map(rep => rep._id === payload.reply_id ? payload.item : rep)
-          } : comm)
+          comments: state.image.comments.map((comm) =>
+            comm._id === payload.comment_id
+              ? {
+                  ...comm,
+                  replies: comm.replies.map((rep) =>
+                    rep._id === payload.reply_id ? payload.item : rep
+                  ),
+                }
+              : comm
+          ),
         },
-        images: state.images.map(img => img._id === payload.id ? {
-          ...img,
-          comments: img.comments.map(comm => comm._id === payload.comment_id ? {
-            ...comm,
-            replies: comm.replies.map(rep => rep._id === payload.reply_id ? payload.item : rep)
-          } : comm)
-        } : img),
-      }
+        images: state.images.map((img) =>
+          img._id === payload.id
+            ? {
+                ...img,
+                comments: img.comments.map((comm) =>
+                  comm._id === payload.comment_id
+                    ? {
+                        ...comm,
+                        replies: comm.replies.map((rep) =>
+                          rep._id === payload.reply_id ? payload.item : rep
+                        ),
+                      }
+                    : comm
+                ),
+              }
+            : img
+        ),
+      };
     case LIKE_IMAGE:
     case DISLIKE_IMAGE:
     case IMPULSIFY_IMAGE:
@@ -171,32 +270,54 @@ export default (state = initialState, action) => {
     case LIKE_IMAGE_COMMENT:
       return {
         ...state,
-        images: state.images.map(img => img._id === payload.id ? {
-          ...img, comments: img.comments.map(comm => comm._id === payload.commentId ? {
-            ...comm,
-            endorsements: payload.endorsements,
-            judgements: payload.judgements,
-            impulsions: payload.impulsions,
-          } : comm)
-        } : img)
-      }
+        images: state.images.map((img) =>
+          img._id === payload.id
+            ? {
+                ...img,
+                comments: img.comments.map((comm) =>
+                  comm._id === payload.commentId
+                    ? {
+                        ...comm,
+                        endorsements: payload.endorsements,
+                        judgements: payload.judgements,
+                        impulsions: payload.impulsions,
+                      }
+                    : comm
+                ),
+              }
+            : img
+        ),
+      };
     case IMPULSIFY_IMAGE_REPLY:
     case LIKE_IMAGE_REPLY:
     case DISLIKE_IMAGE_REPLY:
       return {
         ...state,
-        images: state.images.map(img => img._id === payload.id ? {
-          ...img, comments: img.comments.map(comm => comm._id === payload.commentId ? {
-            ...comm,
-            replies: comm.replies.map(rep => rep._id === payload.replyId ? {
-              ...rep,
-              endorsements: payload.endorsements,
-              judgements: payload.judgements,
-              impulsions: payload.impulsions,
-            } : rep)
-          } : comm)
-        } : img)
-      }
+        images: state.images.map((img) =>
+          img._id === payload.id
+            ? {
+                ...img,
+                comments: img.comments.map((comm) =>
+                  comm._id === payload.commentId
+                    ? {
+                        ...comm,
+                        replies: comm.replies.map((rep) =>
+                          rep._id === payload.replyId
+                            ? {
+                                ...rep,
+                                endorsements: payload.endorsements,
+                                judgements: payload.judgements,
+                                impulsions: payload.impulsions,
+                              }
+                            : rep
+                        ),
+                      }
+                    : comm
+                ),
+              }
+            : img
+        ),
+      };
     case IMAGE_ERROR:
       return {
         ...state,

@@ -4,6 +4,7 @@ import React, {
   useRef,
   useCallback,
   useContext,
+  Fragment,
 } from "react";
 import Spinner from "../layout/Spinner";
 import { connect } from "react-redux";
@@ -61,7 +62,7 @@ function InitialDashboard(props) {
     wipeImages();
     wipeAllMedia();
     // eslint-disable-next-line
-  }, []);
+  }, [selectedToShow]);
 
   const gettingImages = async () => {
     try {
@@ -90,11 +91,23 @@ function InitialDashboard(props) {
     }
   };
 
+  const getStatusesOfPerson = async () => {
+    if (!hasMore) {
+      return;
+    }
+    const hasMoreValue = await getPersonsStatuses(
+      user._id,
+      page,
+      POST_DELIMITER
+    );
+    await setHasMore(hasMoreValue);
+  };
+
   useEffect(() => {
     if (selectedToShow === "images") {
       gettingImages();
     } else if (selectedToShow === "textual") {
-      getPersonsStatuses(user._id);
+      getStatusesOfPerson();
     } else if (selectedToShow === "videos") {
       getUsersVideo(user._id);
     } else {
@@ -276,6 +289,7 @@ function InitialDashboard(props) {
         >
           {images.map((image, i) => (
             <Post
+              match={match}
               image={image}
               setIsSlider={setIsSlider}
               key={image._id}
@@ -305,10 +319,14 @@ function InitialDashboard(props) {
       )}
       {selectedToShow === "textual" &&
         status.statuses &&
-        Array.isArray(status.statuses) &&
-        status.statuses.map((stat) => (
-          <StatusPost key={stat._id} status={stat} />
-        ))}
+        Array.isArray(status.statuses) && (
+          <Fragment>
+            {status.statuses.map((stat) => (
+              <StatusPost key={stat._id} status={stat} />
+            ))}
+            <div ref={infiniteScrollPost} style={{ height: "50px" }} />
+          </Fragment>
+        )}
       {images && images.length > 0 && isSlider[0] && (
         <ImageSlider
           images={images}

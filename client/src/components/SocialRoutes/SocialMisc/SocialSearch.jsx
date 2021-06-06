@@ -30,7 +30,6 @@ function SocialSearch() {
 
   useEffect(() => {
     (function () {
-      console.log(search.length >= 2);
       if (search.length >= 2) {
         searchPeople(search);
       } else if (search.length < 2) {

@@ -13,7 +13,7 @@ async function createStatus(req, res) {
       impulsions: [],
       isVideo: false,
       type: "textual",
-      savedBy: []
+      savedBy: [],
     });
     const post = await newPost.save();
     await res.json(post);
@@ -68,14 +68,22 @@ async function editStatus(req, res) {
 }
 async function saveStatus(req, res) {
   try {
-    const post = await Status.findById(req.params.id)
-    if (await post.savedBy.filter(sb => sb.user.toString() === req.user.id.toString()).length > 0) post.savedBy = await post.savedBy.filter(sb => sb.user.toString() !== req.user.id.toString())
-    else post.savedBy.push({ user: req.user.id })
-    await post.save()
-    res.json(post)
+    const post = await Status.findById(req.params.id);
+    if (
+      (await post.savedBy.filter(
+        (sb) => sb.user.toString() === req.user.id.toString()
+      ).length) > 0
+    )
+      post.savedBy = await post.savedBy.filter(
+        (sb) => sb.user.toString() !== req.user.id.toString()
+      );
+    else post.savedBy.push({ user: req.user.id });
+    await post.save();
+    res.json(post);
   } catch (e) {
-    if (e.kind === 'ObjectId') return res.status(404).json({ msg: 'Post not found' })
-    res.status(500).send('Internal server error.')
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
   }
 }
 async function addCommentToStatus(req, res) {
@@ -89,7 +97,7 @@ async function addCommentToStatus(req, res) {
       replies: [],
       endorsements: [],
       judgements: [],
-      impulsions: []
+      impulsions: [],
     };
     post.comments.unshift(newComment);
     await post.save();
@@ -115,16 +123,17 @@ async function editCommentOfStatus(req, res) {
       (comm) => comm.id === req.params.comment_id
     );
     if (!comment) return res.status(404).json({ msg: "Comment not found." });
-    if (comment.user.toString() !== req.user.id.toString()) return res.status(401).json({ msg: "User not authorised." });
+    if (comment.user.toString() !== req.user.id.toString())
+      return res.status(401).json({ msg: "User not authorised." });
     const newComment = {
       ...comment.toObject(),
       content: req.body.content,
     };
     post.comments = post.comments.map((comm) =>
-    comm.id === req.params.comment_id ? newComment : comment
-  );
-  await post.save();
-  return res.json(newComment);
+      comm.id === req.params.comment_id ? newComment : comment
+    );
+    await post.save();
+    return res.json(newComment);
   } catch (e) {
     console.error(e.message);
     res.status(500).send("Internal server error.");
@@ -143,8 +152,8 @@ async function deleteCommentOfStatus(req, res) {
       return res.status(401).json({ msg: "User not authorised." });
     }
     const removeIndex = post.comments
-    .map((comment) => comment.user.toString())
-    .indexOf(req.user.id);
+      .map((comment) => comment.user.toString())
+      .indexOf(req.user.id);
     post.comments.splice(removeIndex, 1);
     await post.save();
     return res.json(post.comments);
@@ -155,17 +164,17 @@ async function deleteCommentOfStatus(req, res) {
 }
 async function dismissStatus(req, res) {
   try {
-    const user = await User.findById(req.user.id)
-    const { dismissedPosts } = req.body
+    const user = await User.findById(req.user.id);
+    const { dismissedPosts } = req.body;
     const newUser = await User.findByIdAndUpdate(
       req.user.id,
       { dismissedPosts: [...dismissedPosts, req.params.id] },
       { new: true }
-    )
-    return res.json(newUser)
+    );
+    return res.json(newUser);
   } catch (e) {
-    console.error(e.message)
-    res.status(500).send('Internal server error.')
+    console.error(e.message);
+    res.status(500).send("Internal server error.");
   }
 }
 async function replyToCommentOfStatus(req, res) {
@@ -181,7 +190,7 @@ async function replyToCommentOfStatus(req, res) {
       by: user.username,
       endorsements: [],
       judgements: [],
-      impulsions: []
+      impulsions: [],
     };
     const newComment = {
       user: comment.user,
@@ -190,16 +199,16 @@ async function replyToCommentOfStatus(req, res) {
       replies: [...comment.replies, newReply],
     };
     const index = post.comments
-    .map((comm) => comm.id)
-    .indexOf(req.params.comment_id);
+      .map((comm) => comm.id)
+      .indexOf(req.params.comment_id);
     post.comments = post.comments.map((comm) =>
-    comm.id === req.params.comment_id ? newComment : comm
-  );
-  await post.save();
-  res.json(post.comments[index]);
-} catch (e) {
-  res.status(500).send("Internal server error.");
-}
+      comm.id === req.params.comment_id ? newComment : comm
+    );
+    await post.save();
+    res.json(post.comments[index]);
+  } catch (e) {
+    res.status(500).send("Internal server error.");
+  }
 }
 async function editReplyToCommentOfStatus(req, res) {
   try {
@@ -220,13 +229,13 @@ async function editReplyToCommentOfStatus(req, res) {
       by: user.username,
     };
     comment.replies = comment.replies.map((rep) =>
-    rep.id === req.params.reply_id ? newReply : rep
-  );
-  await post.save();
-  res.json(comment);
-} catch (e) {
-  res.status(500).send("Internal server error.");
-}
+      rep.id === req.params.reply_id ? newReply : rep
+    );
+    await post.save();
+    res.json(comment);
+  } catch (e) {
+    res.status(500).send("Internal server error.");
+  }
 }
 async function getAllRepliesToCommentOfStatus(req, res) {
   try {
@@ -244,14 +253,14 @@ async function deleteReplyToCommentOfStatus(req, res) {
     );
     if (!comment) return res.status(404).json({ msg: "Comment not found." });
     if (comment.user.toString() !== req.user.id)
-    return res.status(401).json({ msg: "User not authorised." });
+      return res.status(401).json({ msg: "User not authorised." });
     const reply = comment.replies.find((rep) => rep.id === req.params.reply_id);
     if (!reply) return res.status(404).json({ msg: "Reply not found." });
     if (reply.user.toString() !== req.user.id)
-    return res.status(401).json({ msg: "User not authorised." });
+      return res.status(401).json({ msg: "User not authorised." });
     const removeIndex = comment.replies
-    .map((rep) => rep.user.toString())
-    .indexOf(req.user.id);
+      .map((rep) => rep.user.toString())
+      .indexOf(req.user.id);
     comment.replies = comment.replies.filter(
       (rep) => rep.id !== req.params.reply_id
     );
@@ -273,8 +282,43 @@ async function getMyStatuses(req, res) {
 }
 async function getPersonsStatuses(req, res) {
   try {
-    const statuses = await Status.find({ user: req.params.id });
-    res.json(statuses);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const commentPage = parseInt(req.query.comment_page) || 1;
+    const commentLimit = parseInt(req.query.comment_limit) || 10;
+    const replyPage = parseInt(req.query.reply_page) || 1;
+    const replyLimit = parseInt(req.query.reply_limit) || 5;
+    const [startIndexPosts, startIndexComments, startIndexReplies] = [
+      (page - 1) * limit,
+      (commentPage - 1) * commentLimit,
+      (replyPage - 1) * replyLimit,
+    ];
+    const [endIndexPosts, endIndexComments, endIndexReplies] = [
+      page * limit,
+      commentPage * commentLimit,
+      replyPage * replyLimit,
+    ];
+    const status = await Status.find({ user: req.params.id });
+    const posts = await status.slice(startIndexPosts, endIndexPosts);
+    const newPosts = await posts.map((post) => {
+      post.comments = post.comments
+        .slice(startIndexComments, endIndexComments)
+        .map((comm) => {
+          comm.replies = comm.replies.slice(startIndexReplies, endIndexReplies);
+          return comm;
+        });
+      return post;
+    });
+    const hasMoreValue =
+      startIndexPosts < newPosts.length && endIndexPosts < posts.length;
+    return res.json({
+      posts: newPosts,
+      hasMore: hasMoreValue,
+    });
+    // return res.json({
+    //   hasMore: false,
+    //   posts: [],
+    // });
   } catch (e) {
     console.error(e.message);
     res.status(500).send("Internal server error.");
@@ -294,7 +338,7 @@ async function seeAllWhoImpulsed(req, res) {
         );
       }
     } else {
-      return res.json({ msg: "Either loading or 404: Not Found." })
+      return res.json({ msg: "Either loading or 404: Not Found." });
     }
     res.json(users);
   } catch (e) {
@@ -318,7 +362,7 @@ async function seeAllWhoLiked(req, res) {
         );
       }
     } else {
-      return res.json({ msg: "Either loading or 404: Not Found." })
+      return res.json({ msg: "Either loading or 404: Not Found." });
     }
     res.json(users);
   } catch (e) {
@@ -342,7 +386,7 @@ async function seeAllWhoDisliked(req, res) {
         );
       }
     } else {
-      return res.json({ msg: "Either loading or 404: Not Found." })
+      return res.json({ msg: "Either loading or 404: Not Found." });
     }
     res.json(users);
   } catch (e) {
@@ -529,11 +573,14 @@ async function dislikeStatus(req, res) {
 }
 async function impulsifyComment(req, res) {
   try {
-    const post = await Status.findById(req.params.id)
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const post = await Status.findById(req.params.id);
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
     if (
-      comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
-        .length > 0
+      comment.impulsions.filter(
+        (imp) => imp.user.toString() === req.body.likerId
+      ).length > 0
     ) {
       comment.impulsions.splice(
         comment.impulsions
@@ -548,10 +595,11 @@ async function impulsifyComment(req, res) {
         judgements: comment.judgements,
       });
     }
-    comment.impulsions.unshift({ user: req.body.likerId })
+    comment.impulsions.unshift({ user: req.body.likerId });
     if (
-      comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
-        .length > 0
+      comment.judgements.filter(
+        (jud) => jud.user.toString() === req.body.likerId
+      ).length > 0
     ) {
       comment.judgements.splice(
         comment.judgements
@@ -587,59 +635,63 @@ async function impulsifyComment(req, res) {
   }
 }
 async function likeComment(req, res) {
-try {
-  const post = await Status.findById(req.params.id);
-  const comment = await post.comments.find(c => c.id === req.params.commentId)
-  if (
-    comment.endorsements.filter(
-      (end) => end.user.toString() === req.body.likerId
-    ).length > 0
-  ) {
-    comment.endorsements.splice(
-      comment.endorsements
-        .map((end) => end.user.toString())
-        .indexOf(req.body.likerId),
-      1
+  try {
+    const post = await Status.findById(req.params.id);
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
     );
+    if (
+      comment.endorsements.filter(
+        (end) => end.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      comment.endorsements.splice(
+        comment.endorsements
+          .map((end) => end.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+      await post.save();
+      return res.json({
+        impulsions: comment.impulsions,
+        endorsements: comment.endorsements,
+        judgements: comment.judgements,
+      });
+    }
+    comment.endorsements.unshift({ user: req.body.likerId });
+    if (
+      comment.judgements.filter(
+        (jud) => jud.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      comment.judgements.splice(
+        comment.judgements
+          .map((jud) => jud.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
+    if (
+      comment.impulsions.filter(
+        (imp) => imp.user.toString() === req.body.likerId
+      ).length > 0
+    ) {
+      // Get remove index
+      comment.impulsions.splice(
+        comment.impulsions
+          .map((imp) => imp.user.toString())
+          .indexOf(req.body.likerId),
+        1
+      );
+    }
     await post.save();
     return res.json({
       impulsions: comment.impulsions,
       endorsements: comment.endorsements,
       judgements: comment.judgements,
     });
-  }
-  comment.endorsements.unshift({ user: req.body.likerId });
-  if (
-    comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
-      .length > 0
-  ) {
-    comment.judgements.splice(
-      comment.judgements
-        .map((jud) => jud.user.toString())
-        .indexOf(req.body.likerId),
-      1
-    );
-  }
-  if (
-    comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
-      .length > 0
-  ) {
-    // Get remove index
-    comment.impulsions.splice(
-      comment.impulsions
-        .map((imp) => imp.user.toString())
-        .indexOf(req.body.likerId),
-      1
-    );
-  }
-  await post.save();
-  return res.json({
-    impulsions: comment.impulsions,
-    endorsements: comment.endorsements,
-    judgements: comment.judgements,
-  });
-} catch (e) {
-  console.error(e.message);
+  } catch (e) {
+    console.error(e.message);
     if (e.kind === "ObjectId")
       return res.status(404).json({ msg: "Post not found" });
     res.status(500).send("Internal server error.");
@@ -648,10 +700,13 @@ try {
 async function dislikeComment(req, res) {
   try {
     const post = await Status.findById(req.params.id);
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
     if (
-      comment.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
-        .length > 0
+      comment.judgements.filter(
+        (jud) => jud.user.toString() === req.body.likerId
+      ).length > 0
     ) {
       comment.judgements.splice(
         comment.judgements
@@ -681,8 +736,9 @@ async function dislikeComment(req, res) {
       );
     }
     if (
-      comment.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
-        .length > 0
+      comment.impulsions.filter(
+        (imp) => imp.user.toString() === req.body.likerId
+      ).length > 0
     ) {
       // Get remove index
       comment.impulsions.splice(
@@ -707,9 +763,13 @@ async function dislikeComment(req, res) {
 }
 async function impulsifyReplyToComment(req, res) {
   try {
-    const post = await Status.findById(req.params.id)
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
-    const reply = await comment.replies.find(r => r.id === req.params.replyId)
+    const post = await Status.findById(req.params.id);
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
+    const reply = await comment.replies.find(
+      (r) => r.id === req.params.replyId
+    );
     if (
       reply.impulsions.filter((imp) => imp.user.toString() === req.body.likerId)
         .length > 0
@@ -727,7 +787,7 @@ async function impulsifyReplyToComment(req, res) {
         judgements: reply.judgements,
       });
     }
-    reply.impulsions.unshift({ user: req.body.likerId })
+    reply.impulsions.unshift({ user: req.body.likerId });
     if (
       reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0
@@ -768,8 +828,12 @@ async function impulsifyReplyToComment(req, res) {
 async function likeReplyToComment(req, res) {
   try {
     const post = await Status.findById(req.params.id);
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
-    const reply = await comment.replies.find(r => r.id === req.params.replyId)
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
+    const reply = await comment.replies.find(
+      (r) => r.id === req.params.replyId
+    );
     if (
       reply.endorsements.filter(
         (end) => end.user.toString() === req.body.likerId
@@ -820,16 +884,20 @@ async function likeReplyToComment(req, res) {
     });
   } catch (e) {
     console.error(e.message);
-      if (e.kind === "ObjectId")
-        return res.status(404).json({ msg: "Post not found" });
-      res.status(500).send("Internal server error.");
-    }
+    if (e.kind === "ObjectId")
+      return res.status(404).json({ msg: "Post not found" });
+    res.status(500).send("Internal server error.");
+  }
 }
 async function dislikeReplyToComment(req, res) {
   try {
     const post = await Status.findById(req.params.id);
-    const comment = await post.comments.find(c => c.id === req.params.commentId)
-    const reply = await comment.replies.find(r => r.id === req.params.replyId)
+    const comment = await post.comments.find(
+      (c) => c.id === req.params.commentId
+    );
+    const reply = await comment.replies.find(
+      (r) => r.id === req.params.replyId
+    );
     if (
       reply.judgements.filter((jud) => jud.user.toString() === req.body.likerId)
         .length > 0
@@ -916,7 +984,7 @@ const status = {
   dislikeComment,
   impulsifyReplyToComment,
   likeReplyToComment,
-  dislikeReplyToComment
+  dislikeReplyToComment,
 };
 
 module.exports = status;

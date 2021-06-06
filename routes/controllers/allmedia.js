@@ -1,6 +1,7 @@
 const ImagePost = require("../../models/ImagePost");
 const VideoPost = require("../../models/VideoPost");
 const Status = require("../../models/Status");
+// const { uniqueArr } = require('../../utils/arr');
 
 async function getUsersMedia(req, res) {
   const page = parseInt(req.query.page) || 1;
@@ -26,13 +27,14 @@ async function getUsersMedia(req, res) {
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
       const results = {};
-      const hasMoreValue = posts.length > endIndex;
+      const hasMoreValue =
+        endIndex <= posts.length && startIndex < posts.length;
       console.log({
         hasMoreValue,
         len: posts.length,
         endIndex,
       });
-      if (hasMoreValue)
+      if (hasMoreValue && startIndex < posts.length)
         results.next = {
           page: page + 1,
           limit,
@@ -42,6 +44,12 @@ async function getUsersMedia(req, res) {
         results.next = {
           hasMore: false,
         };
+      await console.log("*", {
+        hasMoreValue,
+        len: posts.length,
+        startIndex,
+        endIndex,
+      });
       results.results = await posts.slice(startIndex, endIndex);
       res.json(results);
     } else {
@@ -124,7 +132,7 @@ async function getMediaInBulk(req, res) {
       }).sort({
         date: -1,
       });
-      posts = [...posts, ...imageposts, ...videoposts, ...statusposts];
+      posts = [...imageposts, ...videoposts, ...statusposts];
     }
     const hasMoreValue = endIndex < posts.length;
     if (endIndex < posts.length)

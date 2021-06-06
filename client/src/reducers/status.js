@@ -41,13 +41,18 @@ export default (state = initialState, action) => {
         loading: false,
         statuses: [...state.statuses, payload],
       };
-    case GET_PERSONS_STATUSES:
     case GET_MY_STATUSES:
     case GET_ALL_STATUSES:
       return {
         ...state,
         loading: false,
         statuses: payload,
+      };
+    case GET_PERSONS_STATUSES:
+      return {
+        ...state,
+        loading: false,
+        statuses: [...state.statuses, ...payload],
       };
     case DELETE_STATUS:
       return {
@@ -82,12 +87,16 @@ export default (state = initialState, action) => {
           stat._id === payload.id
             ? {
                 ...stat,
-                comments: stat.comments.map(comm => comm._id === payload.commentId ? {
-                  ...comm,
-                  endorsements: payload.endorsements,
-                  judgements: payload.judgements,
-                  impulsions: payload.impulsions,
-                } : comm)
+                comments: stat.comments.map((comm) =>
+                  comm._id === payload.commentId
+                    ? {
+                        ...comm,
+                        endorsements: payload.endorsements,
+                        judgements: payload.judgements,
+                        impulsions: payload.impulsions,
+                      }
+                    : comm
+                ),
               }
             : stat
         ),
@@ -102,27 +111,33 @@ export default (state = initialState, action) => {
           stat._id === payload.id
             ? {
                 ...stat,
-                comments: stat.comments.map(comm => comm._id === payload.commentId ? {
-                  ...comm,
-                  replies: comm.replies.map(rep => rep._id === payload.replyId ? {
-                    ...rep,
-                    endorsements: payload.endorsements,
-                    judgements: payload.judgements,
-                    impulsions: payload.impulsions,
-                  } : rep)
-                } : comm)
+                comments: stat.comments.map((comm) =>
+                  comm._id === payload.commentId
+                    ? {
+                        ...comm,
+                        replies: comm.replies.map((rep) =>
+                          rep._id === payload.replyId
+                            ? {
+                                ...rep,
+                                endorsements: payload.endorsements,
+                                judgements: payload.judgements,
+                                impulsions: payload.impulsions,
+                              }
+                            : rep
+                        ),
+                      }
+                    : comm
+                ),
               }
             : stat
         ),
-      }
+      };
     case ADD_COMMENT_TO_STATUS:
       return {
         ...state,
         loading: false,
         statuses: state.statuses.map((stat) =>
-          stat._id === payload.id
-            ? { ...stat, comments: payload.items }
-            : stat
+          stat._id === payload.id ? { ...stat, comments: payload.items } : stat
         ),
       };
     case EDIT_STATUS:
@@ -159,10 +174,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        statuses: state.statuses.map((stat) => stat._id === payload.id ? {
-          ...stat,
-          comments: stat.comments.map(comm => comm._id === payload.comment_id ? payload.item : comm)
-        } : stat),
+        statuses: state.statuses.map((stat) =>
+          stat._id === payload.id
+            ? {
+                ...stat,
+                comments: stat.comments.map((comm) =>
+                  comm._id === payload.comment_id ? payload.item : comm
+                ),
+              }
+            : stat
+        ),
       };
     case DELETE_COMMENT_OF_STATUS:
       return {
@@ -234,11 +255,15 @@ export default (state = initialState, action) => {
           stat._id === payload.id
             ? {
                 ...stat,
-                comments: stat.comments.map(
-                  (comm) => comm._id === payload.comment_id ? {
-                    ...comm,
-                    replies: comm.replies.filter(rep => rep._id !== payload.reply_id)
-                  } : comm
+                comments: stat.comments.map((comm) =>
+                  comm._id === payload.comment_id
+                    ? {
+                        ...comm,
+                        replies: comm.replies.filter(
+                          (rep) => rep._id !== payload.reply_id
+                        ),
+                      }
+                    : comm
                 ),
               }
             : stat

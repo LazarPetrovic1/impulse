@@ -3181,8 +3181,6 @@ export function particles() {
 
   canvas.style.backgroundColor = "#111";
 
-  // console.log(typeof can_w);
-
   var ball = {
       x: 0,
       y: 0,
@@ -3243,7 +3241,6 @@ export function particles() {
   function randomNumFrom(min, max) {
     return Math.random() * (max - min) + min;
   }
-  console.log(randomNumFrom(0, 10));
   // Random Ball
   function getRandomBall() {
     var pos = randomArrayItem(["top", "right", "bottom", "left"]);
@@ -3334,7 +3331,6 @@ export function particles() {
       // alpha change
       b.phase += alpha_f;
       b.alpha = Math.abs(Math.cos(b.phase));
-      // console.log(b.alpha);
     });
 
     balls = new_balls.slice(0);
@@ -3419,7 +3415,6 @@ export function particles() {
     can_h = parseInt(canvas.getAttribute("height"));
   }
   window.addEventListener("resize", function (e) {
-    console.log("Window Resize...");
     initCanvas();
   });
 
@@ -3432,12 +3427,10 @@ export function particles() {
 
   // Mouse effect
   canvas.addEventListener("mouseenter", function () {
-    console.log("mouseenter");
     mouse_in = true;
     balls.push(mouse_ball);
   });
   canvas.addEventListener("mouseleave", function () {
-    console.log("mouseleave");
     mouse_in = false;
     var new_balls = [];
     Array.prototype.forEach.call(balls, function (b) {
@@ -3451,7 +3444,6 @@ export function particles() {
     var e = e || window.event;
     mouse_ball.x = e.pageX;
     mouse_ball.y = e.pageY;
-    // console.log(mouse_ball);
   });
 }
 

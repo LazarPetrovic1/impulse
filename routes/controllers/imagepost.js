@@ -191,7 +191,7 @@ async function replyToImageComment(req, res) {
     };
     const newComment = {
       ...comment.toObject(),
-      replies: [...comment.replies, newReply],
+      replies: [newReply, ...comment.replies],
     };
     post.comments = await post.comments.map((comm) =>
       comm.id === req.params.commentId ? newComment : comm
@@ -230,8 +230,37 @@ async function editReplyToImageComment(req, res) {
 }
 async function getAllRepliesToComment(req, res) {
   try {
+    const replyPage = parseInt(req.query.reply_page) || 1;
+    const replyLimit = parseInt(req.query.reply_limit) || 10;
+    const startIndexReplies = (replyPage - 1) * replyLimit;
+    const endIndexReplies = replyPage * replyLimit;
     const post = await ImagePost.findById(req.params.id);
-    return res.json(post.comments.replies);
+    if (post.comments.length <= 0) {
+      return res.json({
+        hasMore: false,
+        repliesLength: comment.replies.length,
+        replies: [],
+      });
+    }
+    const comment = await post.comments.find(
+      (comm) => comm.id === req.params.commentId
+    );
+    const newReplies = await comment.replies.slice(
+      startIndexReplies,
+      endIndexReplies
+    );
+    if (startIndexReplies < comment.replies.length) {
+      return res.json({
+        replies: newReplies,
+        repliesLength: comment.replies.length,
+        hasMore: true,
+      });
+    }
+    return res.json({
+      hasMore: false,
+      repliesLength: comment.replies.length,
+      replies: [],
+    });
   } catch (e) {
     res.status(500).send("Internal server error.");
   }
@@ -519,15 +548,48 @@ async function getMyImages(req, res) {
 }
 async function getUsersImages(req, res) {
   try {
-    const page = req.query.page || 1;
-    const limit = req.query.limit || 5;
-    const posts = await paginate(
-      ImagePost,
-      { user: req.params.id },
-      page,
-      limit
-    );
-    res.json(posts);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const commentPage = parseInt(req.query.comment_page) || 1;
+    const commentLimit = parseInt(req.query.comment_limit) || 10;
+    const replyPage = parseInt(req.query.reply_page) || 1;
+    const replyLimit = parseInt(req.query.reply_limit) || 5;
+    const [startIndexPosts, startIndexComments, startIndexReplies] = [
+      (page - 1) * limit,
+      (commentPage - 1) * commentLimit,
+      (replyPage - 1) * replyLimit,
+    ];
+    const [endIndexPosts, endIndexComments, endIndexReplies] = [
+      page * limit,
+      commentPage * commentLimit,
+      replyPage * replyLimit,
+    ];
+    const posts = await ImagePost.find({ user: req.params.id });
+    const newPosts = await posts
+      .slice(startIndexPosts, endIndexPosts)
+      .map((post) => {
+        post.comments = post.comments
+          .slice(startIndexComments, endIndexComments)
+          .map((comm) => {
+            comm.replies = comm.replies.slice(
+              startIndexReplies,
+              endIndexReplies
+            );
+            return comm;
+          });
+        return post;
+      });
+    // res.json(posts);
+    if (startIndexComments < posts.length && endIndexPosts < posts.length) {
+      return res.json({
+        posts: newPosts,
+        hasMore: true,
+      });
+    }
+    return res.json({
+      hasMore: false,
+      posts: [],
+    });
   } catch (e) {
     console.error(e.message);
     res.status(500).json({ msg: "Internal server error." });
@@ -917,6 +979,34 @@ async function dislikeReplyToImageComment(req, res) {
   }
 }
 
+async function getPostComments(req, res) {
+  try {
+    const commentPage = parseInt(req.query.comment_page) || 1;
+    const commentLimit = parseInt(req.query.comment_limit) || 10;
+    const startIndexComments = (commentPage - 1) * commentLimit;
+    const endIndexComments = commentPage * commentLimit;
+    const post = await ImagePost.findById(req.params.id);
+    const newComments = await post.comments.slice(
+      startIndexComments,
+      endIndexComments
+    );
+    if (startIndexComments < post.comments.length) {
+      return res.json({
+        comments: newComments,
+        commentsLength: post.comments.length,
+        hasMore: true,
+      });
+    }
+    return res.json({
+      hasMore: false,
+      commentsLength: post.comments.length,
+      comments: [],
+    });
+  } catch (e) {
+    return res.json({ msg: "Either loading or 404: Not Found." });
+  }
+}
+
 const image = {
   uploadImage,
   getAllImages,
@@ -946,6 +1036,7 @@ const image = {
   impulsifyReplyToImageComment,
   likeReplyToImageComment,
   dislikeReplyToImageComment,
+  getPostComments,
 };
 
 module.exports = image;

@@ -13,7 +13,6 @@ function LeaveGroupCheck({
 }) {
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(`Left ${groupname}!`);
     await onClose();
     if (ingroup) {
       await history.push("/");

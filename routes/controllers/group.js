@@ -51,7 +51,6 @@ async function getGroup(req, res) {
     commentPage * commentLimit,
     replyPage * replyLimit,
   ];
-  const results = {};
 
   try {
     const group = await Group.findById(req.params.id);
@@ -127,8 +126,98 @@ async function postInGroup(req, res) {
 }
 async function getAllPosts(req, res) {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const commentPage = parseInt(req.query.comment_page) || 1;
+    const commentLimit = parseInt(req.query.comment_limit) || 10;
+    const replyPage = parseInt(req.query.reply_page) || 1;
+    const replyLimit = parseInt(req.query.reply_limit) || 5;
+    const [startIndexPosts, startIndexComments, startIndexReplies] = [
+      (page - 1) * limit,
+      (commentPage - 1) * commentLimit,
+      (replyPage - 1) * replyLimit,
+    ];
+    const [endIndexPosts, endIndexComments, endIndexReplies] = [
+      page * limit,
+      commentPage * commentLimit,
+      replyPage * replyLimit,
+    ];
     const group = await Group.findById(req.params.id);
-    return res.json(group.posts);
+    const posts = await group.posts.slice(startIndexPosts, endIndexPosts);
+    const newPosts = await group.posts.map((post) => {
+      post.comments = post.comments
+        .slice(startIndexComments, endIndexComments)
+        .map((comm) => {
+          comm.replies = comm.replies.slice(startIndexReplies, endIndexReplies);
+          return comm;
+        });
+      return post;
+    });
+    if (startIndexComments < newPosts.length) {
+      return res.json({
+        posts: newPosts,
+        hasMore: true,
+      });
+    }
+    return res.json({
+      hasMore: false,
+      posts: [],
+    });
+  } catch (e) {
+    res.status(500).send("Internal server error.");
+  }
+}
+async function getPostsOfGroup(req, res) {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const commentPage = parseInt(req.query.comment_page) || 1;
+    const commentLimit = parseInt(req.query.comment_limit) || 10;
+    const replyPage = parseInt(req.query.reply_page) || 1;
+    const replyLimit = parseInt(req.query.reply_limit) || 5;
+    const [startIndexPosts, startIndexComments, startIndexReplies] = [
+      (page - 1) * limit,
+      (commentPage - 1) * commentLimit,
+      (replyPage - 1) * replyLimit,
+    ];
+    const [endIndexPosts, endIndexComments, endIndexReplies] = [
+      page * limit,
+      commentPage * commentLimit,
+      replyPage * replyLimit,
+    ];
+    const group = await Group.findById(req.params.id);
+    const posts = await group.posts.slice(startIndexPosts, endIndexPosts);
+    const newPosts = await posts.map((post) => {
+      post.comments = post.comments
+        .slice(startIndexComments, endIndexComments)
+        .map((comm) => {
+          comm.replies = comm.replies.slice(startIndexReplies, endIndexReplies);
+          return comm;
+        });
+      return post;
+    });
+    await console.log("*", {
+      page,
+      limit,
+      commentPage,
+      commentLimit,
+      replyPage,
+      replyLimit,
+      startIndexPosts,
+      endIndexPosts,
+      newPosts,
+      postslen: group.posts.length,
+    });
+    if (startIndexPosts < group.posts.length) {
+      return res.json({
+        posts: newPosts,
+        hasMore: true,
+      });
+    }
+    return res.json({
+      hasMore: false,
+      posts: [],
+    });
   } catch (e) {
     res.status(500).send("Internal server error.");
   }
@@ -1024,6 +1113,7 @@ const group = {
   dislikePost,
   meInGroups,
   commentGroupPost,
+  getPostsOfGroup,
   getPostComments,
   updateComment,
   deleteComment,

@@ -25,6 +25,7 @@ import {
   IMPULSIFY_GROUP_POST_REPLY,
   LIKE_GROUP_POST_REPLY,
   DISLIKE_GROUP_POST_REPLY,
+  GET_GROUP_POSTS,
 } from "./types";
 
 import {
@@ -518,7 +519,6 @@ export const getPostComments = (
     const res = await axios.get(
       `/api/group/${id}/${postId}?comment_page=${commentPage}&comment_limit=${commentLimit}`
     );
-    await console.log("REZDEJTA", res.data);
     dispatch({
       type: GET_COMMENTS_OF_GROUP_POST,
       payload: {
@@ -628,7 +628,6 @@ export const getCommentReplies = (
     const res = await axios.get(
       `/api/group/${id}/${postId}/${commentId}?reply_page=${replyPage}&reply_limit=${replyLimit}`
     );
-    await console.log(res.data);
     dispatch({
       type: GET_REPLIES_TO_COMMENT_OF_GROUP_POST,
       payload: {
@@ -653,13 +652,6 @@ export const updateReply = (id, postId, commentId, replyId, content) => async (
       "Content-Type": "application/json",
     },
   };
-  console.log("ALL STUFF", {
-    id,
-    postId,
-    commentId,
-    replyId,
-    content,
-  });
   const body = JSON.stringify({ content });
   try {
     const res = await axios.put(
@@ -708,5 +700,32 @@ export const deleteReply = (id, postId, commentId, replyId, content) => async (
   }
 };
 
-// :id/:post_id/:comment_id/:reply_id
-//
+export const getGroupPosts = (
+  id,
+  page,
+  limit,
+  commentPage,
+  commentLimit,
+  replyPage,
+  replyLimit
+) => async (dispatch) => {
+  try {
+    const res = await axios.get(
+      `/api/group/getposts/${id}?page=${page}&limit=${limit}&comment_page=${commentPage}&comment_limit=${commentLimit}&reply_page=${replyPage}&reply_limit=${replyLimit}`
+    );
+    dispatch({
+      type: GET_GROUP_POSTS,
+      payload: res.data.posts,
+    });
+    return {
+      hasMore: res.data.hasMore,
+      postsLength: res.data.postsLength,
+    };
+  } catch (e) {
+    console.warn(e.message);
+    dispatch({
+      type: GROUP_ERROR,
+      payload: e.message,
+    });
+  }
+};

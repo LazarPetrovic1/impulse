@@ -11,6 +11,7 @@ router.delete("/:id", auth, group.deleteGroup);
 // savePost
 router.post("/:id", auth, group.postInGroup);
 router.post("/getposts/:id", auth, group.getAllPosts);
+router.get("/getposts/:id", auth, group.getPostsOfGroup);
 
 router.delete("/:id/:postId", auth, group.deletePost);
 router.post("/:id/:postId", auth, group.commentGroupPost);

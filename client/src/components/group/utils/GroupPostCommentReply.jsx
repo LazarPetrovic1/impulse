@@ -8,7 +8,7 @@ import {
   deleteReply,
   impulsifyReplyToImageComment,
   likeReplyToImageComment,
-  dislikeReplyToImageComment
+  dislikeReplyToImageComment,
 } from "../../../actions/group";
 import { Link } from "react-router-dom";
 import DeleteIcon from "../../utils/icons/DeleteIcon";
@@ -28,7 +28,7 @@ function GroupPostCommentReply({
   impulsifyReplyToImageComment,
   likeReplyToImageComment,
   dislikeReplyToImageComment,
-  sendNotif
+  sendNotif,
 }) {
   const { language } = useContext(LanguageContext);
   const [liked, setLiked] = useState(null);
@@ -118,12 +118,6 @@ function GroupPostCommentReply({
 
   const update = async (e) => {
     e.preventDefault();
-    await console.log("SVEEEE", {
-      groupId: group._id,
-      postId,
-      commentId,
-      replyId: reply._id,
-    });
     await updateReply(group._id, postId, commentId, reply._id, replyBody);
     await setIsEditing(false);
   };
@@ -270,5 +264,5 @@ export default connect(mapStateToProps, {
   impulsifyReplyToImageComment,
   likeReplyToImageComment,
   dislikeReplyToImageComment,
-  sendNotif
+  sendNotif,
 })(GroupPostCommentReply);

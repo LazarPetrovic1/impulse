@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
-import Modal from '../../utils/Modal';
-import { connect } from 'react-redux';
-import Friend from './Friend';
-import Spinner from '../../layout/Spinner';
-import { createGroup } from '../../../actions/group';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import Modal from "../../utils/Modal";
+import { connect } from "react-redux";
+import Friend from "./Friend";
+import Spinner from "../../layout/Spinner";
+import { createGroup } from "../../../actions/group";
+import PropTypes from "prop-types";
 
-function AddGroup({ title, show, setShow, onClose, auth: { user, loading }, createGroup }) {
-  const [imgb64, setImgb64] = useState("")
+function AddGroup({
+  title,
+  show,
+  setShow,
+  onClose,
+  auth: { user, loading },
+  createGroup,
+}) {
+  const [imgb64, setImgb64] = useState("");
   const [groupInfo, setGroupInfo] = useState({
     name: "",
     about: "",
@@ -15,26 +22,26 @@ function AddGroup({ title, show, setShow, onClose, auth: { user, loading }, crea
     admin: user._id,
     requiresAdmin: false,
     isSeen: true,
-  })
+  });
   const onImageUpload = (e) => {
     e.persist();
-    console.log(e);
-    const reader = new FileReader()
-    reader.readAsDataURL(e.target.files[0])
-    reader.onloadend = () => setImgb64(reader.result)
-  }
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onloadend = () => setImgb64(reader.result);
+  };
   const {
     name,
     about,
-    people, /* eslint-disable-line */
-    admin, /* eslint-disable-line */
+    people /* eslint-disable-line */,
+    admin /* eslint-disable-line */,
     requiresAdmin,
     isSeen,
-  } = groupInfo
-  const onChange = e => setGroupInfo({ ...groupInfo, [e.target.name]: e.target.value })
-  const onSubmit = async e => {
-    e.preventDefault()
-    if (!imgb64) return
+  } = groupInfo;
+  const onChange = (e) =>
+    setGroupInfo({ ...groupInfo, [e.target.name]: e.target.value });
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!imgb64) return;
     await createGroup({
       people,
       admin,
@@ -42,9 +49,9 @@ function AddGroup({ title, show, setShow, onClose, auth: { user, loading }, crea
       requiresAdmin,
       isSeen,
       name,
-      data: imgb64
-    })
-    await setShow(false)
+      data: imgb64,
+    });
+    await setShow(false);
     await setGroupInfo({
       name: "",
       about: "",
@@ -52,8 +59,8 @@ function AddGroup({ title, show, setShow, onClose, auth: { user, loading }, crea
       admin: user._id,
       requiresAdmin: false,
       isSeen: true,
-    })
-  }
+    });
+  };
   return user && user.friends && !loading ? (
     <Modal title={title} show={show} onClose={onClose} provideOwnClosure>
       <form onSubmit={onSubmit}>
@@ -80,19 +87,25 @@ function AddGroup({ title, show, setShow, onClose, auth: { user, loading }, crea
           />
         </div>
         <div className="form-group">
-          {user.friends && user.friends.length > 0 ? user.friends.map(fr => (
-            <Friend
-              key={fr.user}
-              id={fr.user}
-              groupInfo={groupInfo}
-              setGroupInfo={setGroupInfo}
-            />
-          )) : (
-            <h2 className="text-center text-warning">You don't have any friends... Loser</h2>
+          {user.friends && user.friends.length > 0 ? (
+            user.friends.map((fr) => (
+              <Friend
+                key={fr.user}
+                id={fr.user}
+                groupInfo={groupInfo}
+                setGroupInfo={setGroupInfo}
+              />
+            ))
+          ) : (
+            <h2 className="text-center text-warning">
+              You don't have any friends... Loser
+            </h2>
           )}
         </div>
         <div className="form-group">
-          <h2 className="text-primary">{user.firstName} {user.lastName} will be the admin.</h2>
+          <h2 className="text-primary">
+            {user.firstName} {user.lastName} will be the admin.
+          </h2>
           <p>This can be changed later.</p>
         </div>
         <div className="form-group">
@@ -106,7 +119,9 @@ function AddGroup({ title, show, setShow, onClose, auth: { user, loading }, crea
                 onChange={onImageUpload}
                 accept="image/*"
               />
-              <label className="custom-file-label" htmlFor="image">Choose file</label>
+              <label className="custom-file-label" htmlFor="image">
+                Choose file
+              </label>
             </div>
           </div>
           {imgb64 && (
@@ -129,10 +144,13 @@ function AddGroup({ title, show, setShow, onClose, auth: { user, loading }, crea
               name="requiresAdmin"
               id="requiresAdmin"
               value={requiresAdmin}
-              onChange={() => setGroupInfo({ ...groupInfo, requiresAdmin: !requiresAdmin })}
+              onChange={() =>
+                setGroupInfo({ ...groupInfo, requiresAdmin: !requiresAdmin })
+              }
             />
             <label className="mb-0" htmlFor="requiresAdmin">
-              The admin will have to approve every action that requires autonomy.
+              The admin will have to approve every action that requires
+              autonomy.
             </label>
           </div>
           <div className="d-flex align-items-center">
@@ -145,7 +163,8 @@ function AddGroup({ title, show, setShow, onClose, auth: { user, loading }, crea
               onChange={() => setGroupInfo({ ...groupInfo, isSeen: !isSeen })}
             />
             <label htmlFor="isSeen" className="mb-0">
-              The group will be seen by everyone or just by (friends of group members).
+              The group will be seen by everyone or just by (friends of group
+              members).
             </label>
           </div>
         </div>
@@ -157,16 +176,18 @@ function AddGroup({ title, show, setShow, onClose, auth: { user, loading }, crea
         </div>
       </form>
     </Modal>
-  ) : <Spinner />
+  ) : (
+    <Spinner />
+  );
 }
 
 const mapStateToProps = (state) => ({
-  auth: state.auth
-})
+  auth: state.auth,
+});
 
 AddGroup.propTypes = {
   auth: PropTypes.object.isRequired,
   createGroup: PropTypes.func.isRequired,
-}
+};
 
 export default connect(mapStateToProps, { createGroup })(AddGroup);

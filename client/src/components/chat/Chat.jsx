@@ -40,7 +40,6 @@ function Chat(props) {
   );
   const [createGroup, setCreateGroup] = useState(false);
   const selectFriend = async (i) => {
-    console.log("CLICKING");
     await setPage(1);
     await setChat({});
     await setSelected(user.friends[i]);

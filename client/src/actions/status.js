@@ -91,7 +91,6 @@ export const likeStatusComment = (id, commentId, likerId) => async (
       body,
       config
     );
-    await console.log("REZDEJTA", res.data);
     dispatch({
       type: LIKE_STATUS_COMMENT,
       payload: {
@@ -350,13 +349,16 @@ export const getMyStatuses = () => async (dispatch) => {
     });
   }
 };
-export const getPersonsStatuses = (id) => async (dispatch) => {
+export const getPersonsStatuses = (id, page, limit) => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/status/${id}`);
+    const res = await axios.get(
+      `/api/status/${id}?page=${page}&limit=${limit}`
+    );
     dispatch({
       type: GET_PERSONS_STATUSES,
-      payload: res.data,
+      payload: res.data.posts,
     });
+    return res.data.hasMore;
   } catch (e) {
     console.warn(e.message);
     dispatch({
@@ -541,7 +543,6 @@ export const addCommentToStatus = (content, id) => async (dispatch) => {
   const body = JSON.stringify({ content });
   try {
     const res = await axios.post(`/api/status/comment/${id}`, body, config);
-    await console.log("REZ.DEJTA ADDCOMMENTTOSTATUS", res.data);
     dispatch({
       type: ADD_COMMENT_TO_STATUS,
       payload: {
@@ -585,11 +586,6 @@ export const getCommentsOfStatus = (id) => async (dispatch) => {
 export const editCommentOfStatus = (id, comment_id, content) => async (
   dispatch
 ) => {
-  console.log("ALL PARAMS", {
-    id,
-    comment_id,
-    content,
-  });
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -602,7 +598,6 @@ export const editCommentOfStatus = (id, comment_id, content) => async (
       body,
       config
     );
-    await console.log("RETURN FROM BACK", res.data);
     dispatch({
       type: EDIT_COMMENT_OF_STATUS,
       payload: {

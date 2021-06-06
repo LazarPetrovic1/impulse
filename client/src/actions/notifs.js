@@ -38,9 +38,7 @@ export const sendNotif = ({
     name,
     url,
   });
-  const notif = socket.on("sentNotif", (notif) => {
-    console.log(notif);
-  });
+  const notif = socket.on("sentNotif", (notif) => {});
   dispatch({
     type: POST_NOTIF,
     payload: notif,
@@ -52,7 +50,6 @@ export const readNotifs = (userId) => async (dispatch) => {
   await socket.emit("readNotifs", userId);
   // eslint-disable-next-line
   dispatch(findNotifs(userId));
-  // await console.log(nots);
 };
 
 export const sendFriendRequest = ({ senderId, accepterId }) => async (

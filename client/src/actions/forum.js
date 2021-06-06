@@ -266,7 +266,6 @@ export const forumPostEditComment = (id, comment_id, content) => async (
       JSON.stringify({ content }),
       config
     );
-    await console.log(res.data);
     dispatch({
       type: FORUM_POST_EDIT_COMMENT,
       payload: res.data,
@@ -341,7 +340,6 @@ export const forumPostEditReplyToComment = (
       JSON.stringify({ content: replyText }),
       config
     );
-    await console.log(res.data);
     dispatch({
       type: FORUM_POST_EDIT_REPLY,
       payload: {
@@ -479,7 +477,6 @@ export const likeForumPostComment = (id, commentId, likerId) => async (
       body,
       config
     );
-    await console.log("REZDEJTA", res.data);
     dispatch({
       type: LIKE_FORUM_POST_COMMENT,
       payload: {

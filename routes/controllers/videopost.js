@@ -81,6 +81,31 @@ async function uploadVideo(req, res) {
 }
 async function getAllVideos(req, res) {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const posts = await VideoPost.find().sort({ date: -1 });
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const newPosts = await posts.slice(startIndex, endIndex);
+    const hasMoreValue = startIndex < posts.length && endIndex <= posts.length;
+    await console.log("*", {
+      startIndex,
+      endIndex,
+      hasMoreValue,
+      allposts: posts.length,
+    });
+    return res.json({
+      hasMore: hasMoreValue,
+      posts: newPosts,
+    });
+    // res.json(posts);
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).send("Internal server error.");
+  }
+}
+async function getFullVideos(req, res) {
+  try {
     const posts = await VideoPost.find().sort({ date: -1 });
     res.json(posts);
   } catch (e) {
@@ -979,6 +1004,7 @@ const video = {
   addView,
   uploadVideo,
   getAllVideos,
+  getFullVideos,
   getVideoById,
   deleteVideo,
   saveVideo,

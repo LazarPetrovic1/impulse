@@ -12,6 +12,7 @@ import {
   imagePostReplyToComment as addReply,
   editImageComment as editComment,
   deleteComment,
+  getRepliesToComment,
 } from "../../actions/image";
 import { sendNotif } from "../../actions/notifs";
 import { LanguageContext } from "../../contexts/LanguageContext";
@@ -19,6 +20,7 @@ import PropTypes from "prop-types";
 import DeleteIcon from "../utils/icons/DeleteIcon";
 import EditIcon from "../utils/icons/EditIcon";
 import Reply from "./Reply";
+import { REPLY_DELIMITER } from "../../utils/nonReduxConstants";
 
 function Comment({
   auth,
@@ -30,6 +32,7 @@ function Comment({
   addReply,
   editComment,
   deleteComment,
+  getRepliesToComment,
 }) {
   const [user, setUser] = useState({});
   const [liked, setLiked] = useState(null);
@@ -38,6 +41,10 @@ function Comment({
   const [commentBody, setCommentBody] = useState(comm.text);
   const [isReplying, setIsReplying] = useState(false);
   const { language } = useContext(LanguageContext);
+  const [page, setPage] = useState(1);
+  const [hasMoreReplies, setHasMoreReplies] = useState(true);
+  const [repliesLength, setRepliesLength] = useState(0);
+  const [areRepliesHidden, setAreRepliesHidden] = useState(false);
   useEffect(() => {
     let isMounted = true;
     if (isMounted) {
@@ -140,6 +147,30 @@ function Comment({
         return;
     }
   };
+
+  useEffect(() => {
+    (async function () {
+      try {
+        if (!hasMoreReplies) {
+          return;
+        }
+        if (page === 1 && comm.replies.length > 0) {
+          return;
+        }
+        const res = await getRepliesToComment(
+          imgId,
+          comm._id,
+          page,
+          REPLY_DELIMITER
+        );
+        await setHasMoreReplies(res.hasMore);
+        await setRepliesLength(res.repliesLength);
+      } catch (e) {
+        console.warn(e.message);
+      }
+    })();
+    // eslint-disable-next-line
+  }, [page]);
 
   return user && comm && Object.keys(comm).length > 0 ? (
     <section
@@ -255,6 +286,23 @@ function Comment({
           </button>
         </form>
       )}
+      <button
+        className="btn btn-block pt-2"
+        style={{ background: "transparent", color: "white" }}
+        onClick={() => setPage(page + 1)}
+      >
+        Load more replies{" "}
+        {page > 1 &&
+          repliesLength > 0 &&
+          `${comm.replies.length}/${repliesLength}`}
+      </button>
+      <button
+        className="btn btn-block pt-2"
+        style={{ background: "transparent", color: "white" }}
+        onClick={() => setAreRepliesHidden(!areRepliesHidden)}
+      >
+        {areRepliesHidden ? "Expand" : "Hide"} replies
+      </button>
       <div className="d-flex">
         <div className="position-relative">
           <i
@@ -297,14 +345,6 @@ function Comment({
           reply={reply}
         />
       ))}
-      {/*comm.replies.map((reply) => (
-        <VideoCommentReply
-          key={reply._id}
-          imgId={imgId}
-          commentId={comm._id}
-          reply={reply}
-        />
-      ))*/}
     </section>
   ) : (
     <Spinner />
@@ -321,6 +361,7 @@ Comment.propTypes = {
   addReply: PropTypes.func.isRequired,
   editComment: PropTypes.func.isRequired,
   deleteComment: PropTypes.func.isRequired,
+  getRepliesToComment: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -334,27 +375,5 @@ export default connect(mapStateToProps, {
   addReply,
   editComment,
   deleteComment,
+  getRepliesToComment,
 })(Comment);
-
-// <CommentContainer className="border">
-//   <div name="information">
-//     <img
-//       src={
-//         user && user.profileImages && user.profileImages.length > 0 ?
-//         user.profileImages[user.profileImages.length - 1].url :
-//         `https://robohash.org/${user._id}?set=set4&size=22x22`
-//       }
-//       style={{ width: 22, height: 22, borderRadius: "50%" }}
-//       alt={`${comm.name}'s avatar`}
-//     />
-//     <p className="mb-0 ml-3">
-//       <Link to={`/social/profile/${comm.user}`}>@{comm.name}</Link>
-//     </p>
-//   </div>
-//   <div name="content" className="my-2">
-//     <p className="m-0">{comm.text}</p>
-//     <p className="m-0" name="date" style={{ fontSize: "12px" }}>
-//       On <Moment className="pl-2" format="DD.MM.YYYY">{comm.date}</Moment>
-//     </p>
-//   </div>
-// </CommentContainer>

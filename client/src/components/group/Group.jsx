@@ -1,5 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
-import { getGroup } from "../../actions/group";
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  useRef,
+} from "react";
+import { getGroup, getGroupPosts } from "../../actions/group";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import DashCenter from "../../styled/DashCenter";
@@ -13,15 +19,52 @@ import GroupPost from "./GroupPost";
 import DeleteGroupCheck from "../dashboard/utilcomps/DeleteGroupCheck";
 import DeleteIcon from "../utils/icons/DeleteIcon";
 import { ColourContext } from "../../contexts/ColourContext";
+import {
+  POST_DELIMITER,
+  COMMENT_DELIMITER,
+  REPLY_DELIMITER,
+} from "../../utils/nonReduxConstants";
 
-function Group({ group: { group }, getGroup, match }) {
+function Group({ group: { group }, getGroup, match, getGroupPosts }) {
+  const [page, setPage] = useState(2);
+  const [hasMore, setHasMore] = useState(true);
   const [showAbout, setShowAbout] = useState(false);
   const [showPeople, setShowPeople] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showPostItems, setShowPostItems] = useState(false);
   const [groupPeople, setGroupPeople] = useState([]);
   const [searchMembers, setSearchMembers] = useState("");
-  const { background } = useContext(ColourContext)
+  const { background } = useContext(ColourContext);
+  const observer = useRef();
+  const infiniteScrollPost = useCallback(
+    (node) => {
+      if (!hasMore) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+      // eslint-disable-next-line
+    },
+    [hasMore]
+  );
+  const getMoreGroups = async () => {
+    if (!hasMore) return;
+    if (page > 1 && group && group._id) {
+      const res = await getGroupPosts(
+        group._id,
+        page,
+        POST_DELIMITER,
+        1,
+        COMMENT_DELIMITER,
+        1,
+        REPLY_DELIMITER
+      );
+      await setHasMore(res.hasMore);
+    }
+  };
   useEffect(() => {
     (async function () {
       try {
@@ -32,6 +75,10 @@ function Group({ group: { group }, getGroup, match }) {
     })();
     // eslint-disable-next-line
   }, []);
+  useEffect(() => {
+    getMoreGroups();
+    // eslint-disable-next-line
+  }, [page]);
   useEffect(() => {
     let people = [];
     (async function () {
@@ -60,7 +107,11 @@ function Group({ group: { group }, getGroup, match }) {
           height="auto"
         />
       </div>
-      <DashCenter background={background} justification="space-between" maxw="1300px">
+      <DashCenter
+        background={background}
+        justification="space-between"
+        maxw="1300px"
+      >
         <h1>{group.name}</h1>
         <div className="d-flex">
           <button
@@ -166,6 +217,7 @@ function Group({ group: { group }, getGroup, match }) {
         group.posts.map((post) => (
           <GroupPost groupid={group._id} key={post._id} post={post} />
         ))}
+      <div ref={infiniteScrollPost} style={{ height: "30px" }} />
     </article>
   ) : (
     <Spinner />
@@ -175,10 +227,11 @@ function Group({ group: { group }, getGroup, match }) {
 Group.propTypes = {
   getGroup: PropTypes.func.isRequired,
   group: PropTypes.object.isRequired,
+  getGroupPosts: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   group: state.group,
 });
 
-export default connect(mapStateToProps, { getGroup })(Group);
+export default connect(mapStateToProps, { getGroup, getGroupPosts })(Group);

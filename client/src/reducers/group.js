@@ -7,6 +7,7 @@ import {
   DELETE_GROUP_POST,
   GROUP_ERROR,
   CREATE_GROUP_POST,
+  GET_GROUP_POSTS,
   IMPULSE_POST_IN_GROUP,
   LIKE_POST_IN_GROUP,
   DISLIKE_POST_IN_GROUP,
@@ -160,6 +161,15 @@ export default (state = initialState, action) => {
         group: {
           ...state.group,
           posts: [payload, ...state.group.posts],
+        },
+      };
+    case GET_GROUP_POSTS:
+      return {
+        ...state,
+        loading: false,
+        group: {
+          ...state.group,
+          posts: [...state.group.posts, ...payload],
         },
       };
     case COMMENT_GROUP_POST:

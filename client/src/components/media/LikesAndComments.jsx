@@ -42,7 +42,6 @@ function LikesAndComments(props) {
   // const getStatOnHover = async (id, type) => {
   //   try {
   //     const res = await axios.get(`/api/imageposts/${id}/${type}`)
-  //     await console.log("RES.DATA", res.data);
   //     switch (type) {
   //       case "impulse":
   //         await setAllWhoImpulsed(res.data)
@@ -54,7 +53,6 @@ function LikesAndComments(props) {
   //         await setAllWhoDisliked(res.data)
   //         break;
   //       default:
-  //         console.log("Hello");
   //     }
   //   } catch (e) {
   //     console.warn(e.message);
@@ -172,7 +170,6 @@ function LikesAndComments(props) {
     } else if (!media[props.i].isVideo && media[props.i].url) {
       await commentImage({ id, text: comment, ownedById });
     } else {
-      console.log("Commenting");
     }
     await setComment("");
   };

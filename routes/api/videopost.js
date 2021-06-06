@@ -6,6 +6,7 @@ const video = require("../controllers/videopost");
 router.post("/", auth, video.uploadVideo);
 // router.get("/:id/chunks", auth, video.getVideoBuffer)
 router.get("/", auth, video.getAllVideos);
+router.get("/full", auth, video.getFullVideos);
 router.get("/video/:id", auth, video.getVideoById);
 router.delete("/:id", auth, video.deleteVideo);
 // updatePost
@@ -28,15 +29,23 @@ router.put("/:id/dismiss", auth, video.dismissVideo);
 router.put("/impulse/:id", auth, video.impulseVideo);
 router.put("/like/:id", auth, video.likeVideo);
 router.put("/dislike/:id", auth, video.dislikeVideo);
-router.get("/impulse/:id", auth, video.seeAllWhoImpulsed)
-router.get("/like/:id", auth, video.seeAllWhoLiked)
-router.get("/dislike/:id", auth, video.seeAllWhoDisliked)
-router.put("/:id/:commentId/impulse", auth, video.impulsifyComment)
-router.put("/:id/:commentId/like", auth, video.likeComment)
-router.put("/:id/:commentId/dislike", auth, video.dislikeComment)
-router.put("/:id/:commentId/:replyId/impulse", auth, video.impulsifyReplyToComment)
-router.put("/:id/:commentId/:replyId/like", auth, video.likeReplyToComment)
-router.put("/:id/:commentId/:replyId/dislike", auth, video.dislikeReplyToComment)
-router.get("/views/:id", auth, video.addView)
+router.get("/impulse/:id", auth, video.seeAllWhoImpulsed);
+router.get("/like/:id", auth, video.seeAllWhoLiked);
+router.get("/dislike/:id", auth, video.seeAllWhoDisliked);
+router.put("/:id/:commentId/impulse", auth, video.impulsifyComment);
+router.put("/:id/:commentId/like", auth, video.likeComment);
+router.put("/:id/:commentId/dislike", auth, video.dislikeComment);
+router.put(
+  "/:id/:commentId/:replyId/impulse",
+  auth,
+  video.impulsifyReplyToComment
+);
+router.put("/:id/:commentId/:replyId/like", auth, video.likeReplyToComment);
+router.put(
+  "/:id/:commentId/:replyId/dislike",
+  auth,
+  video.dislikeReplyToComment
+);
+router.get("/views/:id", auth, video.addView);
 
 module.exports = router;

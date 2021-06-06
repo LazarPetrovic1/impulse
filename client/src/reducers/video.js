@@ -22,7 +22,8 @@ import {
   LIKE_VIDEO_COMMENT,
   IMPULSIFY_VIDEO_REPLY,
   LIKE_VIDEO_REPLY,
-  DISLIKE_VIDEO_REPLY
+  DISLIKE_VIDEO_REPLY,
+  GET_FULL_VIDEOS,
 } from "../actions/types";
 
 const initialState = {
@@ -39,20 +40,30 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        videos: state.videos.map(vid => vid._id === payload.id ? {
-          ...vid,
-          views: payload.views
-        } : vid),
+        videos: state.videos.map((vid) =>
+          vid._id === payload.id
+            ? {
+                ...vid,
+                views: payload.views,
+              }
+            : vid
+        ),
         video: {
           ...state.video,
-          views: payload.views
-        }
-      }
-    case GET_VIDEOS:
+          views: payload.views,
+        },
+      };
+    case GET_FULL_VIDEOS:
       return {
         ...state,
         loading: false,
         videos: payload,
+      };
+    case GET_VIDEOS:
+      return {
+        ...state,
+        loading: false,
+        videos: [...state.videos, ...payload],
       };
     case GET_VIDEO:
       return {
@@ -91,12 +102,16 @@ export default (state = initialState, action) => {
         loading: false,
         video: {
           ...state.video,
-          comments: state.video.comments.map(comm => comm._id === payload.commentId ? {
-            ...comm,
-            impulsions: payload.impulsions,
-            endorsements: payload.endorsements,
-            judgements: payload.judgements,
-          } : comm)
+          comments: state.video.comments.map((comm) =>
+            comm._id === payload.commentId
+              ? {
+                  ...comm,
+                  impulsions: payload.impulsions,
+                  endorsements: payload.endorsements,
+                  judgements: payload.judgements,
+                }
+              : comm
+          ),
         },
       };
     case IMPULSIFY_VIDEO_REPLY:
@@ -107,15 +122,23 @@ export default (state = initialState, action) => {
         loading: false,
         video: {
           ...state.video,
-          comments: state.video.comments.map(comm => comm._id === payload.commentId ? {
-            ...comm,
-            replies: comm.replies.map(rep => rep._id === payload.replyId ? {
-              ...rep,
-              impulsions: payload.impulsions,
-              endorsements: payload.endorsements,
-              judgements: payload.judgements,
-            } : rep)
-          } : comm)
+          comments: state.video.comments.map((comm) =>
+            comm._id === payload.commentId
+              ? {
+                  ...comm,
+                  replies: comm.replies.map((rep) =>
+                    rep._id === payload.replyId
+                      ? {
+                          ...rep,
+                          impulsions: payload.impulsions,
+                          endorsements: payload.endorsements,
+                          judgements: payload.judgements,
+                        }
+                      : rep
+                  ),
+                }
+              : comm
+          ),
         },
       };
     case VIDEO_DELETE_COMMENT:

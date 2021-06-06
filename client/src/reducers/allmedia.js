@@ -41,7 +41,8 @@ export default (state = initialState, action) => {
     case SET_BULK_MEDIA:
       return {
         ...state,
-        media: [...state.media, ...payload],
+        media: payload,
+        // media: [...state.media, ...payload],
       };
     case ALL_MEDIA_OUTSIDE_SPAWN:
       return {

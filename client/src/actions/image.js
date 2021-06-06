@@ -20,8 +20,10 @@ import {
   EDIT_IMAGE_COMMENT,
   EDIT_IMAGE_COMMENT_REPLY,
   ADD_COMMENT,
+  GET_IMAGE_COMMENTS,
   DELETE_COMMENT,
   DELETE_REPLY,
+  IMAGE_POST_GET_REPLIES,
   ALL_MEDIA_OUTSIDE_SPAWN,
   ALL_MEDIA_OUTSIDE_STATCHANGE,
   ALL_MEDIA_OUTSIDE_SPAWN_COMMENT,
@@ -412,9 +414,9 @@ export const getImages = (id, page, limit) => async (dispatch) => {
     );
     dispatch({
       type: GET_IMAGES,
-      payload: res.data.results,
+      payload: res.data.posts,
     });
-    return res.data.next.hasMore;
+    return res.data.hasMore;
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
@@ -461,6 +463,29 @@ export const addComment = ({ id, text, ownedById }) => async (dispatch) => {
       type: ALL_MEDIA_OUTSIDE_SPAWN_COMMENT,
       payload: { type: "image", id, item: res.data },
     });
+  } catch (e) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: e.message },
+    });
+  }
+};
+export const getComments = (id, page, limit) => async (dispatch) => {
+  try {
+    const res = await axios.get(
+      `/api/imageposts/comment/${id}?comment_page=${page}&comment_limit=${limit}`
+    );
+    dispatch({
+      type: GET_IMAGE_COMMENTS,
+      payload: {
+        id,
+        comments: res.data.comments,
+      },
+    });
+    return {
+      commentsLength: res.data.commentsLength,
+      hasMore: res.data.hasMore,
+    };
   } catch (e) {
     dispatch({
       type: IMAGE_ERROR,
@@ -620,7 +645,6 @@ export const imagePostReplyToComment = (id, comment_id, content) => async (
       JSON.stringify({ content }),
       config
     );
-    await console.log("REZDEJTA", res.data);
     dispatch({
       type: IMAGE_POST_ADD_REPLY,
       payload: {
@@ -670,4 +694,25 @@ export const deleteImageReply = (id, comment_id, reply_id) => async (
     console.warn(e.message);
     dispatch({ type: IMAGE_ERROR, payload: e.message });
   }
+};
+export const getRepliesToComment = (id, comment_id, page, limit) => async (
+  dispatch
+) => {
+  try {
+    const res = await axios.get(
+      `/api/imageposts/comment/${id}/${comment_id}/reply?reply_page=${page}&reply_limit=${limit}`
+    );
+    dispatch({
+      type: IMAGE_POST_GET_REPLIES,
+      payload: {
+        id,
+        commentId: comment_id,
+        replies: res.data.replies,
+      },
+    });
+    return {
+      repliesLength: res.data.repliesLength,
+      hasMore: res.data.hasMore,
+    };
+  } catch (e) {}
 };

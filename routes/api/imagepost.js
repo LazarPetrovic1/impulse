@@ -13,21 +13,18 @@ router.post(
   [auth, [check("text", "Text is required.").not().isEmpty()]],
   image.commentOnImage
 );
+router.get("/comment/:id", auth, image.getPostComments);
 router.get("/comment/:id", auth, image.getImageComments);
 router.put("/comment/:id/:commentId", auth, image.editImageComments);
 router.delete("/comment/:id/:commentId", auth, image.deleteComment);
 router.put("/:id/dismiss", auth, image.dismissImage);
-router.post(
-  "/comment/:id/:commentId/reply",
-  auth,
-  image.replyToImageComment
-);
+router.post("/comment/:id/:commentId/reply", auth, image.replyToImageComment);
 router.put(
   "/comment/:id/:commentId/:replyId",
   auth,
   image.editReplyToImageComment
 );
-router.get("/comment/:id/reply", auth, image.getAllRepliesToComment);
+router.get("/comment/:id/:commentId/reply", auth, image.getAllRepliesToComment);
 router.delete(
   "/comment/:id/:commentId/:replyId",
   auth,
@@ -44,13 +41,23 @@ router.get("/:id/dislike", auth, image.seeAllWhoDisliked);
 router.put("/impulse/:id", auth, image.impulseImage);
 router.put("/like/:id", auth, image.likeImage);
 router.put("/dislike/:id", auth, image.dislikeImage);
-router.put("/:id/:commentId/impulse", auth, image.impulsifyImageComment)
-router.put("/:id/:commentId/like", auth, image.likeImageComment)
-router.put("/:id/:commentId/dislike", auth, image.dislikeImageComment)
-router.put("/:id/:commentId/:replyId/impulse", auth, image.impulsifyReplyToImageComment)
-router.put("/:id/:commentId/:replyId/like", auth, image.likeReplyToImageComment)
-router.put("/:id/:commentId/:replyId/dislike", auth, image.dislikeReplyToImageComment)
-
-
+router.put("/:id/:commentId/impulse", auth, image.impulsifyImageComment);
+router.put("/:id/:commentId/like", auth, image.likeImageComment);
+router.put("/:id/:commentId/dislike", auth, image.dislikeImageComment);
+router.put(
+  "/:id/:commentId/:replyId/impulse",
+  auth,
+  image.impulsifyReplyToImageComment
+);
+router.put(
+  "/:id/:commentId/:replyId/like",
+  auth,
+  image.likeReplyToImageComment
+);
+router.put(
+  "/:id/:commentId/:replyId/dislike",
+  auth,
+  image.dislikeReplyToImageComment
+);
 
 module.exports = router;

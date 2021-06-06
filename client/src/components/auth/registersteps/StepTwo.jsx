@@ -32,7 +32,6 @@ function StepTwo({
   const proceedToStepThree = async () => {
     try {
       const { errors, isGood } = await checksecondstep(username, password);
-      await console.log({ errors, isGood });
       if (isGood) {
         onProgressChange([username, password, password2]);
       } else {

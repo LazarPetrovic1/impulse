@@ -123,7 +123,6 @@ function ProfileOverview({ auth: { user }, hideSelected }) {
           await setDob(res.data.dob);
           break;
         default:
-          console.log("Nope!");
       }
       await setStatePiece(true);
       await window.location.reload();
@@ -133,7 +132,6 @@ function ProfileOverview({ auth: { user }, hideSelected }) {
   const changeProfileOverview = (value) => {
     const newHidden = handleProfileOverview(hidden, value);
     setHidden(newHidden);
-    console.log(newHidden);
   };
 
   useEffect(() => {

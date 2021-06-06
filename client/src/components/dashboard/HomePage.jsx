@@ -95,8 +95,10 @@ function HomePage({
       if (Array.isArray(friends) && friends.length > 0 && hasMore) {
         const res = await getFriendsMediaInBulk(friends, page, POST_DELIMITER);
         await setHasMore(res.next.hasMore);
-        await setFriendsMedia([...friendsMedia, ...res.results]);
-        await setBulkMedia([...res.results]);
+        await setFriendsMedia(res.results);
+        // await setFriendsMedia([...friendsMedia, ...res.results]);
+        await setBulkMedia(res.results);
+        // await setBulkMedia([...res.results]);
       }
     } catch (e) {
       console.warn(e.message);
@@ -145,46 +147,32 @@ function HomePage({
           <SideMenu />
         </div>
       </div>
-      {allmedia.media.length > 0 &&
-        friendsMedia &&
-        friendsMedia.length > 0 &&
-        friendsMedia.length === allmedia.media.length && (
-          <DashCenter
-            display="block"
-            maxw="1300px"
-            style={{ pointerEvents: "all" }}
-          >
-            {/*friendsMedia &&
-              friendsMedia.map((post, i) => (
-                <GenericPost
-                  post={post}
+      {allmedia && allmedia.media && allmedia.media.length > 0 && (
+        <DashCenter
+          display="block"
+          maxw="1300px"
+          style={{ pointerEvents: "all" }}
+        >
+          {allmedia.media.map((post, i) => (
+            <Fragment key={post._id}>
+              {post.type && post.type === "textual" ? (
+                <StatusPost status={post} />
+              ) : !post.isVideo && post.url ? (
+                <ImagePost
+                  image={post}
+                  setIsSlider={setIsGenericSlider}
                   i={i}
-                  setIsGenericSlider={setIsGenericSlider}
-                  key={post._id}
+                  match={match}
+                  backupImage={post}
                 />
-              ))*/}
-            {allmedia &&
-              allmedia.media &&
-              allmedia.media.map((post, i) => (
-                <Fragment key={post._id}>
-                  {post.type && post.type === "textual" ? (
-                    <StatusPost status={post} />
-                  ) : !post.isVideo && post.url ? (
-                    <ImagePost
-                      image={post}
-                      setIsSlider={setIsGenericSlider}
-                      i={i}
-                      match={match}
-                      backupImage={post}
-                    />
-                  ) : post.isVideo && post.url ? (
-                    <VideoPost match={match} video={post} />
-                  ) : null}
-                </Fragment>
-              ))}
-            <div ref={infiniteScrollPost} />
-          </DashCenter>
-        )}
+              ) : post.isVideo && post.url ? (
+                <VideoPost match={match} video={post} />
+              ) : null}
+            </Fragment>
+          ))}
+          <div ref={infiniteScrollPost} />
+        </DashCenter>
+      )}
       {friendsMedia && friendsMedia.length > 0 && isGenericSlider[0] && (
         <GenericSlider
           media={friendsMedia}

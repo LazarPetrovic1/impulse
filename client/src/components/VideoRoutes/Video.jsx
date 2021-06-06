@@ -98,7 +98,6 @@ function Video({
   const setLikability = (val) => {
     const id = match.params.id;
     const likerId = user._id;
-    console.log({ id, likerId });
     const ownedById = video.video.user;
 
     if (liked === val) setLiked(null);

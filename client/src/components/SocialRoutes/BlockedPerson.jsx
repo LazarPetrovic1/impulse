@@ -11,7 +11,6 @@ function BlockedPerson({ bp, unblockPerson, auth: { user } }) {
       try {
         const user = await getUserById(bp.user);
         await setPerson(user);
-        await console.log(user);
       } catch (e) {
         console.warn(e.message);
       }

@@ -37,7 +37,6 @@ export async function getCity(coordinates, setter) {
 export function autoSetCoords(coords) {
   navigator.geolocation.getCurrentPosition(
     function (pos) {
-      console.log("POS", pos);
       const crd = pos.coords;
       const lat = crd.latitude.toString();
       const lng = crd.longitude.toString();
@@ -55,7 +54,6 @@ export function autoSetCoords(coords) {
 }
 
 export async function autoGetCity(coordinates) {
-  console.log("COORDS", coordinates);
   const lat = coordinates[0];
   const lng = coordinates[1];
   const res = await axios.get(

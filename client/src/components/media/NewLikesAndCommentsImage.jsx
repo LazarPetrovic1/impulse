@@ -35,7 +35,6 @@ function NewLikesAndComments(props) {
   const getStatOnHover = async (id, type) => {
     try {
       const res = await axios.get(`/api/imageposts/${id}/${type}`);
-      await console.log("RES.DATA", res.data);
       switch (type) {
         case "impulse":
           await setAllWhoImpulsed(res.data);
@@ -47,7 +46,6 @@ function NewLikesAndComments(props) {
           await setAllWhoDisliked(res.data);
           break;
         default:
-          console.log("Hello");
       }
     } catch (e) {
       console.warn(e.message);
