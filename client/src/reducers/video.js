@@ -24,6 +24,8 @@ import {
   LIKE_VIDEO_REPLY,
   DISLIKE_VIDEO_REPLY,
   GET_FULL_VIDEOS,
+  CLEAR_VIDEOS,
+  VIDEO_GET_REPLIES,
 } from "../actions/types";
 
 const initialState = {
@@ -36,6 +38,13 @@ const initialState = {
 export default (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+    case CLEAR_VIDEOS:
+      return {
+        ...state,
+        loading: true,
+        videos: [],
+        error: null,
+      };
     case INCREMENT_VIEWS:
       return {
         ...state,
@@ -72,13 +81,37 @@ export default (state = initialState, action) => {
         video: payload,
       };
     case VIDEO_GET_COMMENTS:
+      return {
+        ...state,
+        loading: false,
+        video: {
+          ...state.video,
+          comments: [...state.video.comments, ...payload.comments],
+        },
+      };
+    case VIDEO_GET_REPLIES:
+      return {
+        ...state,
+        loading: false,
+        video: {
+          ...state.video,
+          comments: state.video.comments.map((comm) =>
+            comm._id === payload.comment_id
+              ? {
+                  ...comm,
+                  replies: [...comm.replies, ...payload.replies],
+                }
+              : comm
+          ),
+        },
+      };
     case VIDEO_COMMENT:
       return {
         ...state,
         loading: false,
         video: {
           ...state.video,
-          comments: payload,
+          comments: [...payload, ...state.video.comments],
         },
       };
     case LIKE_VIDEO:
@@ -152,6 +185,16 @@ export default (state = initialState, action) => {
       };
     case VIDEO_EDIT_COMMENT:
     case VIDEO_ADD_REPLY:
+      return {
+        ...state,
+        loading: false,
+        video: {
+          ...state.video,
+          comments: state.video.comments.map((comm) =>
+            comm._id === payload.comment_id ? payload.comment : comm
+          ),
+        },
+      };
     case VIDEO_EDIT_REPLY:
       return {
         ...state,

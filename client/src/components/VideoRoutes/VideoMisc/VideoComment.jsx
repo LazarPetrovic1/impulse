@@ -8,6 +8,7 @@ import {
   likeComment as like,
   dislikeComment as dislike,
   impulsifyComment as impulsify,
+  videoGetReplies,
 } from "../../../actions/video";
 import Moment from "react-moment";
 import PropTypes from "prop-types";
@@ -18,6 +19,7 @@ import EditIcon from "../../utils/icons/EditIcon";
 import { LanguageContext } from "../../../contexts/LanguageContext";
 import { sendNotif } from "../../../actions/notifs";
 import ShortLogo from "../../../styled/Logo/ShortLogo";
+import { REPLY_DELIMITER } from "../../../utils/nonReduxConstants";
 
 function VideoComment({
   comment,
@@ -31,6 +33,7 @@ function VideoComment({
   dislike,
   impulsify,
   sendNotif,
+  videoGetReplies,
 }) {
   const [liked, setLiked] = useState(null);
   const { language } = useContext(LanguageContext);
@@ -39,6 +42,10 @@ function VideoComment({
   const [commentBody, setCommentBody] = useState(comment.text);
   const [isReplying, setIsReplying] = useState(false);
   const [byUser, setByUser] = useState(null);
+  const [page, setPage] = useState(1);
+  const [hasMoreReplies, setHasMoreReplies] = useState(true);
+  const [repliesLength, setRepliesLength] = useState(0);
+  const [areRepliesHidden, setAreRepliesHidden] = useState(false);
   useEffect(() => {
     (async function () {
       try {
@@ -50,6 +57,30 @@ function VideoComment({
     })();
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    (async function () {
+      try {
+        if (!hasMoreReplies) {
+          return;
+        }
+        if (page === 1 && comment.replies.length > 0) {
+          return;
+        }
+        const res = await videoGetReplies(
+          videoId,
+          comment._id,
+          page,
+          REPLY_DELIMITER
+        );
+        await setHasMoreReplies(res.hasMore);
+        await setRepliesLength(res.repliesLength);
+      } catch (e) {
+        console.warn(e.message);
+      }
+    })();
+    // eslint-disable-next-line
+  }, [page]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -171,6 +202,23 @@ function VideoComment({
           </span>
         </p>
       </div>
+      <button
+        className="btn btn-block pt-2"
+        style={{ background: "transparent", color: "white" }}
+        onClick={() => setPage(page + 1)}
+      >
+        Load more replies{" "}
+        {page > 1 &&
+          repliesLength > 0 &&
+          `${comment.replies.length}/${repliesLength}`}
+      </button>
+      <button
+        className="btn btn-block pt-2"
+        style={{ background: "transparent", color: "white" }}
+        onClick={() => setAreRepliesHidden(!areRepliesHidden)}
+      >
+        {areRepliesHidden ? "Expand" : "Hide"} replies
+      </button>
       <div style={{ top: "1rem", right: "1rem" }} className="position-absolute">
         {isReplying ? (
           <button
@@ -262,14 +310,15 @@ function VideoComment({
           </span>
         </div>
       </div>
-      {comment.replies.map((reply) => (
-        <VideoCommentReply
-          key={reply._id}
-          videoId={videoId}
-          commentId={comment._id}
-          reply={reply}
-        />
-      ))}
+      {!areRepliesHidden &&
+        comment.replies.map((reply) => (
+          <VideoCommentReply
+            key={reply._id}
+            videoId={videoId}
+            commentId={comment._id}
+            reply={reply}
+          />
+        ))}
     </section>
   );
 }
@@ -283,6 +332,7 @@ VideoComment.propTypes = {
   dislike: PropTypes.func.isRequired,
   impulsify: PropTypes.func.isRequired,
   sendNotif: PropTypes.func.isRequired,
+  videoGetReplies: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -297,4 +347,5 @@ export default connect(mapStateToProps, {
   dislike,
   impulsify,
   sendNotif,
+  videoGetReplies,
 })(VideoComment);

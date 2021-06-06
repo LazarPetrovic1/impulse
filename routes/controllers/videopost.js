@@ -88,12 +88,6 @@ async function getAllVideos(req, res) {
     const endIndex = page * limit;
     const newPosts = await posts.slice(startIndex, endIndex);
     const hasMoreValue = startIndex < posts.length && endIndex <= posts.length;
-    await console.log("*", {
-      startIndex,
-      endIndex,
-      hasMoreValue,
-      allposts: posts.length,
-    });
     return res.json({
       hasMore: hasMoreValue,
       posts: newPosts,
@@ -115,7 +109,25 @@ async function getFullVideos(req, res) {
 }
 async function getVideoById(req, res) {
   try {
+    const commentPage = parseInt(req.query.comment_page) || 1;
+    const commentLimit = parseInt(req.query.comment_limit) || 10;
+    const replyPage = parseInt(req.query.reply_page) || 1;
+    const replyLimit = parseInt(req.query.reply_limit) || 5;
+    const [startIndexComments, startIndexReplies] = [
+      (commentPage - 1) * commentLimit,
+      (replyPage - 1) * replyLimit,
+    ];
+    const [endIndexComments, endIndexReplies] = [
+      commentPage * commentLimit,
+      replyPage * replyLimit,
+    ];
     const post = await VideoPost.findById(req.params.id);
+    post.comments = await post.comments
+      .slice(startIndexComments, endIndexComments)
+      .map((comm) => {
+        comm.replies = comm.replies.slice(startIndexReplies, endIndexReplies);
+        return comm;
+      });
     if (!post) return res.status(404).json({ msg: "Post not found" });
     res.json(post);
   } catch (e) {
@@ -187,8 +199,27 @@ async function commentVideo(req, res) {
 }
 async function getVideoComments(req, res) {
   try {
+    const commentPage = parseInt(req.query.comment_page) || 1;
+    const commentLimit = parseInt(req.query.comment_limit) || 10;
+    const startIndexComments = (commentPage - 1) * commentLimit;
+    const endIndexComments = commentPage * commentLimit;
     const post = await VideoPost.findById(req.params.id);
-    return res.json(post.comments);
+    const newComments = await post.comments.slice(
+      startIndexComments,
+      endIndexComments
+    );
+    if (startIndexComments < post.comments.length) {
+      return res.json({
+        comments: newComments,
+        commentsLength: post.comments.length,
+        hasMore: true,
+      });
+    }
+    return res.json({
+      hasMore: false,
+      commentsLength: post.comments.length,
+      comments: [],
+    });
   } catch (e) {
     res.status(500).send("Internal server error.");
   }
@@ -275,7 +306,7 @@ async function replyToComment(req, res) {
     };
     const newComment = {
       ...comment.toObject(),
-      replies: [...comment.replies, newReply],
+      replies: [newReply, ...comment.replies],
     };
     const index = post.comments
       .map((comm) => comm.id)
@@ -284,6 +315,7 @@ async function replyToComment(req, res) {
       comm.id === req.params.comment_id ? newComment : comm
     );
     await post.save();
+    await console.log(post.comments[index]);
     res.json(post.comments[index]);
   } catch (e) {
     res.status(500).send("Internal server error.");
@@ -316,9 +348,32 @@ async function updateReply(req, res) {
 }
 async function getRepliesToComment(req, res) {
   try {
+    const replyPage = parseInt(req.query.reply_page) || 1;
+    const replyLimit = parseInt(req.query.reply_limit) || 10;
+    const startIndexReplies = (replyPage - 1) * replyLimit;
+    const endIndexReplies = replyPage * replyLimit;
     const post = await VideoPost.findById(req.params.id);
-    return res.json(post.comments.replies);
+    const comment = await post.comments.find(
+      (comm) => comm.id === req.params.comment_id
+    );
+    const newReplies = await comment.replies.slice(
+      startIndexReplies,
+      endIndexReplies
+    );
+    if (startIndexReplies < comment.replies.length) {
+      return res.json({
+        replies: newReplies,
+        repliesLength: comment.replies.length,
+        hasMore: true,
+      });
+    }
+    return res.json({
+      hasMore: false,
+      repliesLength: comment.replies.length,
+      replies: [],
+    });
   } catch (e) {
+    console.log(e.message);
     res.status(500).send("Internal server error.");
   }
 }

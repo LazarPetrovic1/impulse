@@ -36,6 +36,8 @@ import {
   ALL_MEDIA_OUTSIDE_REPLY_REMOVE,
   ALL_MEDIA_OUTSIDE_REPLY_EDIT,
   GET_FULL_VIDEOS,
+  CLEAR_VIDEOS,
+  VIDEO_GET_REPLIES,
 } from "./types";
 import axios from "axios";
 
@@ -56,6 +58,8 @@ export const addView = (id) => async (dispatch) => {
     });
   }
 };
+
+export const clearVideos = () => (dispatch) => dispatch({ type: CLEAR_VIDEOS });
 
 // export const saveVideo = (id) => async (dispatch) => {}
 // export const dismissVideo = (id) => async (dispatch) => {}
@@ -533,7 +537,7 @@ export const videoDeleteComment = (id, comment_id) => async (dispatch) => {
       type: VIDEO_DELETE_COMMENT,
       payload: comment_id,
     });
-    dispatch(videoGetComments(id));
+    // dispatch(videoGetComments(id));
     dispatch({
       type: ALL_MEDIA_OUTSIDE_COMMENT_REMOVE,
       payload: {
@@ -548,14 +552,23 @@ export const videoDeleteComment = (id, comment_id) => async (dispatch) => {
     dispatch({ type: VIDEO_ERROR });
   }
 };
-export const videoGetComments = (id) => async (dispatch) => {
+export const videoGetComments = (id, page, limit) => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/videoposts/comment/${id}`);
-
+    const res = await axios.get(
+      `/api/videoposts/comment/${id}?comment_page=${page}&comment_limit=${limit}`
+    );
     dispatch({
       type: VIDEO_GET_COMMENTS,
-      payload: res.data,
+      payload: {
+        id,
+        comments: res.data.comments,
+      },
     });
+
+    return {
+      commentsLength: res.data.commentsLength,
+      hasMore: res.data.hasMore,
+    };
   } catch (e) {
     console.warn(e.message);
 
@@ -580,7 +593,7 @@ export const videoEditComment = (id, comment_id, content) => async (
       type: VIDEO_EDIT_COMMENT,
       payload: res.data,
     });
-    dispatch(videoGetComments(id));
+    // dispatch(videoGetComments(id));
     dispatch({
       type: ALL_MEDIA_OUTSIDE_COMMENT_EDIT,
       payload: {
@@ -611,9 +624,13 @@ export const videoReplyToComment = (id, comment_id, content) => async (
     );
     dispatch({
       type: VIDEO_ADD_REPLY,
-      payload: res.data,
+      payload: {
+        id,
+        comment_id,
+        comment: res.data,
+      },
     });
-    dispatch(videoGetComments(id));
+    // dispatch(videoGetComments(id));
     dispatch({
       type: ALL_MEDIA_OUTSIDE_SPAWN_REPLY_VIDEO,
       payload: {
@@ -643,7 +660,7 @@ export const videoDeleteReplyToComment = (id, comment_id, reply_id) => async (
       type: VIDEO_DELETE_REPLY,
       payload,
     });
-    dispatch(videoGetComments(id));
+    // dispatch(videoGetComments(id));
     dispatch({
       type: ALL_MEDIA_OUTSIDE_REPLY_REMOVE,
       payload: {
@@ -678,7 +695,7 @@ export const videoEditReplyToComment = (
       type: VIDEO_EDIT_REPLY,
       payload: res.data,
     });
-    dispatch(videoGetComments(id));
+    // dispatch(videoGetComments(id));
     dispatch({
       type: ALL_MEDIA_OUTSIDE_REPLY_EDIT,
       payload: {
@@ -705,6 +722,33 @@ export const searchVideos = (val, pathname) => (dispatch) => {
     dispatch({
       type: VIDEO_SEARCH,
       payload: val,
+    });
+  }
+};
+
+export const videoGetReplies = (id, commentId, page, limit) => async (
+  dispatch
+) => {
+  try {
+    const res = await axios.get(
+      `/api/videoposts/comment/${id}/${commentId}/reply?reply_page=${page}&reply_limit=${limit}`
+    );
+    dispatch({
+      type: VIDEO_GET_REPLIES,
+      payload: {
+        id,
+        comment_id: commentId,
+        replies: res.data.replies,
+      },
+    });
+    return {
+      repliesLength: res.data.repliesLength,
+      hasMore: res.data.hasMore,
+    };
+  } catch (e) {
+    dispatch({
+      type: VIDEO_ERROR,
+      msg: e.message,
     });
   }
 };

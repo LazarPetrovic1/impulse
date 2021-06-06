@@ -6,14 +6,14 @@ import React, {
   useRef,
 } from "react";
 import { connect } from "react-redux";
-import { getAllVideos } from "../../../actions/video.js";
+import { getAllVideos, clearVideos } from "../../../actions/video.js";
 import PropTypes from "prop-types";
 import VideoGrid from "../VideoMisc/VideoGrid";
 import VideoList from "../VideoMisc/VideoList";
 import Videos from "../Videos";
 import { POST_DELIMITER } from "../../../utils/nonReduxConstants";
 
-function VideoAll({ getAllVideos, video, auth, location }) {
+function VideoAll({ getAllVideos, clearVideos, video, auth, location }) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [gotVids, setGotVids] = useState(false);
@@ -41,6 +41,7 @@ function VideoAll({ getAllVideos, video, auth, location }) {
   useEffect(() => {
     (async function () {
       try {
+        await clearVideos();
         await getMoreVideos();
         await setGotVids(true);
       } catch (e) {
@@ -119,6 +120,7 @@ VideoAll.propTypes = {
   auth: PropTypes.object.isRequired,
   getAllVideos: PropTypes.func.isRequired,
   video: PropTypes.object.isRequired,
+  clearVideos: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -126,4 +128,6 @@ const mapStateToProps = (state) => ({
   video: state.video,
 });
 
-export default connect(mapStateToProps, { getAllVideos })(VideoAll);
+export default connect(mapStateToProps, { getAllVideos, clearVideos })(
+  VideoAll
+);

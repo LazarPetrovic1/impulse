@@ -7,6 +7,7 @@ import {
   impulsifyVideo as impulsify,
   commentVideo,
   addView,
+  videoGetComments,
 } from "../../actions/video.js";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -20,6 +21,7 @@ import truncate from "truncate";
 import ResponsiveVideo from "../../styled/Video/ResponsiveVideo";
 import useTimeout from "../../hooks/useTimeout";
 import ViewCounter from "../../styled/Video/ViewCounter";
+import { COMMENT_DELIMITER } from "../../utils/nonReduxConstants";
 
 const maxw = { maxWidth: "1280px" };
 
@@ -36,12 +38,17 @@ function Video({
   history,
   addView,
   stopViews,
+  videoGetComments,
 }) {
   const [liked, setLiked] = useState(null);
   const [byUser, setByUser] = useState(null);
   const [comment, setComment] = useState("");
   const { language } = useContext(LanguageContext);
   const [seeMore, setSeeMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMoreComments, setHasMoreComments] = useState(true);
+  const [commentsLength, setCommentsLength] = useState(0);
+  const [areCommentsHidden, setAreCommentsHidden] = useState(false);
 
   useTimeout(() => {
     if (stopViews) {
@@ -94,6 +101,36 @@ function Video({
     }
     // eslint-disable-next-line
   }, [video && video.video && video.video]);
+
+  useEffect(() => {
+    (async function () {
+      try {
+        if (video && video.video && Object.keys(video.video).length > 0) {
+          if (!hasMoreComments) {
+            return;
+          }
+          if (
+            page === 1 &&
+            video.video.comments.length &&
+            video.video.comments.length > 0
+          ) {
+            return;
+          }
+          const res = await videoGetComments(
+            video.video._id,
+            page,
+            COMMENT_DELIMITER
+          );
+          await console.log("REZ", res);
+          await setHasMoreComments(res.hasMore);
+          await setCommentsLength(res.commentsLength);
+        }
+      } catch (e) {
+        console.warn(e.message);
+      }
+    })();
+    // eslint-disable-next-line
+  }, [page]);
 
   const setLikability = (val) => {
     const id = match.params.id;
@@ -289,7 +326,27 @@ function Video({
         </form>
       </div>
       <div style={maxw} className="m-auto">
-        {video &&
+        <button
+          className="btn btn-block pt-2"
+          style={{ background: "transparent", color: "white" }}
+          onClick={() => setPage(page + 1)}
+        >
+          Load more comments{" "}
+          {page > 1 &&
+            commentsLength > 0 &&
+            `${video.video.comments.length}/${commentsLength}`}
+        </button>
+        <button
+          className="btn btn-block pt-2"
+          style={{ background: "transparent", color: "white" }}
+          onClick={() => setAreCommentsHidden(!areCommentsHidden)}
+        >
+          {areCommentsHidden ? "Expand" : "Hide"} comments
+        </button>
+      </div>
+      <div style={maxw} className="m-auto">
+        {!areCommentsHidden &&
+          video &&
           video.video &&
           video.video.comments &&
           video.video.comments.length > 0 &&
@@ -315,6 +372,7 @@ Video.propTypes = {
   sendNotif: PropTypes.func.isRequired,
   commentVideo: PropTypes.func.isRequired,
   addView: PropTypes.func.isRequired,
+  videoGetComments: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -330,4 +388,5 @@ export default connect(mapStateToProps, {
   sendNotif,
   commentVideo,
   addView,
+  videoGetComments,
 })(Video);

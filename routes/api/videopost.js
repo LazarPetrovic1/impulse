@@ -23,7 +23,7 @@ router.put("/comment/:id/:comment_id", auth, video.updateComment);
 router.delete("/comment/:id/:comment_id", auth, video.deleteComment);
 router.post("/comment/:id/:comment_id/reply", auth, video.replyToComment);
 router.put("/comment/:id/:comment_id/:reply_id", auth, video.updateReply);
-router.get("/comment/:id/reply", auth, video.getRepliesToComment);
+router.get("/comment/:id/:comment_id/reply", auth, video.getRepliesToComment);
 router.delete("/comment/:id/:comment_id/:reply_id", auth, video.deleteReply);
 router.put("/:id/dismiss", auth, video.dismissVideo);
 router.put("/impulse/:id", auth, video.impulseVideo);
