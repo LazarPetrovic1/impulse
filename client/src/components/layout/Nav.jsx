@@ -50,6 +50,11 @@ function Nav(props) {
         </Link>
       </CenterListItem>
       <CenterListItem>
+        <Link className="nav-link" to="/impulse/change-password">
+          Change pass
+        </Link>
+      </CenterListItem>
+      <CenterListItem>
         <div className="nav-link pointer position-relative">
           <div
             onClick={() => {

@@ -13,6 +13,7 @@ import {
   BLOCK_PERSON,
   SEND_FRIEND_REQUEST,
   UNBLOCK_PERSON,
+  CHANGE_PASSWORD,
 } from "../actions/types";
 
 const initialState = {
@@ -35,6 +36,7 @@ export default (state = initialState, action) => {
         user: payload,
       };
     case REGISTER_SUCCESS:
+    case CHANGE_PASSWORD:
     case LOGIN_SUCCESS:
       localStorage.setItem("token", payload.token);
       return {

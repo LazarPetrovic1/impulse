@@ -4,6 +4,7 @@ const authObj = require("../controllers/auth");
 
 router.get("/", auth, authObj.getUser);
 router.post("/", authObj.login);
+router.put("/password", auth, authObj.changePassword);
 router.put("/firstName", auth, authObj.updateFirstName);
 router.put("/lastName", auth, authObj.updateLastName);
 router.put("/sex", auth, authObj.updateSex);
@@ -19,5 +20,6 @@ router.put("/phone", auth, authObj.updatePhone);
 router.put("/question", auth, authObj.updateQuestion);
 router.put("/bio", auth, authObj.updateBio);
 router.put("/profileImage", auth, authObj.updateProfileImage);
+router.post("/changepassword", auth, authObj.mailToChangePassword);
 
 module.exports = router;

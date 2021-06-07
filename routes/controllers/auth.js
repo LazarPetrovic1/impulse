@@ -1,8 +1,9 @@
 const User = require("../../models/User");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+const cloudinary = require("../../utils/cloudinary");
+const { sendEmail } = require("../../utils/sendMail");
 const bcrypt = require("bcryptjs");
-const cloudinary = require('../../utils/cloudinary')
 
 async function getUser(req, res) {
   try {
@@ -43,8 +44,8 @@ async function login(req, res) {
 
     const payload = {
       user: {
-        id: user.id
-      }
+        id: user.id,
+      },
     };
 
     jwt.sign(
@@ -225,12 +226,15 @@ async function updateBio(req, res) {
 
 async function updateProfileImage(req, res) {
   try {
-    const fileStr = await req.body.data
-    const uploadResponse = await cloudinary.uploader.upload(fileStr)
-    let user = await User.findById(req.user.id)
-    user.profileImages.push({ url: uploadResponse.url, content: req.body.content })
-    await user.save()
-    res.json(user)
+    const fileStr = await req.body.data;
+    const uploadResponse = await cloudinary.uploader.upload(fileStr);
+    let user = await User.findById(req.user.id);
+    user.profileImages.push({
+      url: uploadResponse.url,
+      content: req.body.content,
+    });
+    await user.save();
+    res.json(user);
   } catch (e) {
     console.error(e.message);
     res.status(500).send("Internal server error");
@@ -239,12 +243,47 @@ async function updateProfileImage(req, res) {
 
 async function getCountry(req, res) {
   try {
-    const user = await User.findById(req.user.id)
-    const users = await User.find({ country: user.country }).select("-imageTaken -password -security -question")
-    return res.json(users)
+    const user = await User.findById(req.user.id);
+    const users = await User.find({ country: user.country }).select(
+      "-imageTaken -password -security -question"
+    );
+    return res.json(users);
   } catch (e) {
-    console.error(e.message)
-    res.status(500).send('Internal server error')
+    console.error(e.message);
+    res.status(500).send("Internal server error");
+  }
+}
+
+async function mailToChangePassword(req, res) {
+  try {
+    const response = await sendEmail(req.body.to);
+
+    return res.json({ msg: "Hey." });
+  } catch (e) {
+    console.log("ERROR", e.message);
+    res.status(500).json({ msg: "Internal server error" });
+  }
+}
+
+async function changePassword(req, res) {
+  try {
+    let user = await User.findById(req.user.id);
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(req.body.password, salt);
+    await user.save();
+    const payload = { user: { id: user.id } };
+    jwt.sign(
+      payload,
+      config.get("jwtSecret"),
+      { expiresIn: 36000000 },
+      (err, token) => {
+        if (err) throw err;
+        return res.json({ token });
+      }
+    );
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).send("Internal server error");
   }
 }
 
@@ -266,6 +305,8 @@ const auth = {
   updateBio,
   updateProfileImage,
   getCountry,
+  mailToChangePassword,
+  changePassword,
 };
 
 module.exports = auth;

@@ -46,6 +46,7 @@ import { loadUser } from "./actions/auth";
 import { findNotifs } from "./actions/notifs";
 import setAuthToken from "./utils/setAuthToken";
 import notifSound from "./assets/sound-effects/notifs/thunder.mp3";
+import ChangePassword from "./components/misc/ChangePassword";
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -98,6 +99,11 @@ function App() {
                       <Switch>
                         <Route exact path="/login" component={Login} />
                         <Route exact path="/register" component={Register} />
+                        <Route
+                          exact
+                          path="/impulse/change-password"
+                          component={ChangePassword}
+                        />
                         <PrivateRoute exact path="/" component={HomePage} />
                         <PrivateRoute
                           exact

@@ -15,6 +15,7 @@ import {
   BLOCK_PERSON,
   UNFRIEND_PERSON,
   UNBLOCK_PERSON,
+  CHANGE_PASSWORD,
 } from "./types";
 import setAuthToken from "../utils/setAuthToken";
 import io from "socket.io-client";
@@ -298,4 +299,41 @@ export const unblockPerson = ({ senderId, blockedId }) => async (dispatch) => {
       },
     });
   });
+};
+
+export const mailToChangePassword = (to) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const body = JSON.stringify({ to });
+    const res = await axios.post("/api/auth/changepassword", body, config);
+    await console.log("REZDEJTA", res.data);
+    dispatch(setAlert(res.data.msg, "success"));
+  } catch (e) {
+    dispatch(setAlert(e.msg, "danger"));
+  }
+};
+
+export const changePassword = (password) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const body = JSON.stringify({ password });
+    const res = await axios.put("/api/auth/password", body, config);
+    dispatch({
+      type: CHANGE_PASSWORD,
+      payload: res.data,
+    });
+  } catch (e) {
+    dispatch({
+      type: AUTH_ERROR,
+      payload: e.message,
+    });
+  }
 };
