@@ -20,6 +20,9 @@ import { LanguageContext } from "../../../contexts/LanguageContext";
 import { sendNotif } from "../../../actions/notifs";
 import ShortLogo from "../../../styled/Logo/ShortLogo";
 import { REPLY_DELIMITER } from "../../../utils/nonReduxConstants";
+import { genericposts } from "../../../utils/langObject";
+
+const { _loadmorereplies, _expandreplies, _hidereplies } = genericposts;
 
 function VideoComment({
   comment,
@@ -207,7 +210,7 @@ function VideoComment({
         style={{ background: "transparent", color: "white" }}
         onClick={() => setPage(page + 1)}
       >
-        Load more replies{" "}
+        {_loadmorereplies[language]}{" "}
         {page > 1 &&
           repliesLength > 0 &&
           `${comment.replies.length}/${repliesLength}`}
@@ -217,7 +220,7 @@ function VideoComment({
         style={{ background: "transparent", color: "white" }}
         onClick={() => setAreRepliesHidden(!areRepliesHidden)}
       >
-        {areRepliesHidden ? "Expand" : "Hide"} replies
+        {areRepliesHidden ? _expandreplies[language] : _hidereplies[language]}
       </button>
       <div style={{ top: "1rem", right: "1rem" }} className="position-absolute">
         {isReplying ? (

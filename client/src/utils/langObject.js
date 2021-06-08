@@ -398,10 +398,80 @@ export const settingscomponent = {
     sr: "Dodatne informacije",
     de: "Zusätzliche Information",
   },
+  _termsandconditions: {
+    en: "Terms and Conditions",
+    sr: "Uslovi koriscenja",
+    de: "Geschäftsbedingungen",
+  },
+  _themeplayground: {
+    en: "Theme playground",
+    sr: "Igraliste za teme",
+    de: "Themenspielplatz",
+  },
+  _apidocs: {
+    en: "API Docs",
+    sr: "API Dokumentacija",
+    de: "API-Dokumente",
+  },
   _usedevexperience: {
     en: "Dev Mode",
     sr: "Dev Mod",
     de: "Dev Modus",
+  },
+  _hide: {
+    en: "Hide",
+    sr: "Sakrij",
+    de: "Verstecke",
+  },
+  _language: {
+    en: "Language",
+    sr: "Jezik",
+    de: "Sprache",
+  },
+  _theme: {
+    en: "Theme",
+    sr: "Tema",
+    de: "Thema",
+  },
+  _font: {
+    en: "Font",
+    sr: "Font",
+    de: "Schriftart",
+  },
+  _devmode: {
+    en: "Dev mode",
+    sr: "Dev mod",
+    de: "Entwicklermodus",
+  },
+  _as: {
+    en: "as",
+    sr: "kao",
+    de: "als",
+  },
+  _recognizedvalues: {
+    en: "Recognized values are",
+    sr: "Prepoznate vrednosti su",
+    de: "Anerkannte Werte sind",
+  },
+  _strings: {
+    en: "strings",
+    sr: "stringovi",
+    de: "Text",
+  },
+  _boolean: {
+    en: "boolean",
+    sr: "bulovski",
+    de: "boolesch",
+  },
+  _changetextcolour: {
+    en: "Change text colour",
+    sr: "Promenite boju teksta",
+    de: "Textfarbe ändern",
+  },
+  _changepassword: {
+    en: "Change password",
+    sr: "Promenite lozinku",
+    de: "Passwort ändern",
   },
 };
 
@@ -920,5 +990,97 @@ export const gifpickercomponent = {
     en: "Search here",
     sr: "Pretrazite ovde",
     de: "Suche hier",
+  },
+};
+
+export const colourmodalcomponent = {
+  _textcolour: {
+    en: "Text colour",
+    sr: "Boja teksta",
+    de: "Textfarbe",
+  },
+  _bgc: {
+    en: "Background colour",
+    sr: "Boja pozadine",
+    de: "Hintergrundfarbe",
+  },
+  _changecolour: {
+    en: "Change the text colour to something more... personal.",
+    sr: "Promenite boju u nesto Vama blize",
+    de: "Ändern Sie die Textfarbe zu etwas… persönlicher.",
+  },
+};
+
+export const changepasswordcomponent = {
+  _resetpass: {
+    en: "Reset/Change Password",
+    sr: "Promenite lozinku",
+    de: "Passwort ändern",
+  },
+  _confirmemail: {
+    en: "Confirm e-mail",
+    sr: "Potvrdite imejl",
+    de: "Bestätige E-Mail",
+  },
+  _small: {
+    en:
+      "This is the email you use to log in to Impulse, but you can have the reset sent to any other email you have, if you wish so.",
+    sr:
+      "Ovo je imejl koji koristite da se ulogujete na Impuls, ali mozete da posaljete mejl za promenu lozinke i na drugi mejl koji imate, ukoliko to zelite.",
+    de:
+      "Dies ist die E-Mail-Adresse, mit der Sie sich bei Impulse anmelden, aber Sie können das Zurücksetzen auf Wunsch an jede andere E-Mail-Adresse senden lassen, die Sie haben.",
+  },
+  _changepass: {
+    en: "Change your password",
+    sr: "Promenite lozinku",
+    de: "Ändere dein Passwort",
+  },
+  _newpassword: {
+    en: "New password",
+    sr: "Nova lozinka",
+    de: "Neues Passwort",
+  },
+  _confirmpass: {
+    en: "Confirm password",
+    sr: "Potvrdite lozinku",
+    de: "Bestätige Passwort",
+  },
+  _submit: {
+    en: "Submit",
+    sr: "Potvrdite",
+    de: "Reiche ein",
+  },
+};
+
+export const genericposts = {
+  _loadmorecomments: {
+    en: "Load more comments",
+    sr: "Ucitajte vise komentara",
+    de: "Weitere Kommentare laden",
+  },
+  _loadmorereplies: {
+    en: "Load more replies",
+    sr: "Ucitajte vise odgovora",
+    de: "Weitere Antworten laden",
+  },
+  _expandcomments: {
+    en: "Expand comments",
+    sr: "Vidite komentare",
+    de: "Kommentare erweitern",
+  },
+  _hidecomments: {
+    en: "Hide comments",
+    sr: "Sakrijte komentare",
+    de: "Kommentare verstecken",
+  },
+  _expandreplies: {
+    en: "Expand replies",
+    sr: "Vidite odgovore",
+    de: "Antworten erweitern",
+  },
+  _hidereplies: {
+    en: "Hide replies",
+    sr: "Sakrijte odgovore",
+    de: "Antworten verstecken",
   },
 };

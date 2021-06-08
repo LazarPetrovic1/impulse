@@ -258,7 +258,7 @@ async function mailToChangePassword(req, res) {
   try {
     const response = await sendEmail(req.body.to);
 
-    return res.json({ msg: "Hey." });
+    return res.json({ msg: "E-mail sent successfully." });
   } catch (e) {
     console.log("ERROR", e.message);
     res.status(500).json({ msg: "Internal server error" });

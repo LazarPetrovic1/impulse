@@ -21,6 +21,9 @@ import DeleteIcon from "../utils/icons/DeleteIcon";
 import EditIcon from "../utils/icons/EditIcon";
 import Reply from "./Reply";
 import { REPLY_DELIMITER } from "../../utils/nonReduxConstants";
+import { genericposts } from "../../utils/langObject";
+
+const { _loadmorereplies, _expandreplies, _hidereplies } = genericposts;
 
 function Comment({
   auth,
@@ -291,7 +294,7 @@ function Comment({
         style={{ background: "transparent", color: "white" }}
         onClick={() => setPage(page + 1)}
       >
-        Load more replies{" "}
+        {_loadmorereplies[language]}{" "}
         {page > 1 &&
           repliesLength > 0 &&
           `${comm.replies.length}/${repliesLength}`}
@@ -301,7 +304,8 @@ function Comment({
         style={{ background: "transparent", color: "white" }}
         onClick={() => setAreRepliesHidden(!areRepliesHidden)}
       >
-        {areRepliesHidden ? "Expand" : "Hide"} replies
+        {areRepliesHidden ? _expandreplies[language] : _hidereplies[language]}{" "}
+        replies
       </button>
       <div className="d-flex">
         <div className="position-relative">

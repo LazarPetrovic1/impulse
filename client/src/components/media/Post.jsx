@@ -19,6 +19,9 @@ import ShortLogo from "../../styled/Logo/ShortLogo";
 import StatsNames from "../../styled/Stats/StatsNames";
 import { sendNotif } from "../../actions/notifs";
 import axios from "axios";
+import { genericposts } from "../../utils/langObject";
+
+const { _loadmorecomments, _hidecomments, _expandcomments } = genericposts;
 
 function Post({
   image,
@@ -308,7 +311,7 @@ function Post({
               style={{ background: "transparent", color: "white" }}
               onClick={() => setCommentsPage(commentsPage + 1)}
             >
-              Load more comments{" "}
+              {_loadmorecomments[language]}{" "}
               {commentsPage > 1 &&
                 commentsLength > 0 &&
                 `${image.comments.length}/${commentsLength}`}
@@ -318,7 +321,10 @@ function Post({
               style={{ background: "transparent", color: "white" }}
               onClick={() => setAreCommentsHidden(!areCommentsHidden)}
             >
-              {areCommentsHidden ? "Expand" : "Hide"} comments
+              {areCommentsHidden
+                ? _expandcomments[language]
+                : _hidecomments[language]}{" "}
+              comments
             </button>
           </StatsFormContainer>
         </div>

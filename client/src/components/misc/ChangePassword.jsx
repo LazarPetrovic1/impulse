@@ -1,8 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import DashCenter from "../../styled/DashCenter";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { mailToChangePassword, changePassword } from "../../actions/auth";
+import { changepasswordcomponent } from "../../utils/langObject";
+import { LanguageContext } from "../../contexts/LanguageContext";
+
+const {
+  _resetpass,
+  _confirmemail,
+  _small,
+  _changepass,
+  _newpassword,
+  _confirmpass,
+  _submit,
+} = changepasswordcomponent;
 
 function ChangePassword({
   auth: { user },
@@ -11,6 +23,7 @@ function ChangePassword({
   location,
   history,
 }) {
+  const { language } = useContext(LanguageContext);
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -44,13 +57,15 @@ function ChangePassword({
         onSubmit={onPasswordChange}
         className="m-auto border p-5"
       >
-        <h2 className="text-primary text-center mb-5">Change your password</h2>
+        <h2 className="text-primary text-center mb-5">
+          {_changepass[language]}
+        </h2>
         <div className="form-group">
-          <label htmlFor="password">New password</label>
+          <label htmlFor="password">{_newpassword[language]}</label>
           <input
             type="password"
             className="form-control mt-3"
-            placeholder="Enter password"
+            placeholder={_newpassword[language]}
             id="password"
             name="password"
             value={newPassword}
@@ -58,11 +73,11 @@ function ChangePassword({
           />
         </div>
         <div className="form-group">
-          <label htmlFor="password2">Confirm password</label>
+          <label htmlFor="password2">{_confirmpass[language]}</label>
           <input
             type="password"
             className="form-control mt-3"
-            placeholder="Enter password2"
+            placeholder={_confirmpass[language]}
             id="password2"
             name="password2"
             value={confirmPassword}
@@ -74,7 +89,7 @@ function ChangePassword({
             className="btn btn-secondary"
             disabled={newPassword !== confirmPassword}
           >
-            <i className="fas fa-paper-plane pr-2" /> Submit
+            <i className="fas fa-paper-plane pr-2" /> {_submit[language]}
           </button>
         </div>
       </form>
@@ -91,19 +106,18 @@ function ChangePassword({
         onSubmit={onSubmit}
         className="m-auto border p-5"
       >
-        <h2 className="text-primary text-center mb-5">Reset/Change Password</h2>
+        <h2 className="text-primary text-center mb-5">
+          {_resetpass[language]}
+        </h2>
         <div className="form-group">
-          <label htmlFor="email">Confirm email</label>
+          <label htmlFor="email">{_confirmemail[language]}</label>
           <br />
-          <small>
-            This is the email you use to log in to Impulse, but you can have the
-            reset sent to any other email you have, if you wish so.
-          </small>
+          <small>{_small[language]}</small>
           <br />
           <input
             type="email"
             className="form-control mt-3"
-            placeholder="Enter email"
+            placeholder={_confirmemail[language]}
             id="email"
             name="email"
             value={email}
@@ -112,7 +126,7 @@ function ChangePassword({
         </div>
         <div className="form-group d-flex justify-content-end mt-5">
           <button className="btn btn-secondary">
-            <i className="fas fa-paper-plane pr-2" /> Submit
+            <i className="fas fa-paper-plane pr-2" /> {_submit[language]}
           </button>
         </div>
       </form>

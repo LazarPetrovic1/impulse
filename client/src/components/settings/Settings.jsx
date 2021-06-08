@@ -14,8 +14,8 @@ import SocialProfile from "../SocialRoutes/SocialProfile";
 import devoptions from "../../utils/devoptions";
 import TermsAndConditions from "./TermsAndConditions";
 import APIDocs from "./APIDocs";
-import ColourModal from './ColourModal';
-// import SettingsThemePlayground from "./SettingsThemePlayground";
+import ColourModal from "./ColourModal";
+import { Link } from "react-router-dom";
 
 const settingsBarWidth = "250px";
 const {
@@ -26,21 +26,34 @@ const {
   _changetheme,
   _uselegacyfont,
   _additionalinformation,
+  _termsandconditions,
+  _themeplayground,
+  _apidocs,
+  _as,
   _usedevexperience,
+  _hide,
+  _language,
+  _theme,
+  _font,
+  _devmode,
+  _recognizedvalues,
+  _strings,
+  _boolean,
+  _changetextcolour,
+  _changepassword,
 } = settingscomponent;
 
 function Settings() {
   const [selectedSetting, setSelectedSetting] = useState(1);
   const [isHidden, setIsHidden] = useState(false);
   const [devOption, setDevOption] = useState("lslanguage");
-  // const [isPlayground, setIsPlayground] = useState(false);
   const [copied, setCopied] = useState(false);
   const { isDarkTheme } = useContext(ThemeContext);
   const { language } = useContext(LanguageContext);
   const { isLegacyFont, toggleLegacyFont } = useContext(FontContext);
   const { isDevExp, toggleDevExp } = useContext(DevContext);
   const devCopy = useRef();
-  const [showColMod, setShowColMod] = useState(false)
+  const [showColMod, setShowColMod] = useState(false);
 
   const copyText = () => {
     let textField = document.createElement("textarea");
@@ -88,24 +101,31 @@ function Settings() {
               className={selectedSetting === 5 ? "selected" : ""}
               onClick={() => setSelectedSetting(5)}
             >
-              Terms and Conditions
+              {_termsandconditions[language]}
             </li>
             <li
               className={selectedSetting === 6 ? "selected" : ""}
               onClick={() => setSelectedSetting(6)}
             >
-              Theme Playground
+              {_themeplayground[language]}
             </li>
-            {
-              isDevExp && (
-                <li
-                  className={selectedSetting === 7 ? "selected" : ""}
-                  onClick={() => setSelectedSetting(7)}
-                >
-                  API Docs
-                </li>
-              )
-            }
+            <li>
+              <Link
+                className="btn pl-0 text-left"
+                style={{ color: "white", fontSize: "1rem" }}
+                to="/impulse/change-password"
+              >
+                {_changepassword[language]}
+              </Link>
+            </li>
+            {isDevExp && (
+              <li
+                className={selectedSetting === 7 ? "selected" : ""}
+                onClick={() => setSelectedSetting(7)}
+              >
+                {_apidocs[language]}
+              </li>
+            )}
           </ul>
         )}
         {selectedSetting === 6 && (
@@ -118,7 +138,8 @@ function Settings() {
               <i className="fas fa-angle-double-right" />
             ) : (
               <Fragment>
-                Hide <i className="fas fa-angle-double-left pl-2" />
+                {_hide[language]}{" "}
+                <i className="fas fa-angle-double-left pl-2" />
               </Fragment>
             )}
           </button>
@@ -150,7 +171,10 @@ function Settings() {
                   {_selectlanguage[language]}:
                   <SettingsLanguages />
                 </div>
-                <button className="btn btn-secondary btn-lg" onClick={() => setShowColMod(true)}>
+                <button
+                  className="btn btn-secondary btn-lg"
+                  onClick={() => setShowColMod(true)}
+                >
                   <i className="fas fa-palette" />
                 </button>
               </div>
@@ -200,14 +224,6 @@ function Settings() {
                 {_usedevexperience[language]}
               </span>
             </SettingsListItem>
-            {/*<SettingsListItem
-              isLast
-              isDarkTheme={isDarkTheme}
-              className="list-group-item"
-              onClick={() => setIsPlayground(true)}
-            >
-              Theme playground
-            </SettingsListItem>*/}
           </ul>
           {isDevExp && (
             <section
@@ -224,7 +240,7 @@ function Settings() {
                     devOption === "lslanguage" ? "success" : "secondary"
                   }`}
                 >
-                  Language
+                  {_language[language]}
                 </button>
                 <button
                   onClick={() => {
@@ -235,7 +251,7 @@ function Settings() {
                     devOption === "lstheme" ? "success" : "secondary"
                   }`}
                 >
-                  Theme
+                  {_theme[language]}
                 </button>
                 <button
                   onClick={() => {
@@ -246,7 +262,7 @@ function Settings() {
                     devOption === "lsfont" ? "success" : "secondary"
                   }`}
                 >
-                  Font
+                  {_font[language]}
                 </button>
                 <button
                   onClick={() => {
@@ -257,7 +273,7 @@ function Settings() {
                     devOption === "lsdevmode" ? "success" : "secondary"
                   }`}
                 >
-                  Dev mode
+                  {_devmode[language]}
                 </button>
               </div>
               <article className="p-5 border position-relative">
@@ -284,11 +300,11 @@ function Settings() {
                   {devoptions[devOption].reload}
                 </div>
                 <p className="mt-5">
-                  Recognized values are{" "}
-                  {devoptions[devOption].values.join(", ")}, as{" "}
+                  {_recognizedvalues[language]}{" "}
+                  {devoptions[devOption].values.join(", ")}, {_as[language]}{" "}
                   {devOption === "lslanguage" || devOption === "lstheme"
-                    ? "strings"
-                    : "booleans"}
+                    ? _strings[language]
+                    : _boolean[language]}
                   .
                 </p>
               </article>
@@ -304,7 +320,11 @@ function Settings() {
         {/*selectedSetting === 6 && <SettingsThemePlayground />*/}
         {selectedSetting === 7 && <APIDocs />}
       </div>
-      <ColourModal show={showColMod} onClose={() => setShowColMod(false)} title="Change text colour" />
+      <ColourModal
+        show={showColMod}
+        onClose={() => setShowColMod(false)}
+        title={_changetextcolour[language]}
+      />
     </div>
   );
 }

@@ -22,7 +22,9 @@ import ResponsiveVideo from "../../styled/Video/ResponsiveVideo";
 import useTimeout from "../../hooks/useTimeout";
 import ViewCounter from "../../styled/Video/ViewCounter";
 import { COMMENT_DELIMITER } from "../../utils/nonReduxConstants";
+import { genericposts } from "../../utils/langObject";
 
+const { _loadmorecomments, _hidecomments, _expandcomments } = genericposts;
 const maxw = { maxWidth: "1280px" };
 
 function Video({
@@ -331,7 +333,7 @@ function Video({
           style={{ background: "transparent", color: "white" }}
           onClick={() => setPage(page + 1)}
         >
-          Load more comments{" "}
+          {_loadmorecomments[language]}{" "}
           {page > 1 &&
             commentsLength > 0 &&
             `${video.video.comments.length}/${commentsLength}`}
@@ -341,7 +343,10 @@ function Video({
           style={{ background: "transparent", color: "white" }}
           onClick={() => setAreCommentsHidden(!areCommentsHidden)}
         >
-          {areCommentsHidden ? "Expand" : "Hide"} comments
+          {areCommentsHidden
+            ? _expandcomments[language]
+            : _hidecomments[language]}{" "}
+          comments
         </button>
       </div>
       <div style={maxw} className="m-auto">

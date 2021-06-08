@@ -24,6 +24,9 @@ import GroupPostComment from "./utils/GroupPostComment";
 import GroupPostInput from "./inputs/GroupPostInput";
 import { ColourContext } from "../../contexts/ColourContext";
 import { COMMENT_DELIMITER } from "../../utils/nonReduxConstants";
+import { genericposts } from "../../utils/langObject";
+
+const { _loadmorecomments, _hidecomments, _expandreplies } = genericposts;
 
 function GroupPost({
   post,
@@ -255,7 +258,7 @@ function GroupPost({
           style={{ background: "transparent", color: "white" }}
           onClick={() => setPage(page + 1)}
         >
-          Load more comments{" "}
+          {_loadmorecomments[language]}{" "}
           {page > 1 &&
             commentsLength > 0 &&
             `${post.comments.length}/${commentsLength}`}
@@ -265,7 +268,9 @@ function GroupPost({
           style={{ background: "transparent", color: "white" }}
           onClick={() => setAreCommentsHidden(!areCommentsHidden)}
         >
-          {areCommentsHidden ? "Expand" : "Hide"} comments
+          {areCommentsHidden
+            ? _expandreplies[language]
+            : _hidecomments[language]}
         </button>
       </DashCenter>
       {!areCommentsHidden && (
