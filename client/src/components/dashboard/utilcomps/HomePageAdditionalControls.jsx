@@ -7,7 +7,7 @@ import { homepageadditionalcontrolscomponent } from "../../../utils/langObject";
 import { createStatus } from "../../../actions/status";
 // import Lottie from "react-lottie-player";
 // import creategroup from "../../../animations/homepage/creategroup.json";
-import livestream from "../../../animations/homepage/livestream.json";
+// import livestream from "../../../animations/homepage/livestream.json";
 import creategroup from "../../../animations/social-backup.json";
 import EllipsisIcon from "../../utils/icons/EllipsisIcon";
 import GenericIcon from "../../utils/icons/GenericIcon";
@@ -25,7 +25,7 @@ SwiperCore.use([Navigation, A11y]);
 const {
   _saysthhere,
   _creategroup,
-  _livestream,
+  // _livestream,
   _nogroup,
   _youcaneasily,
   _joinone,
@@ -79,10 +79,6 @@ function HomePageAdditionalControls({
           <GenericIcon width={50} height={30} data={creategroup} />
           <span name="text">{_creategroup[language]}</span>
         </ControlsButton>
-        <ControlsButton className="btn btn-primary btn-lg">
-          <GenericIcon width={50} height={30} data={livestream} />
-          <span name="text">{_livestream[language]}</span>
-        </ControlsButton>
       </div>
       {group && Array.isArray(group.groups) && group.groups.length > 0 && (
         <Swiper slidesPerView={3} navigation>
@@ -125,3 +121,8 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, { createStatus, meInGroups })(
   HomePageAdditionalControls
 );
+
+// <ControlsButton className="btn btn-primary btn-lg">
+//   <GenericIcon width={50} height={30} data={livestream} />
+//   <span name="text">{_livestream[language]}</span>
+// </ControlsButton>
