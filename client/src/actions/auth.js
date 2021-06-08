@@ -18,8 +18,7 @@ import {
   CHANGE_PASSWORD,
 } from "./types";
 import setAuthToken from "../utils/setAuthToken";
-import io from "socket.io-client";
-const socket = io.connect(`http://localhost:5000`);
+import { socket } from "../contexts/SocketContext";
 
 // Load a user
 export const loadUser = () => async (dispatch) => {

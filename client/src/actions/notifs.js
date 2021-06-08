@@ -5,9 +5,7 @@ import {
   POST_NOTIF,
   SEND_FRIEND_REQUEST,
 } from "./types";
-import io from "socket.io-client";
-
-const socket = io.connect(`http://localhost:5000`);
+import { socket } from "../contexts/SocketContext";
 
 export const findNotifs = (userId) => async (dispatch) => {
   await socket.emit("findNotif", userId);

@@ -3,17 +3,24 @@ const cors = require("cors");
 const http = require("http");
 const socketio = require("socket.io");
 const path = require("path");
-const PORT = process.env.PORT || 5000;
 const app = express();
 const socketHolder = require("./utils/sockets");
 const server = http.createServer(app);
-const io = socketio(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: "*",
-  },
-});
+let PORT;
+
+if (process.env.PORT > 0) PORT = process.env.PORT;
+else PORT = 5000;
+
+const io = socketio(
+  server
+  // {
+  //   cors: {
+  //     origin: "http://localhost:3000",
+  //     methods: ["GET", "POST", "PUT", "DELETE"],
+  //     allowedHeaders: "*",
+  //   },
+  // }
+);
 
 const corsOptions = {
   origin: ["*"],

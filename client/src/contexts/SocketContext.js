@@ -1,16 +1,26 @@
-import React, { createContext } from 'react'
-import io from 'socket.io-client';
-import thunder from '../assets/sound-effects/notifs/thunder.wav';
-const socket = io.connect(`http://localhost:5000`)
+import React, { createContext } from "react";
+import io from "socket.io-client";
+import thunder from "../assets/sound-effects/notifs/thunder.wav";
+let socket;
+if (React.isDevelopment) {
+  socket = io.connect(`http://localhost:5000`);
+} else {
+  socket = io.connect("APPNAME.herokuapp.com:80");
+  socket.emit("MsgType", "Payload");
+}
 
-export const SocketContext = createContext()
+export const SocketContext = createContext();
 
 export function SocketProvider({ children }) {
   const playEffect = () => {
     const impulseNotif = new Audio(thunder);
-    impulseNotif.play()
-  }
+    impulseNotif.play();
+  };
   return (
-    <SocketContext.Provider value={{ socket, playEffect }}>{children}</SocketContext.Provider>
-  )
-};
+    <SocketContext.Provider value={{ socket, playEffect }}>
+      {children}
+    </SocketContext.Provider>
+  );
+}
+
+export { socket };
