@@ -5,7 +5,7 @@ let socket;
 if (React.isDevelopment) {
   socket = io.connect(`http://localhost:5000`);
 } else {
-  socket = io.connect("fathomless-thicket-93057.herokuapp.com:80");
+  socket = io.connect("fathomless-thicket-93057.herokuapp.com");
   socket.emit("MsgType", "Payload");
 }
 
