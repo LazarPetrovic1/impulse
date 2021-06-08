@@ -3,13 +3,13 @@ import DashCenter from "../../styled/DashCenter";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { mailToChangePassword, changePassword } from "../../actions/auth";
-import { Redirect } from "react-router-dom";
 
 function ChangePassword({
   auth: { user },
   mailToChangePassword,
   changePassword,
   location,
+  history,
 }) {
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -29,7 +29,7 @@ function ChangePassword({
   const onPasswordChange = async (e) => {
     e.preventDefault();
     await changePassword(newPassword);
-    return <Redirect to="/" />;
+    await history.push("/");
   };
 
   return location.search ? (
