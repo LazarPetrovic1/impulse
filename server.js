@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const socketio = require("socket.io");
+const path = require("path");
 const PORT = process.env.PORT || 5000;
 const app = express();
 const socketHolder = require("./utils/sockets");
@@ -42,10 +43,6 @@ app.use(express.json({ limit: "200mb", extended: true }));
 app.use(express.urlencoded({ limit: "200mb", extended: true }));
 app.use(cors(corsOptions));
 
-app.get("/", (req, res) => {
-  res.send("Bye, man.");
-});
-
 // Define the routes
 app.use("/api/users", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/auth"));
@@ -65,6 +62,15 @@ app.use("/impulse/api/v1/videos", require("./routes/public/videopost"));
 app.use("/impulse/api/v1/forum", require("./routes/public/forumpost"));
 
 require("./utils/cron")(app, io);
+
+// Serve static assets if in production
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 server.listen(PORT, () => {
   console.log(`Server listening on port: ${PORT}`);
